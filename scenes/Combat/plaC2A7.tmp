@@ -8,6 +8,7 @@ size = Vector2(64, 64)
 
 [node name="PlayerControlledCreature" type="CharacterBody2D"]
 script = ExtResource("1_mkw86")
+metadata/_edit_group_ = true
 
 [node name="PlayerImage" type="Sprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
@@ -15,14 +16,3 @@ texture = ExtResource("2_d02q3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_qba28")
-
-[node name="Markers" type="Node2D" parent="."]
-
-[node name="MarkerClose" type="Marker2D" parent="Markers"]
-position = Vector2(40, 0)
-
-[node name="MarkerMedium" type="Marker2D" parent="Markers"]
-position = Vector2(72, 0)
-
-[node name="MarkerFar" type="Marker2D" parent="Markers"]
-position = Vector2(112, 0)
