@@ -18,9 +18,15 @@ var combat_creature_speed: int = 0:
 	get:
 		return combat_creature_speed
 		
+# ATTACKING
 var marker_close: Marker2D
 var marker_medium: Marker2D
 var marker_far: Marker2D
+var character_is_attacking: bool = false
+
+# DODGING
+var character_is_dodging: bool = false
+var dodge_direction: Vector2
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -32,16 +38,40 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	pass
 	
-func _move_combat_creature(_delta: float, direction: Vector2) -> void:
+# BASIC MOVEMENT
+func _combat_creature_basic_movement(direction: Vector2) -> void:
 	#var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = direction * combat_creature_speed
 	move_and_slide()
 
-func _attack_at_marker_range(range: String) -> void:
-	match range:
-		"close":
-			print("Attack made at close range")
-		"medium":
-			print("Attack made at medium range")
-		"far":
-			print("Attack made at far range")
+# ATTACKING
+func _combat_creature_attack_at_marker_range(range: String) -> void:
+	if !character_is_attacking:
+		character_is_attacking = true
+		$Timers/AttackLockTimer.start()
+		match range:
+			"close":
+				print("Attack made at close range")
+			"medium":
+				print("Attack made at medium range")
+			"far":
+				print("Attack made at far range")
+
+func _on_attack_lock_timer_timeout():
+	character_is_attacking = false
+
+# DODGING
+func _combat_creature_dodge(direction: Vector2) -> void:
+	if !character_is_dodging:
+		$Timers/DodgeLockTimer.start()
+		character_is_dodging = true
+		dodge_direction = direction
+	
+	_combat_creature_continue_dodge()
+
+func _combat_creature_continue_dodge() -> void:
+	velocity = dodge_direction * (combat_creature_speed * 5)
+	move_and_slide()
+
+func _on_dodge_lock_timer_timeout():
+	character_is_dodging = false

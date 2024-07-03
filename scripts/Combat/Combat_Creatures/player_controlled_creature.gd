@@ -13,5 +13,23 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	_move_combat_creature(_delta, direction)
+	_handle_character_movement()
+	_handle_character_attack()
+
+func _handle_character_movement() -> void:
+	if !character_is_dodging:
+		var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+		if Input.is_action_just_pressed("dodge"):
+			_combat_creature_dodge(direction)
+		else: 
+			_combat_creature_basic_movement(direction)
+	if character_is_dodging:
+		_combat_creature_dodge(Vector2(0,0))
+
+func _handle_character_attack() -> void:
+	if Input.is_action_just_pressed("attack_near"):
+		_combat_creature_attack_at_marker_range("close")
+	if Input.is_action_just_pressed("attack_medium"):
+		_combat_creature_attack_at_marker_range("medium")
+	if Input.is_action_just_pressed("attack_far"):
+		_combat_creature_attack_at_marker_range("far")

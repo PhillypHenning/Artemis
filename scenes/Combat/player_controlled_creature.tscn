@@ -26,3 +26,16 @@ position = Vector2(72, 0)
 
 [node name="MarkerFar" type="Marker2D" parent="Markers"]
 position = Vector2(112, 0)
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="DodgeLockTimer" type="Timer" parent="Timers"]
+wait_time = 0.1
+one_shot = true
+
+[node name="AttackLockTimer" type="Timer" parent="Timers"]
+wait_time = 0.25
+one_shot = true
+
+[connection signal="timeout" from="Timers/DodgeLockTimer" to="." method="_on_dodge_lock_timer_timeout"]
+[connection signal="timeout" from="Timers/AttackLockTimer" to="." method="_on_attack_lock_timer_timeout"]
