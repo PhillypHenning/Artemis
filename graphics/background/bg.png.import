@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3yydyhxxrfo6"
-path="res://.godot/imported/playerGrey_up1.png-df476c3b44aacebea94005987c36231b.ctex"
+uid="uid://rpa10nbehg0v"
+path="res://.godot/imported/bg.png-523c347d2ffbd31fd05daa2b13b315a7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Art/Character/Combat/playerGrey_up1.png"
-dest_files=["res://.godot/imported/playerGrey_up1.png-df476c3b44aacebea94005987c36231b.ctex"]
+source_file="res://graphics/background/bg.png"
+dest_files=["res://.godot/imported/bg.png-523c347d2ffbd31fd05daa2b13b315a7.ctex"]
 
 [params]
 
