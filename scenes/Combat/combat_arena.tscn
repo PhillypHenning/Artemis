@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://drrfk1gcr4ujm"]
 
 [ext_resource type="Texture2D" uid="uid://rpa10nbehg0v" path="res://graphics/background/bg.png" id="1_61bhp"]
-[ext_resource type="PackedScene" uid="uid://bch1inx7rhsor" path="res://scenes/Combat/player_controlled_creature.tscn" id="2_i5cfp"]
+[ext_resource type="PackedScene" uid="uid://bch1inx7rhsor" path="res://scenes/Combat/player_controlled_creature.tscn" id="2_x7vg8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nbob1"]
 size = Vector2(32, 657)
@@ -27,6 +27,7 @@ texture = ExtResource("1_61bhp")
 [node name="BorderRight" type="StaticBody2D" parent="Borders"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderRight"]
+light_mask = 2
 position = Vector2(1232, 456.5)
 shape = SubResource("RectangleShape2D_nbob1")
 
@@ -40,6 +41,7 @@ scale = Vector2(0.988768, 1.31602)
 [node name="BorderLeft" type="StaticBody2D" parent="Borders"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderLeft"]
+light_mask = 2
 position = Vector2(240, 456)
 shape = SubResource("RectangleShape2D_l13q2")
 
@@ -53,6 +55,7 @@ scale = Vector2(1.99488, 1.05376)
 [node name="BorderTop" type="StaticBody2D" parent="Borders"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderTop"]
+light_mask = 2
 position = Vector2(736, 140)
 shape = SubResource("RectangleShape2D_mrfyn")
 
@@ -65,6 +68,7 @@ offset_bottom = 152.0
 [node name="BorderBottom" type="StaticBody2D" parent="Borders"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderBottom"]
+light_mask = 2
 position = Vector2(736, 776)
 shape = SubResource("RectangleShape2D_xhb0g")
 
@@ -74,7 +78,5 @@ offset_top = 768.0
 offset_right = 1248.0
 offset_bottom = 800.0
 
-[node name="Area2D" type="Area2D" parent="Borders"]
-
-[node name="Player" parent="." instance=ExtResource("2_i5cfp")]
-position = Vector2(368, 672)
+[node name="PlayerControlledCreature" parent="." instance=ExtResource("2_x7vg8")]
+position = Vector2(344, 664)
