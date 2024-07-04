@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://drrfk1gcr4ujm"]
+[gd_scene load_steps=8 format=3 uid="uid://drrfk1gcr4ujm"]
 
 [ext_resource type="Texture2D" uid="uid://rpa10nbehg0v" path="res://graphics/background/bg.png" id="1_61bhp"]
 [ext_resource type="PackedScene" uid="uid://bch1inx7rhsor" path="res://scenes/Combat/player_controlled_creature.tscn" id="2_x7vg8"]
+[ext_resource type="PackedScene" uid="uid://c8cdet8dkmps6" path="res://scenes/Combat/target_dummy.tscn" id="3_rwrr2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nbob1"]
 size = Vector2(32, 657)
@@ -80,3 +81,6 @@ offset_bottom = 800.0
 
 [node name="PlayerControlledCreature" parent="." instance=ExtResource("2_x7vg8")]
 position = Vector2(344, 664)
+
+[node name="TargetDummy" parent="." instance=ExtResource("3_rwrr2")]
+position = Vector2(992, 224)
