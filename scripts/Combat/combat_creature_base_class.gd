@@ -50,7 +50,6 @@ var combat_creature_current_speed: int = 0:
 	get:
 		return combat_creature_current_speed
 
-
 # HEALTH
 var character_has_iframes: bool = false
 var character_damage_cooldown: bool = false
@@ -65,6 +64,7 @@ var character_is_attacking: bool = false
 # MOVEMENT ABILITIES
 var character_last_known_direction: Vector2
 var character_is_using_movement_ability: bool = false
+
 ## DODGING
 var character_is_dodging: bool = false
 
@@ -101,11 +101,11 @@ func _combat_creature_basic_movement(direction: Vector2) -> void:
 		move_and_slide()
 
 # ATTACKING
-func _combat_creature_attack_at_marker_range(range: String) -> void:
+func _combat_creature_attack_at_marker_range(target_range: String) -> void:
 	if !character_is_attacking:
 		character_is_attacking = true
 		$Timers/AttackLockTimer.start()
-		match range:
+		match target_range:
 			"close":
 				print("Attack made at close range")
 			"medium":

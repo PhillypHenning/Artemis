@@ -19,8 +19,8 @@ size = Vector2(1024, 20)
 [node name="CombatArena" type="Node2D"]
 
 [node name="Background" type="Sprite2D" parent="."]
-position = Vector2(760, 472)
-scale = Vector2(1.61406, 1.75972)
+position = Vector2(767.501, 479.25)
+scale = Vector2(1.60078, 1.69097)
 texture = ExtResource("1_61bhp")
 
 [node name="Borders" type="Node2D" parent="."]
@@ -80,7 +80,7 @@ offset_right = 1248.0
 offset_bottom = 800.0
 
 [node name="PlayerControlledCreature" parent="." instance=ExtResource("2_x7vg8")]
-position = Vector2(344, 664)
+position = Vector2(416, 608)
 
 [node name="TargetDummy" parent="." instance=ExtResource("3_rwrr2")]
-position = Vector2(992, 224)
+position = Vector2(992, 288)
