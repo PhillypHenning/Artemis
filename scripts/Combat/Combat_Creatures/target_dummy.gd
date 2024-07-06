@@ -4,6 +4,7 @@ extends CombatCreatureBaseClass
 @export var stamina: 	int = 10
 @export var speed: 		int = 400
 
+
 var target_dummy_has_taken_damage: bool = false
 
 # Called when the node enters the scene tree for the first time.
