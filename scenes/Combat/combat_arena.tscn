@@ -39,6 +39,7 @@ offset_top = 128.0
 offset_right = 256.0
 offset_bottom = 624.0
 scale = Vector2(0.988768, 1.31602)
+metadata/_edit_use_anchors_ = true
 
 [node name="BorderLeft" type="StaticBody2D" parent="Borders"]
 
@@ -53,6 +54,7 @@ offset_top = 128.0
 offset_right = 1232.0
 offset_bottom = 751.0
 scale = Vector2(1.99488, 1.05376)
+metadata/_edit_use_anchors_ = true
 
 [node name="BorderTop" type="StaticBody2D" parent="Borders"]
 
@@ -66,6 +68,7 @@ offset_left = 224.0
 offset_top = 128.0
 offset_right = 1248.0
 offset_bottom = 152.0
+metadata/_edit_use_anchors_ = true
 
 [node name="BorderBottom" type="StaticBody2D" parent="Borders"]
 
@@ -79,6 +82,7 @@ offset_left = 224.0
 offset_top = 768.0
 offset_right = 1248.0
 offset_bottom = 800.0
+metadata/_edit_use_anchors_ = true
 
 [node name="PlayerControlledCreature" parent="." instance=ExtResource("2_x7vg8")]
 position = Vector2(416, 608)
@@ -86,16 +90,23 @@ position = Vector2(416, 608)
 [node name="TargetDummy" parent="." instance=ExtResource("3_rwrr2")]
 position = Vector2(992, 288)
 
-[node name="CombatCreatureCard" parent="." instance=ExtResource("4_agv16")]
-offset_left = 256.0
-offset_top = 8.0
-offset_right = 256.0
-offset_bottom = 8.0
-scale = Vector2(0.7, 0.7)
-
 [node name="CombatCreatureCard2" parent="." instance=ExtResource("4_agv16")]
+visible = false
 offset_left = 1024.0
 offset_top = 8.0
 offset_right = 1024.0
 offset_bottom = 8.0
+scale = Vector2(0.7, 0.7)
+metadata/_edit_use_anchors_ = true
+
+[node name="CardSpawn1" type="Node2D" parent="."]
+position = Vector2(252, 8)
+
+[node name="CombatCreatureCard" parent="CardSpawn1" instance=ExtResource("4_agv16")]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 scale = Vector2(0.7, 0.7)

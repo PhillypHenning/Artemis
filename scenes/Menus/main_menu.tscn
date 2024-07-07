@@ -1,14 +1,14 @@
 [gd_scene load_steps=5 format=3 uid="uid://b2nnwujgr5q6h"]
 
-[ext_resource type="Script" path="res://scripts/Menus/MainMenu.gd" id="1_4tvjj"]
-[ext_resource type="Texture2D" uid="uid://rpa10nbehg0v" path="res://graphics/background/bg.png" id="2_3e1uw"]
-[ext_resource type="Texture2D" uid="uid://kvfnuub0g2nx" path="res://graphics/studio-intro/Roasted-Goblin-Intro.png" id="3_nsx6i"]
-[ext_resource type="AudioStream" uid="uid://dsj52r0q15om7" path="res://audio/studio-intro/056399721-goblin-laugh-3.mp3" id="4_oif66"]
+[ext_resource type="Script" path="res://scripts/menus/main_menu.gd" id="1_dadkk"]
+[ext_resource type="Texture2D" uid="uid://rpa10nbehg0v" path="res://graphics/background/bg.png" id="2_hntwy"]
+[ext_resource type="Texture2D" uid="uid://kvfnuub0g2nx" path="res://graphics/studio_intro/roasted_goblin_intro.png" id="3_716ny"]
+[ext_resource type="AudioStream" uid="uid://dsj52r0q15om7" path="res://audio/studio-intro/056399721-goblin-laugh-3.mp3" id="4_cj77w"]
 
 [node name="MainMenu" type="Node"]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-script = ExtResource("1_4tvjj")
+script = ExtResource("1_dadkk")
 
 [node name="Main" type="Control" parent="CanvasLayer"]
 visible = false
@@ -125,7 +125,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_3e1uw")
+texture = ExtResource("2_hntwy")
 expand_mode = 1
 
 [node name="StudioIntro" type="TextureRect" parent="Backgrounds"]
@@ -134,13 +134,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("3_nsx6i")
+texture = ExtResource("3_716ny")
 expand_mode = 1
 
 [node name="Audios" type="Node" parent="."]
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Audios"]
-stream = ExtResource("4_oif66")
+stream = ExtResource("4_cj77w")
 
 [connection signal="pressed" from="CanvasLayer/Main/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/PlayButton" to="CanvasLayer" method="_on_play_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/Main/CenterContainer/PanelContainer/MarginContainer/VBoxContainer/SettingsButton" to="CanvasLayer" method="_on_settings_button_pressed"]

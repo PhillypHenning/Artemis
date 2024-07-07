@@ -7,7 +7,6 @@ extends CanvasLayer
 @onready var studio_intro = $"../Backgrounds/StudioIntro"
 @onready var audio_stream_player_2d = $"../Audios/AudioStreamPlayer2D"
 
-
 func _ready() -> void:
 	intro_timer.start()
 	audio_stream_player_2d.play()
