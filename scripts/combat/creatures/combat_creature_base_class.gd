@@ -2,6 +2,9 @@ class_name CombatCreatureBaseClass
 
 extends CharacterBody2D
 
+var combat_creature_name: String = "BaseClassChangeThis"
+var combat_creature_is_player_creature: bool = false
+
 var combat_creature_initial_health: int = 0:
 	set(value):
 		combat_creature_initial_health = value
@@ -54,6 +57,7 @@ var combat_creature_current_speed: int = 0:
 var character_has_iframes: bool = false
 var character_damage_cooldown: bool = false
 var character_damage_lock_timer: Timer
+var combat_creature_is_dead: bool = false
 
 # ATTACKING
 var marker_close: Marker2D
@@ -72,9 +76,25 @@ var character_is_dodging: bool = false
 var character_is_dashing: bool = false
 var dash_direction: Vector2
 
+# PARENT NODE
+var combat_arena_node: Node
+
+# COMBAT CARD
+var combat_creature_card: Node
+var combat_creature_health_bar: Node
+var combat_creature_stamina_counter: Node
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	_combat_creature_setup_damage_lock_timer()
+	combat_arena_node = find_parent("CombatArena")
+	
+	if combat_arena_node != null:
+		if combat_creature_is_player_creature:
+			combat_arena_node.connect("attach_player_creature_to_card", _attach_creature_to_card)
+		else:
+			combat_arena_node.connect("attach_enemy_creature_to_card", _attach_creature_to_card)
+		
 	
 func _handle_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_initial_health = health
@@ -159,6 +179,9 @@ func _combat_creature_take_damage(amount_of_incoming_damage: int):
 		combat_creature_current_health -= amount_of_incoming_damage
 		character_damage_cooldown = true
 		character_damage_lock_timer.start()
+	if combat_creature_current_health <= 0:
+		combat_creature_is_dead = true
+		
 
 func _combat_creature_setup_damage_lock_timer() -> void:
 	character_damage_lock_timer = Timer.new()
@@ -169,3 +192,22 @@ func _combat_creature_setup_damage_lock_timer() -> void:
 
 func _on_damage_lock_timer_timeout():
 	character_damage_cooldown = false
+
+# COMBAT CARD
+func _attach_creature_to_card(_card: Node):
+	push_error("OVERRIDE THIS IN THE CREATURE CARD")
+
+func _setup_combat_card() -> void:
+	var name_node = combat_creature_card.find_child("NameLabel")
+	name_node.text = combat_creature_name
+	
+	combat_creature_health_bar = combat_creature_card.find_child("HealthBar")
+	combat_creature_health_bar.max_value = combat_creature_max_health
+	combat_creature_health_bar.value = combat_creature_max_health
+	
+	combat_creature_stamina_counter = combat_creature_card.find_child("StaminaCounter")
+	combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
+
+func _handle_combat_card() -> void:
+	combat_creature_health_bar.value = combat_creature_current_health
+	combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
