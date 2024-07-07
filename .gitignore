@@ -14,5 +14,9 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 
+# Github
 .git
 .gitattributes
+
+# Visual Studio
+.vscode
