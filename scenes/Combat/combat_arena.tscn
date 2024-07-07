@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://drrfk1gcr4ujm"]
+[gd_scene load_steps=9 format=3 uid="uid://drrfk1gcr4ujm"]
 
 [ext_resource type="Texture2D" uid="uid://rpa10nbehg0v" path="res://graphics/background/bg.png" id="1_61bhp"]
 [ext_resource type="PackedScene" uid="uid://bch1inx7rhsor" path="res://scenes/Combat/player_controlled_creature.tscn" id="2_x7vg8"]
 [ext_resource type="PackedScene" uid="uid://c8cdet8dkmps6" path="res://scenes/Combat/target_dummy.tscn" id="3_rwrr2"]
+[ext_resource type="PackedScene" uid="uid://bshn165lv7whk" path="res://scenes/UI/combat_creature_card.tscn" id="4_agv16"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nbob1"]
 size = Vector2(32, 657)
@@ -84,3 +85,17 @@ position = Vector2(416, 608)
 
 [node name="TargetDummy" parent="." instance=ExtResource("3_rwrr2")]
 position = Vector2(992, 288)
+
+[node name="CombatCreatureCard" parent="." instance=ExtResource("4_agv16")]
+offset_left = 256.0
+offset_top = 8.0
+offset_right = 256.0
+offset_bottom = 8.0
+scale = Vector2(0.7, 0.7)
+
+[node name="CombatCreatureCard2" parent="." instance=ExtResource("4_agv16")]
+offset_left = 1024.0
+offset_top = 8.0
+offset_right = 1024.0
+offset_bottom = 8.0
+scale = Vector2(0.7, 0.7)
