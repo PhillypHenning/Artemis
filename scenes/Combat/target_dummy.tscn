@@ -17,11 +17,3 @@ texture = ExtResource("1_ol3m8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_xnifc")
-
-[node name="Timers" type="Node" parent="."]
-
-[node name="HealTimer" type="Timer" parent="Timers"]
-wait_time = 10.0
-one_shot = true
-
-[connection signal="timeout" from="Timers/HealTimer" to="." method="_on_heal_timer_timeout"]

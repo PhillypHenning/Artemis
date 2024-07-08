@@ -92,6 +92,9 @@ var combat_creature_target_marker_close: Node
 var combat_creature_target_marker_medium: Node
 var combat_creature_target_marker_far: Node
 
+# Timers
+var combat_creature_timers_node
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	combat_arena_node = find_parent("CombatArena")
@@ -100,6 +103,9 @@ func _ready() -> void:
 	_create_combat_creature_markers()
 
 	# Timers
+	combat_creature_timers_node = Node.new()
+	combat_creature_timers_node.name = "Timers"
+	add_child(combat_creature_timers_node)
 	_combat_creature_setup_damage_lock_timer()
 	
 	# Signal connections
@@ -115,7 +121,7 @@ func _process(_delta: float) -> void:
 	_handle_look_at_target()
 
 
-func _handle_initial_stat_set(health: int, stamina: int, speed: int) -> void:
+func _init_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_initial_health = health
 	combat_creature_max_health = health
 	combat_creature_current_health = health
@@ -127,6 +133,13 @@ func _handle_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_initial_speed = speed
 	combat_creature_max_speed = speed
 	combat_creature_current_speed = speed
+
+
+func _init_add_basic_timers() -> void:
+	combat_creature_timers_node = Node.new()
+	combat_creature_timers_node.name = "Timers"
+	add_child(combat_creature_timers_node)
+
 	
 # BASIC MOVEMENT
 func _combat_creature_basic_movement(direction: Vector2) -> void:
@@ -228,8 +241,9 @@ func _setup_combat_card() -> void:
 	combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
 
 func _handle_combat_card() -> void:
-	combat_creature_health_bar.value = combat_creature_current_health
-	combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
+	if combat_creature_card:
+		combat_creature_health_bar.value = combat_creature_current_health
+		combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
 
 func _handle_targetting(_target: Node) -> void:
 	push_error("OVERRIDE THIS IN THE CREATURE CARD")

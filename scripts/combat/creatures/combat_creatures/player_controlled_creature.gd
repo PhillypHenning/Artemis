@@ -9,7 +9,7 @@ func _ready() -> void:
 	combat_creature_is_player_creature = true
 	combat_creature_name = "Player Controlled Creature"
 	super._ready()
-	_handle_initial_stat_set(health, stamina, speed)
+	_init_initial_stat_set(health, stamina, speed)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
