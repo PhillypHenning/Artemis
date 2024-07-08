@@ -14,17 +14,17 @@ var action_stack: Dictionary = {
 	"Action_3": null
 }
 
-var player_creature_scene = load("res://scenes/combat/player_controlled_creature.tscn")
-var target_dummy_creature_scene = load("res://scenes/combat/target_dummy.tscn")
-var creature_card_scene = load("res://scenes/UI/combat_creature_card.tscn")
+var player_creature_scene = preload("res://scenes/combat/player_controlled_creature.tscn")
+var target_dummy_creature_scene = preload("res://scenes/combat/target_dummy.tscn")
+var creature_card_scene = preload("res://scenes/UI/combat_creature_card.tscn")
 
 const Utils = preload("res://scripts/utils/utils.gd")
 var utils = Utils.new()
 
 signal attach_player_creature_to_card(Node)
 signal attach_enemy_creature_to_card(Node)
-signal player_character_target(Node)
-signal enemy_character_target(Node)
+signal set_player_character_target(Node)
+signal set_enemy_character_target(Node)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -43,8 +43,8 @@ func _ready():
 	attach_enemy_creature_to_card.emit(enemy_creature_card)
 	
 	# Targeting
-	player_character_target.emit(enemy_creature)
-	enemy_character_target.emit(player_creature)
+	set_player_character_target.emit(enemy_creature)
+	set_enemy_character_target.emit(player_creature)
 
 func _process(_delta) -> void:
 	_handle_stack()

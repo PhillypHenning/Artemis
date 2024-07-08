@@ -92,6 +92,11 @@ var combat_creature_target_marker_close: Node
 var combat_creature_target_marker_medium: Node
 var combat_creature_target_marker_far: Node
 
+# ABILITIES
+var utility_abilities_script = preload("res://scripts/combat/abilities/utility.gd")
+var utility_abilities = utility_abilities_script.new()
+var combat_creature_abilities: Dictionary
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	combat_arena_node = find_parent("CombatArena")
@@ -100,19 +105,24 @@ func _ready() -> void:
 	_create_combat_creature_markers()
 
 	# Timers
+	var timers_node = Node.new()
+	timers_node.name = "Timers"
+	add_child(timers_node)
 	_combat_creature_setup_damage_lock_timer()
 	
 	# Signal connections
 	if combat_arena_node != null:
 		if combat_creature_is_player_creature:
 			combat_arena_node.connect("attach_player_creature_to_card", _attach_creature_to_card)
-			combat_arena_node.connect("player_character_target", _handle_targetting)
+			combat_arena_node.connect("set_player_character_target", _handle_targetting)
 		else:
 			combat_arena_node.connect("attach_enemy_creature_to_card", _attach_creature_to_card)
-			combat_arena_node.connect("enemy_character_target", _handle_targetting)
+			combat_arena_node.connect("set_enemy_character_target", _handle_targetting)
 
 func _process(_delta: float) -> void:
 	_handle_look_at_target()
+	_handle_combat_card()
+	_handle_abilities()
 
 
 func _handle_initial_stat_set(health: int, stamina: int, speed: int) -> void:
@@ -198,6 +208,7 @@ func _combat_creature_take_damage(amount_of_incoming_damage: int):
 		combat_creature_current_health -= amount_of_incoming_damage
 		character_damage_cooldown = true
 		character_damage_lock_timer.start()
+		
 	if combat_creature_current_health <= 0:
 		combat_creature_is_dead = true
 		
@@ -228,8 +239,9 @@ func _setup_combat_card() -> void:
 	combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
 
 func _handle_combat_card() -> void:
-	combat_creature_health_bar.value = combat_creature_current_health
-	combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
+	if combat_creature_card:
+		combat_creature_health_bar.value = combat_creature_current_health
+		combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
 
 func _handle_targetting(_target: Node) -> void:
 	push_error("OVERRIDE THIS IN THE CREATURE CARD")
@@ -278,3 +290,16 @@ func _handle_look_at_target() -> void:
 		combat_creature_markers.look_at(get_global_mouse_position())
 	else:
 		combat_creature_markers.look_at(combat_creature_target.global_position)
+
+# Abilities
+func _update_abilities(abilities: Dictionary) -> void:
+	combat_creature_abilities = abilities
+
+func _handle_abilities() -> void:
+	if combat_creature_abilities["Offensive"]:
+		pass
+	if combat_creature_abilities["Defensive"]:
+		pass
+	if combat_creature_abilities["Utility"]:
+		for n in combat_creature_abilities["Utility"]:
+			utility_abilities.id_to_ability[n].call(self)

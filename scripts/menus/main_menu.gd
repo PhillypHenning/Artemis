@@ -7,10 +7,12 @@ extends CanvasLayer
 @onready var studio_intro = $"../Backgrounds/StudioIntro"
 @onready var audio_stream_player_2d = $"../Audios/AudioStreamPlayer2D"
 
+var debug_combat_scene = preload("res://scenes/combat/combat_arena.tscn")
+
 func _ready() -> void:
 	intro_timer.start()
 	audio_stream_player_2d.play()
-	
+
 	studio_intro.visible = true
 	background.visible = false
 	main.visible = false
@@ -21,8 +23,9 @@ func _process(_delta: float) -> void:
 		intro_timer.stop()
 		_on_intro_timer_timeout()
 
+
 func _on_play_button_pressed():
-	get_tree().change_scene_to_file("res://scenes/Combat/combat_arena.tscn")
+	get_tree().change_scene_to_packed(debug_combat_scene)
 
 
 func _on_settings_button_pressed():

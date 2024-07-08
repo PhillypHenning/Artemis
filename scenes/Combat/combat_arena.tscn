@@ -15,7 +15,7 @@ size = Vector2(1024, 24)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xhb0g"]
 size = Vector2(1024, 20)
 
-[node name="CombatArena" type="Node2D"]
+[node name="CombatArena2" type="Node2D"]
 position = Vector2(208, 72)
 script = ExtResource("1_h52x4")
 
