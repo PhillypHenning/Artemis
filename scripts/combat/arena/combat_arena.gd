@@ -23,18 +23,28 @@ var utils = Utils.new()
 
 signal attach_player_creature_to_card(Node)
 signal attach_enemy_creature_to_card(Node)
+signal player_character_target(Node)
+signal enemy_character_target(Node)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	add_child(utils.spawn_packedscene_at_spawn_point(player_creature_scene, player_spawn_point.position, "PlayerCreature"))
-	add_child(utils.spawn_packedscene_at_spawn_point(target_dummy_creature_scene, target_dummy_spawn_point.position, "TargetDummy"))
-	var pcc = utils.spawn_packedscene_at_spawn_point(creature_card_scene, card_spawn_1.position, "PlayerCreatureCard")
-	add_child(pcc)
-	var tdc = utils.spawn_packedscene_at_spawn_point(creature_card_scene, card_spawn_2.position, "TargetDummyCard")
-	add_child(tdc)
+	var player_creature = utils.spawn_packedscene_at_spawn_point(player_creature_scene, player_spawn_point.position, "PlayerCreature")
+	add_child(player_creature)
+	var enemy_creature = utils.spawn_packedscene_at_spawn_point(target_dummy_creature_scene, target_dummy_spawn_point.position, "TargetDummy")
+	add_child(enemy_creature)
 	
-	attach_player_creature_to_card.emit(pcc)
-	attach_enemy_creature_to_card.emit(tdc)
+	var player_creature_card = utils.spawn_packedscene_at_spawn_point(creature_card_scene, card_spawn_1.position, "PlayerCreatureCard")
+	add_child(player_creature_card)
+	var enemy_creature_card = utils.spawn_packedscene_at_spawn_point(creature_card_scene, card_spawn_2.position, "TargetDummyCard")
+	add_child(enemy_creature_card)
+	
+	# Creature Card
+	attach_player_creature_to_card.emit(player_creature_card)
+	attach_enemy_creature_to_card.emit(enemy_creature_card)
+	
+	# Targeting
+	player_character_target.emit(enemy_creature)
+	enemy_character_target.emit(player_creature)
 
 func _process(_delta) -> void:
 	_handle_stack()

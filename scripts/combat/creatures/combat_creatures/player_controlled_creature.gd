@@ -12,7 +12,8 @@ func _ready() -> void:
 	_handle_initial_stat_set(health, stamina, speed)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	super._process(delta)
 	_handle_character_movement()
 	_handle_character_movement_ability()
 	_handle_character_attack()
@@ -36,3 +37,6 @@ func _handle_character_attack() -> void:
 func _attach_creature_to_card(card: Node):
 	combat_creature_card = card
 	super._setup_combat_card()
+
+func _handle_targetting(target: Node) -> void:
+	combat_creature_target = target

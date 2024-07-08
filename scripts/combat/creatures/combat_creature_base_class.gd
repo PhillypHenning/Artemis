@@ -84,18 +84,37 @@ var combat_creature_card: Node
 var combat_creature_health_bar: Node
 var combat_creature_stamina_counter: Node
 
+# TARGETING
+var combat_creature_target: Node
+
+var combat_creature_markers: Node
+var combat_creature_target_marker_close: Node
+var combat_creature_target_marker_medium: Node
+var combat_creature_target_marker_far: Node
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	_combat_creature_setup_damage_lock_timer()
 	combat_arena_node = find_parent("CombatArena")
 	
+	# Targeting
+	_create_combat_creature_markers()
+
+	# Timers
+	_combat_creature_setup_damage_lock_timer()
+	
+	# Signal connections
 	if combat_arena_node != null:
 		if combat_creature_is_player_creature:
 			combat_arena_node.connect("attach_player_creature_to_card", _attach_creature_to_card)
+			combat_arena_node.connect("player_character_target", _handle_targetting)
 		else:
 			combat_arena_node.connect("attach_enemy_creature_to_card", _attach_creature_to_card)
-		
-	
+			combat_arena_node.connect("enemy_character_target", _handle_targetting)
+
+func _process(_delta: float) -> void:
+	_handle_look_at_target()
+
+
 func _handle_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_initial_health = health
 	combat_creature_max_health = health
@@ -211,3 +230,51 @@ func _setup_combat_card() -> void:
 func _handle_combat_card() -> void:
 	combat_creature_health_bar.value = combat_creature_current_health
 	combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
+
+func _handle_targetting(_target: Node) -> void:
+	push_error("OVERRIDE THIS IN THE CREATURE CARD")
+	
+func _create_combat_creature_markers() -> void:
+	combat_creature_markers = Node2D.new()
+	combat_creature_markers.name = "TargetMarkers"
+	add_child(combat_creature_markers)
+	
+	combat_creature_target_marker_close = Node2D.new()
+	combat_creature_target_marker_close.name = "TargetRangeClose"
+	combat_creature_target_marker_close.position.x = 40
+	combat_creature_markers.add_child(combat_creature_target_marker_close)
+	# DEBUG REMOVE START
+	var ccr = ColorRect.new()
+	ccr.position = combat_creature_target_marker_close.position
+	ccr.size = Vector2(1,1)
+	combat_creature_target_marker_close.add_child(ccr)
+	# DEBUG REMOVE END
+	
+	combat_creature_target_marker_medium = Node2D.new()
+	combat_creature_target_marker_medium.name = "TargetRangeMedium"
+	combat_creature_target_marker_medium.position.x = 70
+	combat_creature_markers.add_child(combat_creature_target_marker_medium)
+	# DEBUG REMOVE START
+	var ccr2 = ColorRect.new()
+	ccr2.position = combat_creature_target_marker_medium.position
+	ccr2.size = Vector2(1,1)
+	combat_creature_target_marker_medium.add_child(ccr2)
+	# DEBUG REMOVE END
+	
+	
+	combat_creature_target_marker_far = Node2D.new()
+	combat_creature_target_marker_far.name = "TargetRangeFar"
+	combat_creature_target_marker_far.position.x = 100
+	combat_creature_markers.add_child(combat_creature_target_marker_far)
+	# DEBUG REMOVE START
+	var ccr3 = ColorRect.new()
+	ccr3.position = combat_creature_target_marker_far.position
+	ccr3.size = Vector2(1,1)
+	combat_creature_target_marker_far.add_child(ccr3)
+	# DEBUG REMOVE END
+
+func _handle_look_at_target() -> void:
+	if !combat_creature_target:
+		combat_creature_markers.look_at(get_global_mouse_position())
+	else:
+		combat_creature_markers.look_at(combat_creature_target.global_position)
