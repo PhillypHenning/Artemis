@@ -20,23 +20,23 @@ func _process(delta: float) -> void:
 
 func _handle_character_movement() -> void:
 	var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	_combat_creature_basic_movement(direction)
+	_handle_combat_creature_basic_movement(direction)
 
 func _handle_character_movement_ability() -> void:
-	if Input.is_action_just_pressed("dodge"): _combat_creature_handle_movement_ability("dodge")
-	elif Input.is_action_just_pressed("dash"): _combat_creature_handle_movement_ability("dash")
+	if Input.is_action_just_pressed("dodge"): _use_combat_creature_movement_ability("dodge")
+	elif Input.is_action_just_pressed("dash"): _use_combat_creature_movement_ability("dash")
 
 func _handle_character_attack() -> void:
 	if Input.is_action_just_pressed("attack_near"):
-		_combat_creature_attack_at_marker_range("close")
+		_use_combat_creature_attack_at_marker_range("close")
 	if Input.is_action_just_pressed("attack_medium"):
-		_combat_creature_attack_at_marker_range("medium")
+		_use_combat_creature_attack_at_marker_range("medium")
 	if Input.is_action_just_pressed("attack_far"):
-		_combat_creature_attack_at_marker_range("far")
+		_use_combat_creature_attack_at_marker_range("far")
 
-func _attach_creature_to_card(card: Node):
+func _init_attach_creature_to_card(card: Node):
 	combat_creature_card = card
-	super._setup_combat_card()
+	super._init_combat_card()
 
-func _handle_targetting(target: Node) -> void:
+func _init_assign_target(target: Node) -> void:
 	combat_creature_target = target

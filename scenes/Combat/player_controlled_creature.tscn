@@ -15,21 +15,3 @@ texture = ExtResource("2_d02q3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_qba28")
-
-[node name="Timers" type="Node" parent="."]
-
-[node name="DashLockTimer" type="Timer" parent="Timers"]
-wait_time = 0.25
-one_shot = true
-
-[node name="AttackLockTimer" type="Timer" parent="Timers"]
-wait_time = 5.0
-one_shot = true
-
-[node name="DodgeLockTimer" type="Timer" parent="Timers"]
-wait_time = 0.25
-one_shot = true
-
-[connection signal="timeout" from="Timers/DashLockTimer" to="." method="_on_dash_lock_timer_timeout"]
-[connection signal="timeout" from="Timers/AttackLockTimer" to="." method="_on_attack_lock_timer_timeout"]
-[connection signal="timeout" from="Timers/DodgeLockTimer" to="." method="_on_dodge_lock_timer_timeout"]

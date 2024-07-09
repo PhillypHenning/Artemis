@@ -54,35 +54,35 @@ var combat_creature_current_speed: int = 0:
 		return combat_creature_current_speed
 
 # HEALTH
-var character_has_iframes: bool = false
-var character_damage_cooldown: bool = false
-var character_damage_lock_timer: Timer
+var combat_creature_has_iframes: bool = false
+var combat_creature_damage_cooldown: bool = false
+var combat_creature_damage_immunity_timer: Timer
 var combat_creature_is_dead: bool = false
+var combat_creature_damage_immunity_time = 1
 
 # ATTACKING
-var marker_close: Marker2D
-var marker_medium: Marker2D
-var marker_far: Marker2D
-var character_is_attacking: bool = false
+var combat_creature_is_attacking: bool = false
 
 # MOVEMENT ABILITIES
-var character_last_known_direction: Vector2
-var character_is_using_movement_ability: bool = false
+var combat_creature_last_known_direction: Vector2
+var combat_creature_is_using_movement_ability: bool = false
+var combat_creature_movement_ability_timer: Node
 
 ## DODGING
-var character_is_dodging: bool = false
+var combat_creature_is_dodging: bool = false
+var combat_creature_dodge_timer: Node
 
 ## DASHING
-var character_is_dashing: bool = false
-var dash_direction: Vector2
+var combat_creature_is_dashing: bool = false
+var combat_creature_dash_direction: Vector2
 
 # PARENT NODE
 var combat_arena_node: Node
 
 # COMBAT CARD
 var combat_creature_card: Node
-var combat_creature_health_bar: Node
-var combat_creature_stamina_counter: Node
+var combat_creature_card_health_bar: Node
+var combat_creature_card_stamina_counter: Node
 
 # TARGETING
 var combat_creature_target: Node
@@ -93,33 +93,23 @@ var combat_creature_target_marker_medium: Node
 var combat_creature_target_marker_far: Node
 
 # Timers
-var combat_creature_timers_node
+var combat_creature_timers_node_group: Node
 
-# Called when the node enters the scene tree for the first time.
+
+# INITIALIZATION FUNCTIONS
 func _ready() -> void:
 	combat_arena_node = find_parent("CombatArena")
 	
 	# Targeting
-	_create_combat_creature_markers()
+	_init_create_combat_creature_markers()
 
 	# Timers
-	combat_creature_timers_node = Node.new()
-	combat_creature_timers_node.name = "Timers"
-	add_child(combat_creature_timers_node)
-	_combat_creature_setup_damage_lock_timer()
+	_init_create_timers_node_group()
+	_init_create_damage_immunity_timer()
+	_init_create_movement_ability_timer()
 	
 	# Signal connections
-	if combat_arena_node != null:
-		if combat_creature_is_player_creature:
-			combat_arena_node.connect("attach_player_creature_to_card", _attach_creature_to_card)
-			combat_arena_node.connect("player_character_target", _handle_targetting)
-		else:
-			combat_arena_node.connect("attach_enemy_creature_to_card", _attach_creature_to_card)
-			combat_arena_node.connect("enemy_character_target", _handle_targetting)
-
-func _process(_delta: float) -> void:
-	_handle_look_at_target()
-
+	_init_attach_creature_card()
 
 func _init_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_initial_health = health
@@ -134,121 +124,7 @@ func _init_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_max_speed = speed
 	combat_creature_current_speed = speed
 
-
-func _init_add_basic_timers() -> void:
-	combat_creature_timers_node = Node.new()
-	combat_creature_timers_node.name = "Timers"
-	add_child(combat_creature_timers_node)
-
-	
-# BASIC MOVEMENT
-func _combat_creature_basic_movement(direction: Vector2) -> void:
-	character_last_known_direction = direction
-	velocity = direction * combat_creature_current_speed
-	if character_is_dashing:
-		_combat_creature_continue_dash()
-	elif character_is_dodging:
-		pass
-	else:
-		move_and_slide()
-
-# ATTACKING
-func _combat_creature_attack_at_marker_range(target_range: String) -> void:
-	if !character_is_attacking:
-		character_is_attacking = true
-		$Timers/AttackLockTimer.start()
-		match target_range:
-			"close":
-				print("Attack made at close range")
-			"medium":
-				print("Attack made at medium range")
-			"far":
-				print("Attack made at far range")
-
-func _on_attack_lock_timer_timeout():
-	character_is_attacking = false
-
-# MOVEMENT ABILITIES
-func _combat_creature_handle_movement_ability(ability: String) -> void:
-	if !character_is_using_movement_ability:
-		character_is_using_movement_ability = true
-		match ability:
-			"dodge":
-				_combat_creature_dodge()
-			"dash":
-				_combat_creature_dash(character_last_known_direction)
-
-## DASHING
-func _combat_creature_dash(direction: Vector2) -> void:
-	if !character_is_dashing:
-		$Timers/DashLockTimer.start()
-		character_is_dashing = true
-		dash_direction = direction
-
-func _combat_creature_continue_dash() -> void:
-	velocity = dash_direction * (combat_creature_current_speed * 5)
-	move_and_slide()
-
-func _on_dash_lock_timer_timeout():
-	character_is_dashing = false
-	character_is_using_movement_ability = false
-
-## DODGING
-func _combat_creature_dodge() -> void:
-	if !character_is_dodging:
-		$Timers/DodgeLockTimer.start()
-		character_is_dodging = true
-		character_has_iframes = true
-
-func _on_dodge_lock_timer_timeout():
-	character_is_dodging = false
-	character_is_using_movement_ability = false
-	character_has_iframes = false
-
-# HEALTH
-func _combat_creature_take_damage(amount_of_incoming_damage: int):
-	if !character_has_iframes and !character_damage_cooldown:
-		combat_creature_current_health -= amount_of_incoming_damage
-		character_damage_cooldown = true
-		character_damage_lock_timer.start()
-	if combat_creature_current_health <= 0:
-		combat_creature_is_dead = true
-		
-
-func _combat_creature_setup_damage_lock_timer() -> void:
-	character_damage_lock_timer = Timer.new()
-	character_damage_lock_timer.one_shot = true
-	character_damage_lock_timer.wait_time = 1
-	character_damage_lock_timer.connect("timeout", self._on_damage_lock_timer_timeout)
-	$Timers.add_child(character_damage_lock_timer)
-
-func _on_damage_lock_timer_timeout():
-	character_damage_cooldown = false
-
-# COMBAT CARD
-func _attach_creature_to_card(_card: Node):
-	push_error("OVERRIDE THIS IN THE CREATURE CARD")
-
-func _setup_combat_card() -> void:
-	var name_node = combat_creature_card.find_child("NameLabel")
-	name_node.text = combat_creature_name
-	
-	combat_creature_health_bar = combat_creature_card.find_child("HealthBar")
-	combat_creature_health_bar.max_value = combat_creature_max_health
-	combat_creature_health_bar.value = combat_creature_max_health
-	
-	combat_creature_stamina_counter = combat_creature_card.find_child("StaminaCounter")
-	combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
-
-func _handle_combat_card() -> void:
-	if combat_creature_card:
-		combat_creature_health_bar.value = combat_creature_current_health
-		combat_creature_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
-
-func _handle_targetting(_target: Node) -> void:
-	push_error("OVERRIDE THIS IN THE CREATURE CARD")
-	
-func _create_combat_creature_markers() -> void:
+func _init_create_combat_creature_markers() -> void:
 	combat_creature_markers = Node2D.new()
 	combat_creature_markers.name = "TargetMarkers"
 	add_child(combat_creature_markers)
@@ -275,7 +151,6 @@ func _create_combat_creature_markers() -> void:
 	combat_creature_target_marker_medium.add_child(ccr2)
 	# DEBUG REMOVE END
 	
-	
 	combat_creature_target_marker_far = Node2D.new()
 	combat_creature_target_marker_far.name = "TargetRangeFar"
 	combat_creature_target_marker_far.position.x = 100
@@ -286,6 +161,158 @@ func _create_combat_creature_markers() -> void:
 	ccr3.size = Vector2(1,1)
 	combat_creature_target_marker_far.add_child(ccr3)
 	# DEBUG REMOVE END
+
+func _init_create_timers_node_group() -> void:
+	combat_creature_timers_node_group = Node.new()
+	combat_creature_timers_node_group.name = "Timers"
+	add_child(combat_creature_timers_node_group)
+
+func _init_create_damage_immunity_timer() -> void:
+	combat_creature_damage_immunity_timer = Timer.new()
+	combat_creature_damage_immunity_timer.name = "DamageImmunityTimer"
+	combat_creature_damage_immunity_timer.one_shot = true
+	combat_creature_damage_immunity_timer.wait_time = combat_creature_damage_immunity_time
+	combat_creature_damage_immunity_timer.connect("timeout", self._on_damage_lock_timer_timeout)
+	combat_creature_timers_node_group.add_child(combat_creature_damage_immunity_timer)
+
+func _init_create_movement_ability_timer() -> void:
+	combat_creature_movement_ability_timer = Timer.new()
+	combat_creature_movement_ability_timer.name = "MovementAbilityTimer"
+	combat_creature_movement_ability_timer.one_shot = true
+	combat_creature_movement_ability_timer.wait_time = .25
+	combat_creature_movement_ability_timer.connect("timeout", self._on_movement_ability_timeout)
+	combat_creature_timers_node_group.add_child(combat_creature_movement_ability_timer)
+
+func _init_attach_creature_card() -> void:
+	if combat_arena_node != null:
+		if combat_creature_is_player_creature:
+			combat_arena_node.connect("attach_player_creature_to_card", _init_attach_creature_to_card)
+			combat_arena_node.connect("player_character_target", _init_assign_target)
+		else:
+			combat_arena_node.connect("attach_enemy_creature_to_card", _init_attach_creature_to_card)
+			combat_arena_node.connect("enemy_character_target", _init_assign_target)
+
+
+
+
+
+# PROCESS FUNCTIONS
+func _process(_delta: float) -> void:
+	_handle_look_at_target()
+
+## BASIC MOVEMENT
+func _handle_combat_creature_basic_movement(direction: Vector2) -> void:
+	combat_creature_last_known_direction = direction
+	velocity = direction * combat_creature_current_speed
+	if combat_creature_is_dashing:
+		_handle_combat_creature_continue_dash()
+	elif combat_creature_is_dodging:
+		pass
+	else:
+		move_and_slide()
+
+
+
+
+
+# USE ABILITY
+## ATTACKING
+func _use_combat_creature_attack_at_marker_range(target_range: String) -> void:
+	match target_range:
+		"close":
+			print("Attack made at close range")
+		"medium":
+			print("Attack made at medium range")
+		"far":
+			print("Attack made at far range")
+
+
+
+
+
+
+## MOVEMENT ABILITIES
+func _use_combat_creature_movement_ability(ability: String) -> void:
+	if !combat_creature_is_using_movement_ability:
+		combat_creature_is_using_movement_ability = true
+		match ability:
+			"dodge":
+				_use_combat_creature_dodge()
+			"dash":
+				_use_combat_creature_dash(combat_creature_last_known_direction)
+
+func _on_movement_ability_timeout():
+	combat_creature_is_dashing = false
+	combat_creature_is_dodging = false
+	combat_creature_is_using_movement_ability = false
+
+### DASHING
+func _use_combat_creature_dash(direction: Vector2) -> void:
+	if !combat_creature_is_dashing:
+		combat_creature_movement_ability_timer.start()
+		combat_creature_is_dashing = true
+		combat_creature_dash_direction = direction
+
+func _handle_combat_creature_continue_dash() -> void:
+	velocity = combat_creature_dash_direction * (combat_creature_current_speed * 5)
+	move_and_slide()
+
+
+### DODGING
+func _use_combat_creature_dodge() -> void:
+	if !combat_creature_is_dodging:
+		combat_creature_movement_ability_timer.start()
+		combat_creature_is_dodging = true
+		combat_creature_has_iframes = true
+
+
+
+
+
+
+# HEALTH
+func _use_combat_creature_take_damage(amount_of_incoming_damage: int):
+	if !combat_creature_has_iframes and !combat_creature_damage_cooldown:
+		combat_creature_current_health -= amount_of_incoming_damage
+		combat_creature_damage_cooldown = true
+		combat_creature_damage_immunity_timer.start()
+	if combat_creature_current_health <= 0:
+		combat_creature_is_dead = true
+
+func _on_damage_lock_timer_timeout():
+	combat_creature_damage_cooldown = false
+
+
+
+
+
+
+# COMBAT CARD
+func _init_attach_creature_to_card(_card: Node):
+	push_error("OVERRIDE THIS IN THE CREATURE CARD")
+
+func _init_combat_card() -> void:
+	var name_node = combat_creature_card.find_child("NameLabel")
+	name_node.text = combat_creature_name
+	
+	combat_creature_card_health_bar = combat_creature_card.find_child("HealthBar")
+	combat_creature_card_health_bar.max_value = combat_creature_max_health
+	combat_creature_card_health_bar.value = combat_creature_max_health
+	
+	combat_creature_card_stamina_counter = combat_creature_card.find_child("StaminaCounter")
+	combat_creature_card_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
+
+func _handle_combat_card() -> void:
+	if combat_creature_card:
+		combat_creature_card_health_bar.value = combat_creature_current_health
+		combat_creature_card_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
+
+
+
+
+# TARGETTING
+func _init_assign_target(_target: Node) -> void:
+	push_error("OVERRIDE THIS IN THE CREATURE CARD")
 
 func _handle_look_at_target() -> void:
 	if !combat_creature_target:
