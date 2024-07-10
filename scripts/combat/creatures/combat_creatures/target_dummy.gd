@@ -15,14 +15,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	super._process(delta)
 	if Input.is_action_just_pressed("take_damage"):
-		combat_creature_current_health-=1
+		_use_combat_creature_take_damage(1)
 		if !target_dummy_has_taken_damage:
 			target_dummy_has_taken_damage = true
 
 	if Input.is_action_just_pressed("use_stamina"):
-		combat_creature_current_stamina-=1
-
-	_handle_combat_card()
+		_use_combat_creature_use_stamina(1)
 
 func _init_attach_creature_to_card(card: Node):
 	combat_creature_card = card

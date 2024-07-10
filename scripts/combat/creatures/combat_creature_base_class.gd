@@ -192,10 +192,6 @@ func _init_attach_creature_card() -> void:
 			combat_arena_node.connect("attach_enemy_creature_to_card", _init_attach_creature_to_card)
 			combat_arena_node.connect("enemy_character_target", _init_assign_target)
 
-
-
-
-
 # PROCESS FUNCTIONS
 func _process(_delta: float) -> void:
 	_handle_look_at_target()
@@ -271,17 +267,27 @@ func _use_combat_creature_dodge() -> void:
 
 
 # HEALTH
-func _use_combat_creature_take_damage(amount_of_incoming_damage: int):
+func _use_combat_creature_take_damage(amount_of_incoming_damage: int) -> void:
 	if !combat_creature_has_iframes and !combat_creature_damage_cooldown:
-		combat_creature_current_health -= amount_of_incoming_damage
+		combat_creature_current_health = clamp(combat_creature_current_health-amount_of_incoming_damage, 0, combat_creature_max_health)
 		combat_creature_damage_cooldown = true
 		combat_creature_damage_immunity_timer.start()
+		_handle_update_combat_card()
 	if combat_creature_current_health <= 0:
 		combat_creature_is_dead = true
 
 func _on_damage_lock_timer_timeout():
 	combat_creature_damage_cooldown = false
 
+
+
+
+
+# STAMINA
+func _use_combat_creature_use_stamina(amount_of_stamina_used: int) -> void:
+	combat_creature_current_stamina = clamp(combat_creature_current_stamina-amount_of_stamina_used, 0, combat_creature_max_stamina)
+	_handle_update_combat_card()
+	
 
 
 
@@ -302,13 +308,10 @@ func _init_combat_card() -> void:
 	combat_creature_card_stamina_counter = combat_creature_card.find_child("StaminaCounter")
 	combat_creature_card_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
 
-func _handle_combat_card() -> void:
+func _handle_update_combat_card() -> void:
 	if combat_creature_card:
 		combat_creature_card_health_bar.value = combat_creature_current_health
 		combat_creature_card_stamina_counter.text = "{current}/{max}".format({"current": combat_creature_current_stamina, "max": combat_creature_max_stamina})
-
-
-
 
 # TARGETTING
 func _init_assign_target(_target: Node) -> void:
