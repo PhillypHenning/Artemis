@@ -9,6 +9,10 @@ var max_health = 10
 
 func _ready() -> void:
 	Healing_Abilities._init_healing_abilities(self)
+	
+func _process(_delta) -> void:
+	if health != 5:
+		print(health)
 
 func _on_button_pressed():
 	#var id = 0
@@ -16,9 +20,10 @@ func _on_button_pressed():
 	#var target_callable = target_ability["function"]
 	#target_callable.callv([10])
 	
-	var id = 0
+	var id = 1
 	var target_ability = Healing_Abilities.HEALING_ABILITIES[id]
 	var target_callable = target_ability["function"]
 	var target_parameters = target_ability["parameter_defaults"]
 	target_parameters[0] = self
+	target_parameters[3] = 5
 	target_callable.callv(target_parameters)

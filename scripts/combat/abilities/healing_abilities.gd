@@ -6,6 +6,11 @@ var HEALING_ABILITIES = [
 		"function": _heal_to_full_after_time,
 		"parameter_defaults": [null, 10, true]
 	},
+	{
+		"id": 1,
+		"function": _heal_health,
+		"parameter_defaults": [null, 10, true, 0]
+	},
 ]
 
 func _init_healing_abilities(parent_node: Node) -> void:
@@ -17,7 +22,6 @@ func _init_healing_abilities(parent_node: Node) -> void:
 func _heal_to_full_after_time(target: Node, wait_time: int, one_shot: bool) -> void:
 	print(target)
 	print(target.find_child("AbilityTimers"))
-	
 
 	var timer = Timer.new()
 	timer.wait_time = wait_time
@@ -34,3 +38,7 @@ func _act_on_heal_to_full_after_time_timeout(target: Node) -> void:
 	print("_act_on_heal_to_full_after_time_timeout called")
 	print(target.health)
 	print(target.max_health)
+
+
+func _heal_health(target: Node, wait_time: int, one_shot: bool, amount: int) -> void:
+	target.health += amount
