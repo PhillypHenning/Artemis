@@ -1,26 +1,32 @@
 extends CombatCreatureBaseClass
 
-@export var health: 	int = 10
+@export var health: 	int = 100
 @export var stamina: 	int = 10
 @export var speed: 		int = 400
+var reported_health = 0
 
-var target_dummy_has_taken_damage: bool = false
+var ability_handler = preload("res://scripts/combat/abilities/abilities_handler.gd").new()
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	combat_creature_name = "Target Dummy Card"
 	super._ready()
 	_init_initial_stat_set(health, stamina, speed)
+	ability_handler._init_ability_handler(self)
 
 func _process(delta: float) -> void:
 	super._process(delta)
 	if Input.is_action_just_pressed("take_damage"):
 		_use_combat_creature_take_damage(1)
-		if !target_dummy_has_taken_damage:
-			target_dummy_has_taken_damage = true
+		_use_heal_to_full_ability()
 
 	if Input.is_action_just_pressed("use_stamina"):
 		_use_combat_creature_use_stamina(1)
+		
+	if reported_health != combat_creature_current_health:
+		reported_health = combat_creature_current_health
+		print(combat_creature_current_health)
 
 func _init_attach_creature_to_card(card: Node):
 	combat_creature_card = card
@@ -28,3 +34,10 @@ func _init_attach_creature_to_card(card: Node):
 
 func _init_assign_target(target: Node) -> void:
 	combat_creature_target = target
+
+func _use_heal_to_full_ability() -> void:
+	var ability = ability_handler.ABILITIES[ability_handler.ABILITIES_IDS.HEALING][ability_handler.HEALING_ABILITY_IDS.HEAL_TO_FULL_AFTER_TIME]
+	ability.parameters_overrides.target = self
+	ability.parameters_overrides.wait_time = 10 # WILL BE REPLACED IN healing_abilities.gd with an evaluation based on creature stats
+	ability.parameters_overrides.amount = 100 	# WILL BE REPLACED IN healing_abilities.gd with an evaluation based on creature stats
+	ability.target_callable.call(self, ability)

@@ -1,29 +1,28 @@
 extends Node
 
-var healing_abilities = preload("res://scripts/combat/abilities/healing_abilities.gd")
-var Healing_Abilities = healing_abilities.new()
+var ability_handler = preload("res://scripts/combat/abilities/abilities_handler.gd").new()
 
-
+var reported_health = 0
 var health = 5
 var max_health = 10
 
+@export var amount_healed: int = 3
+
 func _ready() -> void:
-	Healing_Abilities._init_healing_abilities(self)
-	
+	ability_handler._init_ability_handler(self)
+
 func _process(_delta) -> void:
-	if health != 5:
-		print(health)
+	if reported_health != health:
+		reported_health = health
+		print("current_health: {health}".format({"health": reported_health}))
+	
+	if Input.is_action_just_pressed("take_damage"):
+		health-=1
 
 func _on_button_pressed():
-	#var id = 0
-	#var target_ability = Healing_Abilities._get_ability_by_id(id)
-	#var target_callable = target_ability["function"]
-	#target_callable.callv([10])
-	
-	var id = 1
-	var target_ability = Healing_Abilities.HEALING_ABILITIES[id]
-	var target_callable = target_ability["function"]
-	var target_parameters = target_ability["parameter_defaults"]
-	target_parameters[0] = self
-	target_parameters[3] = 5
-	target_callable.callv(target_parameters)
+	var ability = ability_handler.ABILITIES[ability_handler.ABILITIES_IDS.HEALING][ability_handler.HEALING_ABILITY_IDS.HEAL_TO_FULL_AFTER_TIME]
+	ability.parameters_overrides.target = self
+	ability.parameters_overrides.wait_time = 10
+	#ability.parameters_overrides.amount = 100
+	ability.parameters_overrides.amount = amount_healed
+	ability.target_callable.call(self, ability)
