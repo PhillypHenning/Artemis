@@ -6,8 +6,8 @@ extends CombatCreatureBaseClass
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	combat_creature_is_player_creature = true
-	combat_creature_name = "Player Controlled Creature"
+	combat_creature_type.is_player_character = true
+	combat_creature_details.name = "Player Controlled Creature"
 	super._ready()
 	_init_initial_stat_set(health, stamina, speed)
 
@@ -35,8 +35,8 @@ func _handle_character_attack() -> void:
 		_use_combat_creature_attack_at_marker_range("far")
 
 func _init_attach_creature_to_card(card: Node):
-	combat_creature_card = card
+	combat_creature_nodes[COMBAT_CARD].node = card
 	super._init_combat_card()
 
 func _init_assign_target(target: Node) -> void:
-	combat_creature_target = target
+	combat_creature_nodes[TARGETTING].enemy_target = target

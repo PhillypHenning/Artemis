@@ -3,7 +3,7 @@ extends Node
 
 var healing_abilities = preload("res://scripts/combat/abilities/healing_abilities.gd").new()
 
-enum ABILITIES_IDS {
+enum {
 	HEALING,
 	OFFENSIVE,
 	DEFENSIVE,
@@ -15,11 +15,11 @@ enum HEALING_ABILITY_IDS {
 }
 
 var ABILITIES = {
-	ABILITIES_IDS.HEALING: {
+	HEALING: {
 		HEALING_ABILITY_IDS.HEAL_TO_FULL_AFTER_TIME: {
 			"name": "Example Card: Heal To Full After Time",
 			"target_callable": healing_abilities._heal_to_full_after_time,
-			"parameters_overrides": {
+			"parameters": {
 				"target": null,
 				"wait_time": 0,
 				"one_shot": true,
@@ -28,9 +28,9 @@ var ABILITIES = {
 			"timer_name": "HealToFullAfterTime",
 		},
 	},
-	ABILITIES_IDS.OFFENSIVE: {},
-	ABILITIES_IDS.DEFENSIVE: {},
-	ABILITIES_IDS.UTILITY: {},
+	OFFENSIVE: {},
+	DEFENSIVE: {},
+	UTILITY: {},
 }
 
 

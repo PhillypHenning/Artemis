@@ -7,13 +7,13 @@ func _heal_to_full_after_time(target: Node, ability_properties: Dictionary) -> v
 	if htfat_node == null:
 		var timer = Timer.new()
 		timer.name = ability_properties.timer_name
-		timer.wait_time = ability_properties.parameters_overrides.wait_time
-		timer.one_shot = ability_properties.parameters_overrides.one_shot
+		timer.wait_time = ability_properties.parameters.wait_time
+		timer.one_shot = ability_properties.parameters.one_shot
 		timer.timeout.connect(_act_on_heal_to_full_after_time_timeout.bind(target, ability_properties))
 		timers_group_node.add_child(timer)
 		timer.start()
 
 func _act_on_heal_to_full_after_time_timeout(target: Node, ability_properties: Dictionary) -> void:
-	ability_properties.parameters_overrides.target.combat_creature_current_health = clamp(ability_properties.parameters_overrides.target.combat_creature_current_health + ability_properties.parameters_overrides.amount, 0, ability_properties.parameters_overrides.target.combat_creature_max_health)
-	var htfat_node = ability_properties.parameters_overrides.target.get_node("AbilityTimers").get_node("HealToFullAfterTime")
+	ability_properties.parameters.target.combat_creature_health_characteristics.current_health = clamp(ability_properties.parameters.target.combat_creature_health_characteristics.current_health + ability_properties.parameters.amount, 0, ability_properties.parameters.target.combat_creature_health_characteristics.max_health)
+	var htfat_node = ability_properties.parameters.target.get_node("AbilityTimers").get_node("HealToFullAfterTime")
 	htfat_node.queue_free()
