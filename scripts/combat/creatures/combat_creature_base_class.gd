@@ -12,6 +12,7 @@ var combat_creature_details = characteristics.combat_creature_characteristics[ch
 var combat_creature_type = characteristics.combat_creature_characteristics[characteristics.TYPE]
 
 var combat_creature_abilities = preload("res://scripts/combat/abilities/abilities_handler.gd").new()
+var combat_creature_status_effects = preload("res://scripts/combat/status_effects/status_effect_handler.gd").new()
 
 enum {
 	TIMERS_GROUP,
@@ -70,6 +71,7 @@ func _ready() -> void:
 	
 	# Ability handler setup
 	combat_creature_abilities._init_ability_handler(self)
+	combat_creature_status_effects._init_ability_handler(self)
 
 func _init_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_health_characteristics.starting_health = health
@@ -132,9 +134,16 @@ func _init_attach_creature_card() -> void:
 			combat_creature_nodes[PARENT_NODE].arena.connect("enemy_character_target", _init_assign_target)
 
 
+
+
+
 # PROCESS FUNCTIONS
 func _process(_delta: float) -> void:
 	_handle_look_at_target()
+
+
+
+
 
 ## BASIC MOVEMENT
 func _handle_combat_creature_basic_movement(direction: Vector2) -> void:
@@ -144,6 +153,9 @@ func _handle_combat_creature_basic_movement(direction: Vector2) -> void:
 		move_and_slide()
 	else:
 		combat_creature_nodes[MOVEMENT].movement_override.call({"target": self})
+
+
+
 
 
 # USE ABILITY
@@ -165,14 +177,11 @@ func _use_combat_creature_attack_at_marker_range(target_range: String) -> void:
 func _use_combat_creature_take_damage(amount_of_incoming_damage: int) -> void:
 	if combat_creature_health_characteristics.can_take_damage:
 		combat_creature_health_characteristics.current_health = clamp(combat_creature_health_characteristics.current_health-amount_of_incoming_damage, 0, combat_creature_health_characteristics.max_health)
-		combat_creature_health_characteristics.can_take_damage = false
 		_handle_update_combat_card()
+		combat_creature_status_effects._start_status_effect(combat_creature_status_effects.status_effects[combat_creature_status_effects.DAMAGE_IMMUNITY], {"target": self})
 		
 	if combat_creature_health_characteristics.current_health <= 0:
 		combat_creature_health_characteristics.is_dead = true
-
-func _on_damage_lock_timer_timeout():
-	combat_creature_health_characteristics.can_take_damage = true
 
 # STAMINA
 func _use_combat_creature_use_stamina(amount_of_stamina_used: int) -> void:
@@ -202,6 +211,10 @@ func _handle_update_combat_card() -> void:
 	if combat_creature_nodes[COMBAT_CARD].node:
 		combat_creature_nodes[COMBAT_CARD].health_bar.value = combat_creature_health_characteristics.current_health
 		combat_creature_nodes[COMBAT_CARD].stamina_counter.text = "{current}/{max}".format({"current": combat_creature_stamina_characteristics.current_stamina, "max": combat_creature_stamina_characteristics.max_stamina})
+
+
+
+
 
 # TARGETTING
 func _init_assign_target(_target: Node) -> void:

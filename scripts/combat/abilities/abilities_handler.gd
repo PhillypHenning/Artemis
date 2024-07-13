@@ -24,14 +24,13 @@ enum MOVEMENT_ABILITY_IDS {
 var ABILITIES = {
 	HEALING: {
 		HEALING_ABILITY_IDS.HEAL_TO_FULL_AFTER_TIME: {
-			"name": "Example Card: Heal To Full After Time",
 			"target_callable": healing_abilities._heal_to_full_after_time,
 			"parameters": {
 				"target": null,
-				"wait_time": 0,
+				"wait_time": 10,
 				"one_shot": true,
 				"amount": 0,
-				"timer_name": "HealToFullAfterTimeTimer",
+				"timer_name": "HealToFullAfterTime",
 			},
 		},
 	},
@@ -40,7 +39,6 @@ var ABILITIES = {
 	UTILITY: {},
 	MOVEMENT: {
 		MOVEMENT_ABILITY_IDS.TESTING_DODGE :{
-			"name": "Testing Dodge",
 			"target_callable": movement_abilities._use_dodge,
 			"parameters": {
 				"target": null,
@@ -50,7 +48,6 @@ var ABILITIES = {
 			},
 		},
 		MOVEMENT_ABILITY_IDS.TESTING_DASH :{
-			"name": "Testing Dash",
 			"target_callable": movement_abilities._use_dash,
 			"parameters": {
 				"target": null,

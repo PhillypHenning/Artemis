@@ -1,6 +1,6 @@
 extends Node
 
-var ability_utils = preload("res://scripts/combat/abilities/abilities_utils.gd").new()
+var utils = preload("res://scripts/combat/utils/utils.gd").new()
 
 func _heal_to_full_after_time(parameters: Dictionary) -> void:
 	var timers_group_node = parameters.timers_group_node
@@ -9,7 +9,7 @@ func _heal_to_full_after_time(parameters: Dictionary) -> void:
 		push_error("Unable to find timers_group_node")
 		return
 		
-	var timer = ability_utils._get_timer_or_create(timers_group_node, parameters, _act_on_heal_to_full_after_time_timeout)
+	var timer = utils._get_timer_or_create(timers_group_node, parameters, _act_on_heal_to_full_after_time_timeout)
 	if timer.is_stopped():
 		timer.start()
 
