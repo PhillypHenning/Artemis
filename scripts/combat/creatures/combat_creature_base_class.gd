@@ -64,9 +64,6 @@ func _ready() -> void:
 	
 	# Targeting
 	_init_create_combat_creature_markers()
-
-	# Timers
-	_init_create_timers_node_group()
 	
 	# Signal connections
 	_init_attach_creature_card()
@@ -125,11 +122,6 @@ func _init_create_combat_creature_markers() -> void:
 	combat_creature_nodes[MARKERS].far.add_child(ccr3)
 	# DEBUG REMOVE END
 
-func _init_create_timers_node_group() -> void:
-	combat_creature_nodes[TIMERS_GROUP].node = Node.new()
-	combat_creature_nodes[TIMERS_GROUP].node.name = combat_creature_nodes[TIMERS_GROUP].name
-	add_child(combat_creature_nodes[TIMERS_GROUP].node)
-
 func _init_attach_creature_card() -> void:
 	if combat_creature_nodes[PARENT_NODE].arena != null:
 		if combat_creature_type.is_player_character:
@@ -167,6 +159,8 @@ func _use_combat_creature_attack_at_marker_range(target_range: String) -> void:
 
 
 
+
+
 # HEALTH
 func _use_combat_creature_take_damage(amount_of_incoming_damage: int) -> void:
 	if combat_creature_health_characteristics.can_take_damage:
@@ -184,6 +178,10 @@ func _on_damage_lock_timer_timeout():
 func _use_combat_creature_use_stamina(amount_of_stamina_used: int) -> void:
 	combat_creature_stamina_characteristics.current_stamina = clamp(combat_creature_stamina_characteristics.current_stamina-amount_of_stamina_used, 0, combat_creature_stamina_characteristics.max_stamina)
 	_handle_update_combat_card()
+
+
+
+
 
 # COMBAT CARD
 func _init_attach_creature_to_card(_card: Node):

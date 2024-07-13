@@ -30,9 +30,9 @@ var ABILITIES = {
 				"target": null,
 				"wait_time": 0,
 				"one_shot": true,
-				"amount": 0
+				"amount": 0,
+				"timer_name": "HealToFullAfterTimeTimer",
 			},
-			"timer_name": "HealToFullAfterTime",
 		},
 	},
 	OFFENSIVE: {},

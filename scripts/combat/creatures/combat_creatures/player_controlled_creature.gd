@@ -27,14 +27,13 @@ func _handle_character_movement_ability() -> void:
 		combat_creature_abilities._use_ability(combat_creature_abilities.ABILITIES[combat_creature_abilities.MOVEMENT][combat_creature_abilities.MOVEMENT_ABILITY_IDS.TESTING_DODGE], {"target": self})
 	elif Input.is_action_just_pressed("dash"): 
 		combat_creature_abilities._use_ability(combat_creature_abilities.ABILITIES[combat_creature_abilities.MOVEMENT][combat_creature_abilities.MOVEMENT_ABILITY_IDS.TESTING_DASH], {"target": self})
-		
 
 func _handle_character_attack() -> void:
 	if Input.is_action_just_pressed("attack_near"):
 		_use_combat_creature_attack_at_marker_range("close")
-	if Input.is_action_just_pressed("attack_medium"):
+	elif Input.is_action_just_pressed("attack_medium"):
 		_use_combat_creature_attack_at_marker_range("medium")
-	if Input.is_action_just_pressed("attack_far"):
+	elif Input.is_action_just_pressed("attack_far"):
 		_use_combat_creature_attack_at_marker_range("far")
 
 func _init_attach_creature_to_card(card: Node):
