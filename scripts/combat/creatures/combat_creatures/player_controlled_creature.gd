@@ -23,8 +23,11 @@ func _handle_character_movement() -> void:
 	_handle_combat_creature_basic_movement(direction)
 
 func _handle_character_movement_ability() -> void:
-	if Input.is_action_just_pressed("dodge"): _use_combat_creature_movement_ability("dodge")
-	elif Input.is_action_just_pressed("dash"): _use_combat_creature_movement_ability("dash")
+	if Input.is_action_just_pressed("dodge"): 
+		combat_creature_abilities._use_ability(combat_creature_abilities.ABILITIES[combat_creature_abilities.MOVEMENT][combat_creature_abilities.MOVEMENT_ABILITY_IDS.TESTING_DODGE], {"target": self})
+	elif Input.is_action_just_pressed("dash"): 
+		combat_creature_abilities._use_ability(combat_creature_abilities.ABILITIES[combat_creature_abilities.MOVEMENT][combat_creature_abilities.MOVEMENT_ABILITY_IDS.TESTING_DASH], {"target": self})
+		
 
 func _handle_character_attack() -> void:
 	if Input.is_action_just_pressed("attack_near"):
