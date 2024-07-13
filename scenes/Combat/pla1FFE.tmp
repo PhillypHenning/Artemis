@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://bch1inx7rhsor"]
+
+[ext_resource type="Script" path="res://scripts/combat/creatures/combat_creatures/player_controlled_creature.gd" id="1_mkw86"]
+[ext_resource type="Texture2D" uid="uid://bgjksahkabcfy" path="res://icon.svg" id="2_d02q3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qba28"]
+size = Vector2(64, 64)
+
+[node name="PlayerControlledCreature" type="CharacterBody2D"]
+script = ExtResource("1_mkw86")
+health = null
+stamina = null
+speed = null
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_d02q3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_qba28")
