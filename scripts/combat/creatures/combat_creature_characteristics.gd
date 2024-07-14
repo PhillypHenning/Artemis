@@ -11,9 +11,16 @@ enum {
 	ATTACKING
 }
 
+enum {
+	PLAYER,
+	NPC_FRIENDLY,
+	NPC_NEUTRAL,
+	NPC_ENEMY
+}
+
 var combat_creature_characteristics: Dictionary = {
 	TYPE: {
-		is_player_character = false
+		character_type = null
 	},
 	DETAILS : {
 		name: ""

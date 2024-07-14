@@ -126,7 +126,7 @@ func _init_create_combat_creature_markers() -> void:
 
 func _init_attach_creature_card() -> void:
 	if combat_creature_nodes[PARENT_NODE].arena != null:
-		if combat_creature_type.is_player_character:
+		if combat_creature_type.character_type == characteristics.PLAYER:
 			combat_creature_nodes[PARENT_NODE].arena.connect("attach_player_creature_to_card", _init_attach_creature_to_card)
 			combat_creature_nodes[PARENT_NODE].arena.connect("player_character_target", _init_assign_target)
 		else:
