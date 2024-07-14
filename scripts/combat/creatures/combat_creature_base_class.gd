@@ -43,7 +43,11 @@ var combat_creature_nodes = {
 	},
 	TARGETTING: {
 		enemy_target = null,
-		friendly_target = null
+		friendly_target = null,
+		los_raycast = null,
+		los_raycast_name = "LosRaycast",
+		line_of_sight = false,
+		los_visualizer = null
 	},
 	MARKERS: {
 		group = {
@@ -65,6 +69,7 @@ func _ready() -> void:
 	
 	# Targeting
 	_init_create_combat_creature_markers()
+	_init_assign_target()
 	
 	# Signal connections
 	_init_attach_creature_card()
@@ -72,6 +77,8 @@ func _ready() -> void:
 	# Ability handler setup
 	combat_creature_abilities._init_ability_handler(self)
 	combat_creature_status_effects._init_ability_handler(self)
+	
+	_init_create_raycast()
 
 func _init_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_health_characteristics.starting_health = health
@@ -128,13 +135,28 @@ func _init_attach_creature_card() -> void:
 	if combat_creature_nodes[PARENT_NODE].arena != null:
 		if combat_creature_type.character_type == characteristics.PLAYER:
 			combat_creature_nodes[PARENT_NODE].arena.connect("attach_player_creature_to_card", _init_attach_creature_to_card)
-			combat_creature_nodes[PARENT_NODE].arena.connect("player_character_target", _init_assign_target)
 		else:
 			combat_creature_nodes[PARENT_NODE].arena.connect("attach_enemy_creature_to_card", _init_attach_creature_to_card)
-			combat_creature_nodes[PARENT_NODE].arena.connect("enemy_character_target", _init_assign_target)
 
+func _init_assign_target() -> void:
+	if combat_creature_nodes[PARENT_NODE].arena != null:
+		if combat_creature_type.character_type == characteristics.PLAYER:
+			combat_creature_nodes[PARENT_NODE].arena.connect("player_character_target", _handle_assign_target)
+		else:
+			combat_creature_nodes[PARENT_NODE].arena.connect("enemy_character_target", _handle_assign_target)
 
-
+func _init_create_raycast() -> void:
+	combat_creature_nodes[TARGETTING].los_raycast = RayCast2D.new()
+	combat_creature_nodes[TARGETTING].los_raycast.name = combat_creature_nodes[TARGETTING].los_raycast_name
+	self.add_child(combat_creature_nodes[TARGETTING].los_raycast)
+	
+	if combat_creature_type.character_type == characteristics.PLAYER:
+		combat_creature_nodes[TARGETTING].los_visualizer = Line2D.new()
+		combat_creature_nodes[TARGETTING].los_raycast.add_child(combat_creature_nodes[TARGETTING].los_visualizer)
+		combat_creature_nodes[TARGETTING].los_visualizer.global_position = combat_creature_nodes[TARGETTING].los_raycast.global_position
+		combat_creature_nodes[TARGETTING].los_visualizer.add_point(Vector2.ZERO)
+		combat_creature_nodes[TARGETTING].los_visualizer.add_point(combat_creature_nodes[TARGETTING].los_raycast.target_position - combat_creature_nodes[TARGETTING].los_visualizer.global_position)
+		combat_creature_nodes[TARGETTING].los_visualizer.width = 3
 
 
 # PROCESS FUNCTIONS
@@ -217,11 +239,31 @@ func _handle_update_combat_card() -> void:
 
 
 # TARGETTING
-func _init_assign_target(_target: Node) -> void:
+func _handle_assign_target(_target: Node) -> void:
 	push_error("OVERRIDE THIS IN THE CREATURE CARD")
 
 func _handle_look_at_target() -> void:
 	if !combat_creature_nodes[TARGETTING].enemy_target:
-		combat_creature_nodes[MARKERS].group.node.look_at(get_global_mouse_position())
+		var mouse_pos = get_global_mouse_position()
+		combat_creature_nodes[MARKERS].group.node.look_at(mouse_pos)
+		
+		if combat_creature_type.character_type == characteristics.PLAYER:
+			combat_creature_nodes[TARGETTING].los_raycast.target_position = mouse_pos
+			combat_creature_nodes[TARGETTING].los_visualizer.global_position = combat_creature_nodes[TARGETTING].los_raycast.global_position
+			combat_creature_nodes[TARGETTING].los_visualizer.set_point_position(1, combat_creature_nodes[TARGETTING].los_raycast.target_position - combat_creature_nodes[TARGETTING].los_visualizer.global_position)
+
 	else:
 		combat_creature_nodes[MARKERS].group.node.look_at(combat_creature_nodes[TARGETTING].enemy_target.global_position)
+		combat_creature_nodes[TARGETTING].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position
+		combat_creature_nodes[TARGETTING].los_visualizer.global_position = combat_creature_nodes[TARGETTING].los_raycast.global_position
+		combat_creature_nodes[TARGETTING].los_visualizer.set_point_position(1, combat_creature_nodes[TARGETTING].los_raycast.target_position - combat_creature_nodes[TARGETTING].los_visualizer.global_position)
+		
+	if combat_creature_nodes[TARGETTING].los_raycast.is_colliding() and combat_creature_type.character_type == characteristics.PLAYER:
+		print("Collision detected")
+		var target = combat_creature_nodes[TARGETTING].los_raycast.get_collider() # A CollisionObject2D.
+		var shape_id = combat_creature_nodes[TARGETTING].los_raycast.get_collider_shape() # The shape index in the collider.
+		var owner_id = target.shape_find_owner(shape_id) # The owner ID in the collider.
+		var shape = target.shape_owner_get_owner(owner_id)
+		
+		print("target: {target}, shape_id: {shape_id}, owner_id: {owner_id}, shape: {shape},". format({"target": target, "shape_id": shape_id, "owner_id": owner_id, "shape": shape}))
+		

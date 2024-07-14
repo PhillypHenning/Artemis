@@ -34,7 +34,7 @@ func _init_attach_creature_to_card(card: Node):
 	combat_creature_nodes[COMBAT_CARD].node = card
 	super._init_combat_card()
 
-func _init_assign_target(target: Node) -> void:
+func _handle_assign_target(target: Node) -> void:
 	combat_creature_nodes[TARGETTING].enemy_target = target
 
 func _use_heal_to_full_ability() -> void:

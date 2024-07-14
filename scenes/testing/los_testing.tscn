@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://du3u0ye2ntxa3"]
+
+[ext_resource type="PackedScene" uid="uid://bch1inx7rhsor" path="res://scenes/combat/player_controlled_creature.tscn" id="1_wtlk8"]
+[ext_resource type="PackedScene" uid="uid://c8cdet8dkmps6" path="res://scenes/combat/target_dummy.tscn" id="2_y8dhf"]
+
+[node name="LosTesting" type="Node2D"]
+
+[node name="PlayerControlledCreature" parent="." instance=ExtResource("1_wtlk8")]
+position = Vector2(168, 480)
+
+[node name="TargetDummy" parent="." instance=ExtResource("2_y8dhf")]
+position = Vector2(952, 344)
