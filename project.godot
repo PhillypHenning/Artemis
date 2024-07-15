@@ -87,3 +87,4 @@ use_stamina={
 2d_render/layer_1="Player"
 2d_render/layer_2="Walls"
 2d_render/layer_3="Enemy"
+2d_render/layer_4="Obstacle"

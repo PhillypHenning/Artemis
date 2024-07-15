@@ -27,9 +27,9 @@ texture = ExtResource("1_61bhp")
 [node name="Borders" type="Node2D" parent="."]
 
 [node name="BorderRight" type="StaticBody2D" parent="Borders"]
+collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderRight"]
-light_mask = 2
 position = Vector2(1232, 456.5)
 shape = SubResource("RectangleShape2D_nbob1")
 
@@ -42,6 +42,7 @@ scale = Vector2(0.988768, 1.31602)
 metadata/_edit_use_anchors_ = true
 
 [node name="BorderLeft" type="StaticBody2D" parent="Borders"]
+collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderLeft"]
 light_mask = 2
@@ -57,6 +58,7 @@ scale = Vector2(1.99488, 1.05376)
 metadata/_edit_use_anchors_ = true
 
 [node name="BorderTop" type="StaticBody2D" parent="Borders"]
+collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderTop"]
 light_mask = 2
@@ -71,6 +73,7 @@ offset_bottom = 152.0
 metadata/_edit_use_anchors_ = true
 
 [node name="BorderBottom" type="StaticBody2D" parent="Borders"]
+collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderBottom"]
 light_mask = 2

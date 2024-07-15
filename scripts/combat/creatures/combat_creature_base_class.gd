@@ -47,7 +47,7 @@ var combat_creature_nodes = {
 		friendly_target = null,
 		los_raycast = null,
 		los_raycast_name = "LosRaycast",
-		line_of_sight = false,
+		los_on_target = false,
 		los_visualizer = null
 	},
 	MARKERS: {
@@ -151,17 +151,27 @@ func _init_assign_target() -> void:
 func _init_create_raycast() -> void:
 	combat_creature_nodes[TARGETTING].los_raycast = RayCast2D.new()
 	combat_creature_nodes[TARGETTING].los_raycast.name = combat_creature_nodes[TARGETTING].los_raycast_name
-	combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask(4)
+	
+	combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask_value(4, true)
+	if combat_creature_type.character_type == characteristics.PLAYER:
+		combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask_value(3, true)
+	if combat_creature_type.character_type == characteristics.NPC_ENEMY:
+		combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask_value(1, true)
 	self.add_child(combat_creature_nodes[TARGETTING].los_raycast)
 	
 func _init_set_mask() -> void:
+	self.set_collision_mask_value(2, true) 	# Walls
+	self.set_collision_mask_value(4, true)	# Obstacles
 	if combat_creature_type.character_type == characteristics.PLAYER:
-		self.set_collision_layer_value(1, true)
-		self.set_collision_mask_value(3, true)
+		self.set_collision_layer_value(1, true)	# Player
+		self.set_collision_mask_value(3, true)	# Enemy
 	if combat_creature_type.character_type == characteristics.NPC_ENEMY:
 		self.set_collision_layer_value(1, false)
-		self.set_collision_layer_value(3, true)
-		self.set_collision_mask_value(1, true)
+		self.set_collision_layer_value(3, true)	# Enemy
+		self.set_collision_mask_value(1, true)	# Player
+
+
+
 
 
 # PROCESS FUNCTIONS
@@ -264,8 +274,11 @@ func _handle_look_at_target() -> void:
 
 	if combat_creature_nodes[TARGETTING].los_raycast.is_colliding() and combat_creature_nodes[DEBUG]:
 		var target = combat_creature_nodes[TARGETTING].los_raycast.get_collider() # A CollisionObject2D.
-		var shape_id = combat_creature_nodes[TARGETTING].los_raycast.get_collider_shape() # The shape index in the collider.
-		var owner_id = target.shape_find_owner(shape_id) # The owner ID in the collider.
-		var shape = target.shape_owner_get_owner(owner_id)
-		
-		print("Collision detected by [{type}] target: {target}, shape_id: {shape_id}, owner_id: {owner_id}, shape: {shape},". format({"type": combat_creature_type.character_type, "target": target, "shape_id": shape_id, "owner_id": owner_id, "shape": shape}))
+
+		if combat_creature_type.character_type == characteristics.PLAYER:
+			combat_creature_nodes[TARGETTING].los_on_target = target.get_collision_layer_value(3)
+		if combat_creature_type.character_type == characteristics.NPC_ENEMY:
+			combat_creature_nodes[TARGETTING].los_on_target = target.get_collision_layer_value(1)
+	
+	if combat_creature_nodes[DEBUG]:
+		print(combat_creature_nodes[TARGETTING].los_on_target)

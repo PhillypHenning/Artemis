@@ -14,8 +14,8 @@ var action_stack: Dictionary = {
 	"Action_3": null
 }
 
-var player_creature_scene = load("res://scenes/combat/player_controlled_creature.tscn")
-var target_dummy_creature_scene = load("res://scenes/combat/target_dummy.tscn")
+var player_creature_scene = load("res://scenes/combat/creatures/player_controlled_creature.tscn")
+var target_dummy_creature_scene = load("res://scenes/combat/creatures/target_dummy.tscn")
 var creature_card_scene = load("res://scenes/UI/combat_creature_card.tscn")
 
 const Utils = preload("res://scripts/utils/utils.gd")

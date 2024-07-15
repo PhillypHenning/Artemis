@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/combat/testing/los_testing.gd" id="1_vmhov"]
 [ext_resource type="PackedScene" uid="uid://bch1inx7rhsor" path="res://scenes/combat/creatures/player_controlled_creature.tscn" id="1_wtlk8"]
 [ext_resource type="PackedScene" uid="uid://c8cdet8dkmps6" path="res://scenes/combat/creatures/target_dummy.tscn" id="2_y8dhf"]
-[ext_resource type="Texture2D" uid="uid://diwqtd57chdk0" path="res://graphics/combat/obstacles/boulder.png" id="4_ipob4"]
+[ext_resource type="PackedScene" uid="uid://djxjpynabyfcs" path="res://scenes/combat/obstacles/combat_obstacle_boulder.tscn" id="4_05yfv"]
 
 [node name="LosTesting" type="Node2D"]
 script = ExtResource("1_vmhov")
@@ -42,9 +42,8 @@ offset_right = 832.0
 offset_bottom = 1024.0
 text = "Set Enemy Target"
 
-[node name="Boulder" type="Sprite2D" parent="."]
-position = Vector2(832, 352)
-texture = ExtResource("4_ipob4")
+[node name="CombatObstacleBoulder" parent="." instance=ExtResource("4_05yfv")]
+position = Vector2(584, 416)
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]
