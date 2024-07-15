@@ -21,7 +21,8 @@ enum {
 	COMBAT_CARD,
 	TARGETTING,
 	MARKERS,
-	MOVEMENT
+	MOVEMENT,
+	DEBUG
 }
 
 var combat_creature_nodes = {
@@ -60,7 +61,8 @@ var combat_creature_nodes = {
 	},
 	MOVEMENT: {
 		movement_override = null
-	}
+	},
+	DEBUG: false
 }
 
 # INITIALIZATION FUNCTIONS
@@ -70,6 +72,7 @@ func _ready() -> void:
 	# Targeting
 	_init_create_combat_creature_markers()
 	_init_assign_target()
+	_init_set_mask()
 	
 	# Signal connections
 	_init_attach_creature_card()
@@ -148,20 +151,24 @@ func _init_assign_target() -> void:
 func _init_create_raycast() -> void:
 	combat_creature_nodes[TARGETTING].los_raycast = RayCast2D.new()
 	combat_creature_nodes[TARGETTING].los_raycast.name = combat_creature_nodes[TARGETTING].los_raycast_name
+	combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask(4)
 	self.add_child(combat_creature_nodes[TARGETTING].los_raycast)
 	
+func _init_set_mask() -> void:
 	if combat_creature_type.character_type == characteristics.PLAYER:
-		combat_creature_nodes[TARGETTING].los_visualizer = Line2D.new()
-		combat_creature_nodes[TARGETTING].los_raycast.add_child(combat_creature_nodes[TARGETTING].los_visualizer)
-		combat_creature_nodes[TARGETTING].los_visualizer.global_position = combat_creature_nodes[TARGETTING].los_raycast.global_position
-		combat_creature_nodes[TARGETTING].los_visualizer.add_point(Vector2.ZERO)
-		combat_creature_nodes[TARGETTING].los_visualizer.add_point(combat_creature_nodes[TARGETTING].los_raycast.target_position - combat_creature_nodes[TARGETTING].los_visualizer.global_position)
-		combat_creature_nodes[TARGETTING].los_visualizer.width = 3
+		self.set_collision_layer_value(1, true)
+		self.set_collision_mask_value(3, true)
+	if combat_creature_type.character_type == characteristics.NPC_ENEMY:
+		self.set_collision_layer_value(1, false)
+		self.set_collision_layer_value(3, true)
+		self.set_collision_mask_value(1, true)
 
 
 # PROCESS FUNCTIONS
 func _process(_delta: float) -> void:
 	_handle_look_at_target()
+	if combat_creature_nodes[DEBUG]:
+		queue_redraw()
 
 
 
@@ -242,28 +249,25 @@ func _handle_update_combat_card() -> void:
 func _handle_assign_target(_target: Node) -> void:
 	push_error("OVERRIDE THIS IN THE CREATURE CARD")
 
+func _draw() -> void:
+	if combat_creature_nodes[DEBUG]:
+		draw_line(combat_creature_nodes[TARGETTING].los_raycast.position, combat_creature_nodes[TARGETTING].los_raycast.target_position, Color.RED, 3.0)
+
 func _handle_look_at_target() -> void:
+	
 	if !combat_creature_nodes[TARGETTING].enemy_target:
 		var mouse_pos = get_global_mouse_position()
 		combat_creature_nodes[MARKERS].group.node.look_at(mouse_pos)
-		
-		if combat_creature_type.character_type == characteristics.PLAYER:
-			combat_creature_nodes[TARGETTING].los_raycast.target_position = mouse_pos
-			combat_creature_nodes[TARGETTING].los_visualizer.global_position = combat_creature_nodes[TARGETTING].los_raycast.global_position
-			combat_creature_nodes[TARGETTING].los_visualizer.set_point_position(1, combat_creature_nodes[TARGETTING].los_raycast.target_position - combat_creature_nodes[TARGETTING].los_visualizer.global_position)
+		combat_creature_nodes[TARGETTING].los_raycast.target_position = get_local_mouse_position()
 
 	else:
 		combat_creature_nodes[MARKERS].group.node.look_at(combat_creature_nodes[TARGETTING].enemy_target.global_position)
 		combat_creature_nodes[TARGETTING].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position
-		combat_creature_nodes[TARGETTING].los_visualizer.global_position = combat_creature_nodes[TARGETTING].los_raycast.global_position
-		combat_creature_nodes[TARGETTING].los_visualizer.set_point_position(1, combat_creature_nodes[TARGETTING].los_raycast.target_position - combat_creature_nodes[TARGETTING].los_visualizer.global_position)
-		
-	if combat_creature_nodes[TARGETTING].los_raycast.is_colliding() and combat_creature_type.character_type == characteristics.PLAYER:
-		print("Collision detected")
+
+	if combat_creature_nodes[TARGETTING].los_raycast.is_colliding() and combat_creature_nodes[DEBUG]:
 		var target = combat_creature_nodes[TARGETTING].los_raycast.get_collider() # A CollisionObject2D.
 		var shape_id = combat_creature_nodes[TARGETTING].los_raycast.get_collider_shape() # The shape index in the collider.
 		var owner_id = target.shape_find_owner(shape_id) # The owner ID in the collider.
 		var shape = target.shape_owner_get_owner(owner_id)
 		
-		print("target: {target}, shape_id: {shape_id}, owner_id: {owner_id}, shape: {shape},". format({"target": target, "shape_id": shape_id, "owner_id": owner_id, "shape": shape}))
-		
+		print("Collision detected by [{type}] target: {target}, shape_id: {shape_id}, owner_id: {owner_id}, shape: {shape},". format({"type": combat_creature_type.character_type, "target": target, "shape_id": shape_id, "owner_id": owner_id, "shape": shape}))
