@@ -167,8 +167,6 @@ func _init_set_mask() -> void:
 # PROCESS FUNCTIONS
 func _process(_delta: float) -> void:
 	_handle_look_at_target()
-	if combat_creature_nodes[DEBUG]:
-		queue_redraw()
 
 
 
@@ -254,7 +252,6 @@ func _draw() -> void:
 		draw_line(combat_creature_nodes[TARGETTING].los_raycast.position, combat_creature_nodes[TARGETTING].los_raycast.target_position, Color.RED, 3.0)
 
 func _handle_look_at_target() -> void:
-	
 	if !combat_creature_nodes[TARGETTING].enemy_target:
 		var mouse_pos = get_global_mouse_position()
 		combat_creature_nodes[MARKERS].group.node.look_at(mouse_pos)
@@ -262,7 +259,8 @@ func _handle_look_at_target() -> void:
 
 	else:
 		combat_creature_nodes[MARKERS].group.node.look_at(combat_creature_nodes[TARGETTING].enemy_target.global_position)
-		combat_creature_nodes[TARGETTING].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position
+		#combat_creature_nodes[TARGETTING].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position
+		combat_creature_nodes[TARGETTING].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position - combat_creature_nodes[TARGETTING].los_raycast.global_position
 
 	if combat_creature_nodes[TARGETTING].los_raycast.is_colliding() and combat_creature_nodes[DEBUG]:
 		var target = combat_creature_nodes[TARGETTING].los_raycast.get_collider() # A CollisionObject2D.

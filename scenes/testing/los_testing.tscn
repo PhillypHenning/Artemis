@@ -15,17 +15,33 @@ position = Vector2(952, 344)
 
 [node name="Button" type="Button" parent="."]
 offset_left = 256.0
-offset_top = 896.0
+offset_top = 704.0
 offset_right = 504.0
-offset_bottom = 1024.0
+offset_bottom = 832.0
 text = "Player"
 
 [node name="Button2" type="Button" parent="."]
-offset_left = 640.0
-offset_top = 904.0
-offset_right = 896.0
-offset_bottom = 1024.0
+offset_left = 576.0
+offset_top = 704.0
+offset_right = 832.0
+offset_bottom = 824.0
 text = "Enemy"
+
+[node name="Button3" type="Button" parent="."]
+offset_left = 256.0
+offset_top = 896.0
+offset_right = 512.0
+offset_bottom = 1024.0
+text = "Set Player Target"
+
+[node name="Button4" type="Button" parent="."]
+offset_left = 576.0
+offset_top = 896.0
+offset_right = 832.0
+offset_bottom = 1024.0
+text = "Set Enemy Target"
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
+[connection signal="pressed" from="Button4" to="." method="_on_button_4_pressed"]
