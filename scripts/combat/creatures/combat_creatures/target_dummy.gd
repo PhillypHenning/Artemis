@@ -12,7 +12,7 @@ var reported_health = 0
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	combat_creature_details.name = "Target Dummy"
-	combat_creature_type.character_type = characteristics.NPC_NEUTRAL
+	combat_creature_type.character_type = characteristics.NPC_ENEMY
 	super._ready()
 	_init_initial_stat_set(health, stamina, speed)
 	ability_handler._init_ability_handler(self)
@@ -34,7 +34,7 @@ func _init_attach_creature_to_card(card: Node):
 	combat_creature_nodes[COMBAT_CARD].node = card
 	super._init_combat_card()
 
-func _init_assign_target(target: Node) -> void:
+func _handle_assign_target(target: Node) -> void:
 	combat_creature_nodes[TARGETTING].enemy_target = target
 
 func _use_heal_to_full_ability() -> void:

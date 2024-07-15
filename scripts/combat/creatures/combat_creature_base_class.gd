@@ -21,7 +21,8 @@ enum {
 	COMBAT_CARD,
 	TARGETTING,
 	MARKERS,
-	MOVEMENT
+	MOVEMENT,
+	DEBUG
 }
 
 var combat_creature_nodes = {
@@ -43,7 +44,11 @@ var combat_creature_nodes = {
 	},
 	TARGETTING: {
 		enemy_target = null,
-		friendly_target = null
+		friendly_target = null,
+		los_raycast = null,
+		los_raycast_name = "LosRaycast",
+		los_on_target = false,
+		los_visualizer = null
 	},
 	MARKERS: {
 		group = {
@@ -56,7 +61,8 @@ var combat_creature_nodes = {
 	},
 	MOVEMENT: {
 		movement_override = null
-	}
+	},
+	DEBUG: false
 }
 
 # INITIALIZATION FUNCTIONS
@@ -65,6 +71,8 @@ func _ready() -> void:
 	
 	# Targeting
 	_init_create_combat_creature_markers()
+	_init_assign_target()
+	_init_set_mask()
 	
 	# Signal connections
 	_init_attach_creature_card()
@@ -72,6 +80,8 @@ func _ready() -> void:
 	# Ability handler setup
 	combat_creature_abilities._init_ability_handler(self)
 	combat_creature_status_effects._init_ability_handler(self)
+	
+	_init_create_raycast()
 
 func _init_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_health_characteristics.starting_health = health
@@ -128,10 +138,37 @@ func _init_attach_creature_card() -> void:
 	if combat_creature_nodes[PARENT_NODE].arena != null:
 		if combat_creature_type.character_type == characteristics.PLAYER:
 			combat_creature_nodes[PARENT_NODE].arena.connect("attach_player_creature_to_card", _init_attach_creature_to_card)
-			combat_creature_nodes[PARENT_NODE].arena.connect("player_character_target", _init_assign_target)
 		else:
 			combat_creature_nodes[PARENT_NODE].arena.connect("attach_enemy_creature_to_card", _init_attach_creature_to_card)
-			combat_creature_nodes[PARENT_NODE].arena.connect("enemy_character_target", _init_assign_target)
+
+func _init_assign_target() -> void:
+	if combat_creature_nodes[PARENT_NODE].arena != null:
+		if combat_creature_type.character_type == characteristics.PLAYER:
+			combat_creature_nodes[PARENT_NODE].arena.connect("player_character_target", _handle_assign_target)
+		else:
+			combat_creature_nodes[PARENT_NODE].arena.connect("enemy_character_target", _handle_assign_target)
+
+func _init_create_raycast() -> void:
+	combat_creature_nodes[TARGETTING].los_raycast = RayCast2D.new()
+	combat_creature_nodes[TARGETTING].los_raycast.name = combat_creature_nodes[TARGETTING].los_raycast_name
+	
+	combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask_value(4, true)
+	if combat_creature_type.character_type == characteristics.PLAYER:
+		combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask_value(3, true)
+	if combat_creature_type.character_type == characteristics.NPC_ENEMY:
+		combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask_value(1, true)
+	self.add_child(combat_creature_nodes[TARGETTING].los_raycast)
+	
+func _init_set_mask() -> void:
+	self.set_collision_mask_value(2, true) 	# Walls
+	self.set_collision_mask_value(4, true)	# Obstacles
+	if combat_creature_type.character_type == characteristics.PLAYER:
+		self.set_collision_layer_value(1, true)	# Player
+		self.set_collision_mask_value(3, true)	# Enemy
+	if combat_creature_type.character_type == characteristics.NPC_ENEMY:
+		self.set_collision_layer_value(1, false)
+		self.set_collision_layer_value(3, true)	# Enemy
+		self.set_collision_mask_value(1, true)	# Player
 
 
 
@@ -217,11 +254,31 @@ func _handle_update_combat_card() -> void:
 
 
 # TARGETTING
-func _init_assign_target(_target: Node) -> void:
+func _handle_assign_target(_target: Node) -> void:
 	push_error("OVERRIDE THIS IN THE CREATURE CARD")
+
+func _draw() -> void:
+	if combat_creature_nodes[DEBUG]:
+		draw_line(combat_creature_nodes[TARGETTING].los_raycast.position, combat_creature_nodes[TARGETTING].los_raycast.target_position, Color.RED, 3.0)
 
 func _handle_look_at_target() -> void:
 	if !combat_creature_nodes[TARGETTING].enemy_target:
-		combat_creature_nodes[MARKERS].group.node.look_at(get_global_mouse_position())
+		var mouse_pos = get_global_mouse_position()
+		combat_creature_nodes[MARKERS].group.node.look_at(mouse_pos)
+		combat_creature_nodes[TARGETTING].los_raycast.target_position = get_local_mouse_position()
+
 	else:
 		combat_creature_nodes[MARKERS].group.node.look_at(combat_creature_nodes[TARGETTING].enemy_target.global_position)
+		#combat_creature_nodes[TARGETTING].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position
+		combat_creature_nodes[TARGETTING].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position - combat_creature_nodes[TARGETTING].los_raycast.global_position
+
+	if combat_creature_nodes[TARGETTING].los_raycast.is_colliding() and combat_creature_nodes[DEBUG]:
+		var target = combat_creature_nodes[TARGETTING].los_raycast.get_collider() # A CollisionObject2D.
+
+		if combat_creature_type.character_type == characteristics.PLAYER:
+			combat_creature_nodes[TARGETTING].los_on_target = target.get_collision_layer_value(3)
+		if combat_creature_type.character_type == characteristics.NPC_ENEMY:
+			combat_creature_nodes[TARGETTING].los_on_target = target.get_collision_layer_value(1)
+	
+	if combat_creature_nodes[DEBUG]:
+		print(combat_creature_nodes[TARGETTING].los_on_target)
