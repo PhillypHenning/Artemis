@@ -28,6 +28,7 @@ texture = ExtResource("1_61bhp")
 
 [node name="BorderRight" type="StaticBody2D" parent="Borders"]
 collision_layer = 2
+collision_mask = 13
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderRight"]
 position = Vector2(1232, 456.5)
@@ -43,6 +44,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="BorderLeft" type="StaticBody2D" parent="Borders"]
 collision_layer = 2
+collision_mask = 13
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderLeft"]
 light_mask = 2
@@ -59,6 +61,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="BorderTop" type="StaticBody2D" parent="Borders"]
 collision_layer = 2
+collision_mask = 13
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderTop"]
 light_mask = 2
@@ -74,6 +77,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="BorderBottom" type="StaticBody2D" parent="Borders"]
 collision_layer = 2
+collision_mask = 13
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/BorderBottom"]
 light_mask = 2
