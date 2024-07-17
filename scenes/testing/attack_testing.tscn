@@ -10,9 +10,6 @@ script = ExtResource("1_bojyy")
 
 [node name="PlayerControlledCreature" parent="." instance=ExtResource("2_h3xn7")]
 position = Vector2(168, 480)
-health = null
-stamina = null
-speed = null
 
 [node name="TargetDummy" parent="." instance=ExtResource("3_xc6c8")]
 position = Vector2(952, 344)

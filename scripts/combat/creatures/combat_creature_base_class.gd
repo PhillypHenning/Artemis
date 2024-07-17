@@ -168,6 +168,7 @@ func _init_set_mask() -> void:
 
 # PROCESS FUNCTIONS
 func _process(_delta: float) -> void:
+	_handle_debug()
 	_handle_look_at_target()
 
 
@@ -260,7 +261,6 @@ func _draw() -> void:
 
 func _handle_look_at_target() -> void:
 	if !combat_creature_nodes[TARGETTING].enemy_target:
-		var mouse_pos = get_global_mouse_position()
 		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.target_position = get_local_mouse_position()
 		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target = global_position.distance_to(get_global_mouse_position()) - combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
 		
@@ -288,7 +288,7 @@ func _handle_look_at_target() -> void:
 		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = PROXIMITY_RANGE.PROX_OOMR
 
 
-	# DEBUG
+func _handle_debug() -> void:
 	if combat_creature_nodes[DEBUG]:
 		if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_debug:
 			print(combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_on_target)
