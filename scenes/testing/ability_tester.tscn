@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://mq1v0ii5ap70"]
+[gd_scene load_steps=3 format=3 uid="uid://mq1v0ii5ap70"]
 
 [ext_resource type="Script" path="res://scripts/combat/testing/ability_tester.gd" id="1_ny8fn"]
 [ext_resource type="PackedScene" uid="uid://c8cdet8dkmps6" path="res://scenes/combat/creatures/target_dummy.tscn" id="2_x1170"]
-[ext_resource type="Script" path="res://scripts/combat/testing/AttackPoint.gd" id="3_y7r00"]
 
 [node name="AbilityTesterGroup" type="Node"]
 script = ExtResource("1_ny8fn")
@@ -13,37 +12,83 @@ position = Vector2(1728, 128)
 [node name="Buttons" type="Node" parent="."]
 
 [node name="TargetDummyReset" type="Button" parent="Buttons"]
-offset_left = 1592.0
+offset_left = 1600.0
 offset_top = 192.0
 offset_right = 1856.0
-offset_bottom = 344.0
+offset_bottom = 320.0
 text = "Reset Target Dummy"
 
 [node name="HealOverTimeAbilityButton" type="Button" parent="Buttons"]
 offset_left = 64.0
 offset_top = 64.0
-offset_right = 320.0
-offset_bottom = 192.0
+offset_right = 281.0
+offset_bottom = 95.0
 text = "Test Heal Over Time Ability"
 
 [node name="CloseMeleeAttackAbilityButton" type="Button" parent="Buttons"]
 offset_left = 64.0
-offset_top = 256.0
-offset_right = 320.0
-offset_bottom = 384.0
+offset_top = 128.0
+offset_right = 308.0
+offset_bottom = 159.0
 text = "Test Close Melee Attack Ability"
 
-[node name="AttackPoint" type="Node2D" parent="."]
-position = Vector2(1408, 128)
-script = ExtResource("3_y7r00")
+[node name="MediumMeleeAttackAbilityButton" type="Button" parent="Buttons"]
+offset_left = 64.0
+offset_top = 192.0
+offset_right = 308.0
+offset_bottom = 223.0
+text = "Test Medium Melee Attack Ability"
 
-[node name="ColorRect" type="ColorRect" parent="AttackPoint"]
-offset_left = -4.0
-offset_top = -4.0
-offset_right = 4.0
-offset_bottom = 4.0
+[node name="FarMeleeAttackAbilityButton" type="Button" parent="Buttons"]
+offset_left = 64.0
+offset_top = 256.0
+offset_right = 308.0
+offset_bottom = 287.0
+text = "Test Far Melee Attack Ability"
+
+[node name="MultiProxyMeleeAttackAbilityButton" type="Button" parent="Buttons"]
+offset_left = 64.0
+offset_top = 320.0
+offset_right = 355.0
+offset_bottom = 351.0
+text = "Test Multi Proxy Melee Attack Ability"
+
+[node name="SetClose" type="Button" parent="Buttons"]
+offset_left = 1584.0
+offset_top = 384.0
+offset_right = 1710.0
+offset_bottom = 448.0
+text = "Set Proxy Close"
+
+[node name="SetFar" type="Button" parent="Buttons"]
+offset_left = 1592.0
+offset_top = 480.0
+offset_right = 1702.0
+offset_bottom = 544.0
+text = "Set Proxy Far"
+
+[node name="SetOOMR" type="Button" parent="Buttons"]
+offset_left = 1752.0
+offset_top = 480.0
+offset_right = 1887.0
+offset_bottom = 544.0
+text = "Set Proxy OOMR"
+
+[node name="SetMedium" type="Button" parent="Buttons"]
+offset_left = 1744.0
+offset_top = 384.0
+offset_right = 1893.0
+offset_bottom = 448.0
+text = "Set Proxy Medium"
 
 [connection signal="pressed" from="Buttons/TargetDummyReset" to="." method="_on_target_dummy_reset_pressed"]
-[connection signal="pressed" from="Buttons/HealOverTimeAbilityButton" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="Buttons/HealOverTimeAbilityButton" to="." method="_on_heal_over_time_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/HealOverTimeAbilityButton" to="." method="_on_button_pressed"]
 [connection signal="pressed" from="Buttons/CloseMeleeAttackAbilityButton" to="." method="_on_close_melee_attack_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/MediumMeleeAttackAbilityButton" to="." method="_on_medium_melee_attack_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/FarMeleeAttackAbilityButton" to="." method="_on_far_melee_attack_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/MultiProxyMeleeAttackAbilityButton" to="." method="_on_multi_proxy_melee_attack_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/SetClose" to="." method="_on_set_close_pressed"]
+[connection signal="pressed" from="Buttons/SetFar" to="." method="_on_set_far_pressed"]
+[connection signal="pressed" from="Buttons/SetOOMR" to="." method="_on_set_oomr_pressed"]
+[connection signal="pressed" from="Buttons/SetMedium" to="." method="_on_set_medium_pressed"]

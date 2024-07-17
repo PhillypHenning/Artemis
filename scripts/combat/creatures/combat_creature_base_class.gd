@@ -14,6 +14,8 @@ var combat_creature_type = characteristics.combat_creature_characteristics[chara
 var combat_creature_abilities = preload("res://scripts/combat/abilities/abilities_handler.gd").new()
 var combat_creature_status_effects = preload("res://scripts/combat/status_effects/status_effect_handler.gd").new()
 
+var combat_creature_proximities = preload("res://scripts/combat/statics/proximity.gd").new()
+
 enum {
 	TIMERS_GROUP,
 	POSITIONS,
@@ -28,13 +30,6 @@ enum {
 enum TARGETTING_DETAILS {
 	LOS,
 	PROXIMITY
-}
-
-enum PROXIMITY_RANGE {
-	PROX_CLOSE,
-	PROX_MEDIUM,
-	PROX_FAR,
-	PROX_OOMR
 }
 
 var combat_creature_nodes = {
@@ -279,13 +274,13 @@ func _handle_look_at_target() -> void:
 
 	# PROXIMITY
 	if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].close_proximity:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = PROXIMITY_RANGE.PROX_CLOSE
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = combat_creature_proximities.CLOSE
 	elif combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].medium_proximity:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = PROXIMITY_RANGE.PROX_MEDIUM
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = combat_creature_proximities.MEDIUM
 	elif combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].far_proximity:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = PROXIMITY_RANGE.PROX_FAR
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = combat_creature_proximities.FAR
 	else:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = PROXIMITY_RANGE.PROX_OOMR
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = combat_creature_proximities.OOMR
 
 
 func _handle_debug() -> void:
@@ -295,11 +290,11 @@ func _handle_debug() -> void:
 		
 		if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].attack_distance_debug:
 			match combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range:
-				PROXIMITY_RANGE.PROX_CLOSE:
+				combat_creature_proximities.CLOSE:
 					print("Target in close range")
-				PROXIMITY_RANGE.PROX_MEDIUM:
+				combat_creature_proximities.MEDIUM:
 					print("Target in medium range")
-				PROXIMITY_RANGE.PROX_FAR:
+				combat_creature_proximities.FAR:
 					print("Target in far range")
-				PROXIMITY_RANGE.PROX_OOMR:
+				combat_creature_proximities.OOMR:
 					print("Target out of melee range")

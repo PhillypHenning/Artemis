@@ -4,6 +4,7 @@ extends Node
 var healing_abilities = preload("res://scripts/combat/abilities/healing_abilities.gd").new()
 var movement_abilities = preload("res://scripts/combat/abilities/movement_abilities.gd").new()
 var offensive_test_abilities = preload("res://scripts/combat/abilities/offensive/test_abilities.gd").new()
+var proximities = preload("res://scripts/combat/statics/proximity.gd").new()
 
 enum {
 	HEALING,
@@ -27,7 +28,10 @@ enum OFFENSIVE_ABILITY_TYPES {
 }
 
 enum OFFENSIVE_ABILITY_TEST_IDS {
-	TESTING_CLOSE_MELEE
+	TESTING_CLOSE_MELEE,
+	TESTING_MEDIUM_MELEE,
+	TESTING_FAR_MELEE,
+	TESTING_MULTI_PROXY_MELEE
 }
 
 var ABILITIES = {
@@ -49,9 +53,34 @@ var ABILITIES = {
 				"target_callable": offensive_test_abilities._close_melee_attack,
 				"parameters": {
 					"target_location": null,
-					"amount": 0
+					"amount": 0,
+					"proximity_needed": [proximities.CLOSE],
 				}
-			}
+			},
+			OFFENSIVE_ABILITY_TEST_IDS.TESTING_MEDIUM_MELEE: {
+				"target_callable": offensive_test_abilities._medium_melee_attack,
+				"parameters": {
+					"target_location": null,
+					"amount": 0,
+					"proximity_needed": [proximities.MEDIUM],
+				}
+			},
+			OFFENSIVE_ABILITY_TEST_IDS.TESTING_FAR_MELEE: {
+				"target_callable": offensive_test_abilities._far_melee_attack,
+				"parameters": {
+					"target_location": null,
+					"amount": 0,
+					"proximity_needed": [proximities.FAR],
+				}
+			},
+			OFFENSIVE_ABILITY_TEST_IDS.TESTING_MULTI_PROXY_MELEE: {
+				"target_callable": offensive_test_abilities._multi_proxy_melee_attack,
+				"parameters": {
+					"target_location": null,
+					"amount": 0,
+					"proximity_needed": [proximities.CLOSE, proximities.MEDIUM],
+				}
+			},
 		}
 	},
 	DEFENSIVE: {},
