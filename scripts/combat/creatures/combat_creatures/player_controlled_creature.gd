@@ -30,11 +30,11 @@ func _handle_character_movement_ability() -> void:
 
 func _handle_character_attack() -> void:
 	if Input.is_action_just_pressed("attack_near"):
-		_use_combat_creature_attack_at_marker_range("close")
+		pass
 	elif Input.is_action_just_pressed("attack_medium"):
-		_use_combat_creature_attack_at_marker_range("medium")
+		pass
 	elif Input.is_action_just_pressed("attack_far"):
-		_use_combat_creature_attack_at_marker_range("far")
+		pass
 
 func _init_attach_creature_to_card(card: Node):
 	combat_creature_nodes[COMBAT_CARD].node = card

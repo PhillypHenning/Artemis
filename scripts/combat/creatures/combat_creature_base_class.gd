@@ -20,47 +20,67 @@ enum {
 	PARENT_NODE,
 	COMBAT_CARD,
 	TARGETTING,
-	MARKERS,
 	MOVEMENT,
+	IMAGE,
 	DEBUG
+}
+
+enum TARGETTING_DETAILS {
+	LOS,
+	PROXIMITY
+}
+
+enum PROXIMITY_RANGE {
+	PROX_CLOSE,
+	PROX_MEDIUM,
+	PROX_FAR,
+	PROX_OOMR
 }
 
 var combat_creature_nodes = {
 	TIMERS_GROUP: {
-		node = null,
-		name = "TimersGroup"
+		"node": null,
+		"name": "TimersGroup"
 	},
 	POSITIONS: {
-		last_known_direction = null,
-		dash_direction = null
+		"last_known_direction": null,
+		"dash_direction": null
 	},
 	PARENT_NODE: {
-		arena = null
+		"arena": null
 	},
 	COMBAT_CARD: {
-		node = null,
-		health_bar = null,
-		stamina_counter = null,
+		"node": null,
+		"health_bar": null,
+		"stamina_counter": null,
 	},
 	TARGETTING: {
-		enemy_target = null,
-		friendly_target = null,
-		los_raycast = null,
-		los_raycast_name = "LosRaycast",
-		los_on_target = false,
-		los_visualizer = null
-	},
-	MARKERS: {
-		group = {
-			node = null,
-			name = "MarkersGroup"
+		"enemy_target": null,
+		"friendly_target": null,
+		TARGETTING_DETAILS.LOS: {
+			"los_raycast": null,
+			"los_raycast_name": "LosRaycast",
+			"los_on_target": false,
+			"los_visualizer": null,
+			"los_debug_color": Color.RED,
+			"los_debug": false
 		},
-		close = null,
-		medium = null,
-		far = null
+		TARGETTING_DETAILS.PROXIMITY: {
+			"attack_distance_debug": false,
+			"proximity_offset": null,
+			"distance_to_target": null,
+			"proximity_range": null,
+			"close_proximity": 75,
+			"medium_proximity": 175,
+			"far_proximity": 300,
+		}
 	},
 	MOVEMENT: {
-		movement_override = null
+		"movement_override": null
+	},
+	IMAGE: {
+		"node": null,
+		"size": null
 	},
 	DEBUG: false
 }
@@ -69,8 +89,12 @@ var combat_creature_nodes = {
 func _ready() -> void:
 	combat_creature_nodes[PARENT_NODE].arena = find_parent("CombatArena")
 	
+	# Image
+	combat_creature_nodes[IMAGE].node = find_child("Sprite")
+	combat_creature_nodes[IMAGE].size = combat_creature_nodes[IMAGE].node.texture.get_size()
+	combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset = ((combat_creature_nodes[IMAGE].size.x + combat_creature_nodes[IMAGE].size.y) / 4)
+	
 	# Targeting
-	_init_create_combat_creature_markers()
 	_init_assign_target()
 	_init_set_mask()
 	
@@ -81,7 +105,9 @@ func _ready() -> void:
 	combat_creature_abilities._init_ability_handler(self)
 	combat_creature_status_effects._init_ability_handler(self)
 	
+	# LOS
 	_init_create_raycast()
+	
 
 func _init_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_health_characteristics.starting_health = health
@@ -95,44 +121,6 @@ func _init_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_movement_characteristics.starting_speed = speed
 	combat_creature_movement_characteristics.current_speed = speed
 	combat_creature_movement_characteristics.max_speed = speed
-
-func _init_create_combat_creature_markers() -> void:
-	combat_creature_nodes[MARKERS].group.node = Node2D.new()
-	combat_creature_nodes[MARKERS].group.node.name = combat_creature_nodes[MARKERS].group.name
-	add_child(combat_creature_nodes[MARKERS].group.node)
-	
-	combat_creature_nodes[MARKERS].close = Node2D.new()
-	combat_creature_nodes[MARKERS].close.name = "TargetRangeClose"
-	combat_creature_nodes[MARKERS].close.position.x = 40
-	combat_creature_nodes[MARKERS].group.node.add_child(combat_creature_nodes[MARKERS].close)
-	# DEBUG REMOVE START
-	var ccr = ColorRect.new()
-	ccr.position = combat_creature_nodes[MARKERS].close.position
-	ccr.size = Vector2(1,1)
-	combat_creature_nodes[MARKERS].close.add_child(ccr)
-	# DEBUG REMOVE END
-	
-	combat_creature_nodes[MARKERS].medium = Node2D.new()
-	combat_creature_nodes[MARKERS].medium.name = "TargetRangeMedium"
-	combat_creature_nodes[MARKERS].medium.position.x = 70
-	combat_creature_nodes[MARKERS].group.node.add_child(combat_creature_nodes[MARKERS].medium)
-	# DEBUG REMOVE START
-	var ccr2 = ColorRect.new()
-	ccr2.position = combat_creature_nodes[MARKERS].medium.position
-	ccr2.size = Vector2(1,1)
-	combat_creature_nodes[MARKERS].medium.add_child(ccr2)
-	# DEBUG REMOVE END
-	
-	combat_creature_nodes[MARKERS].far = Node2D.new()
-	combat_creature_nodes[MARKERS].far.name = "TargetRangeFar"
-	combat_creature_nodes[MARKERS].far.position.x = 100
-	combat_creature_nodes[MARKERS].group.node.add_child(combat_creature_nodes[MARKERS].far)
-	# DEBUG REMOVE START
-	var ccr3 = ColorRect.new()
-	ccr3.position = combat_creature_nodes[MARKERS].far.position
-	ccr3.size = Vector2(1,1)
-	combat_creature_nodes[MARKERS].far.add_child(ccr3)
-	# DEBUG REMOVE END
 
 func _init_attach_creature_card() -> void:
 	if combat_creature_nodes[PARENT_NODE].arena != null:
@@ -149,15 +137,19 @@ func _init_assign_target() -> void:
 			combat_creature_nodes[PARENT_NODE].arena.connect("enemy_character_target", _handle_assign_target)
 
 func _init_create_raycast() -> void:
-	combat_creature_nodes[TARGETTING].los_raycast = RayCast2D.new()
-	combat_creature_nodes[TARGETTING].los_raycast.name = combat_creature_nodes[TARGETTING].los_raycast_name
+	combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast = RayCast2D.new()
+	combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.name = combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast_name
 	
-	combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask_value(4, true)
+	# Set Default
+	combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(4, true)
+	
+	# Set Specific
 	if combat_creature_type.character_type == characteristics.PLAYER:
-		combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask_value(3, true)
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(3, true)
 	if combat_creature_type.character_type == characteristics.NPC_ENEMY:
-		combat_creature_nodes[TARGETTING].los_raycast.set_collision_mask_value(1, true)
-	self.add_child(combat_creature_nodes[TARGETTING].los_raycast)
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(1, true)
+	
+	self.add_child(combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast)
 	
 func _init_set_mask() -> void:
 	self.set_collision_mask_value(2, true) 	# Walls
@@ -258,27 +250,56 @@ func _handle_assign_target(_target: Node) -> void:
 	push_error("OVERRIDE THIS IN THE CREATURE CARD")
 
 func _draw() -> void:
-	if combat_creature_nodes[DEBUG]:
-		draw_line(combat_creature_nodes[TARGETTING].los_raycast.position, combat_creature_nodes[TARGETTING].los_raycast.target_position, Color.RED, 3.0)
+	if combat_creature_nodes[DEBUG] and combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_debug:
+		draw_line(combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.position, combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.target_position, combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_debug_color, 3.0)
+	
+	if combat_creature_nodes[DEBUG] and combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].attack_distance_debug:
+		draw_circle(Vector2(0,0), (combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].far_proximity + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset), Color.RED)
+		draw_circle(Vector2(0,0), (combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].medium_proximity + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset), Color.BLUE)
+		draw_circle(Vector2(0,0), (combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].close_proximity + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset), Color.GREEN)
 
 func _handle_look_at_target() -> void:
 	if !combat_creature_nodes[TARGETTING].enemy_target:
 		var mouse_pos = get_global_mouse_position()
-		combat_creature_nodes[MARKERS].group.node.look_at(mouse_pos)
-		combat_creature_nodes[TARGETTING].los_raycast.target_position = get_local_mouse_position()
-
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.target_position = get_local_mouse_position()
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target = global_position.distance_to(get_global_mouse_position()) - combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
+		
 	else:
-		combat_creature_nodes[MARKERS].group.node.look_at(combat_creature_nodes[TARGETTING].enemy_target.global_position)
-		#combat_creature_nodes[TARGETTING].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position
-		combat_creature_nodes[TARGETTING].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position - combat_creature_nodes[TARGETTING].los_raycast.global_position
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position - combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.global_position
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target = global_position.distance_to(combat_creature_nodes[TARGETTING].enemy_target.global_position) - combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
 
-	if combat_creature_nodes[TARGETTING].los_raycast.is_colliding() and combat_creature_nodes[DEBUG]:
-		var target = combat_creature_nodes[TARGETTING].los_raycast.get_collider() # A CollisionObject2D.
+	# LOS
+	if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.is_colliding() and combat_creature_nodes[DEBUG]:
+		var target = combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.get_collider() # A CollisionObject2D.
 
 		if combat_creature_type.character_type == characteristics.PLAYER:
-			combat_creature_nodes[TARGETTING].los_on_target = target.get_collision_layer_value(3)
+			combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_on_target = target.get_collision_layer_value(3)
 		if combat_creature_type.character_type == characteristics.NPC_ENEMY:
-			combat_creature_nodes[TARGETTING].los_on_target = target.get_collision_layer_value(1)
-	
+			combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_on_target = target.get_collision_layer_value(1)
+
+	# PROXIMITY
+	if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].close_proximity:
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = PROXIMITY_RANGE.PROX_CLOSE
+	elif combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].medium_proximity:
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = PROXIMITY_RANGE.PROX_MEDIUM
+	elif combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].far_proximity:
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = PROXIMITY_RANGE.PROX_FAR
+	else:
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = PROXIMITY_RANGE.PROX_OOMR
+
+
+	# DEBUG
 	if combat_creature_nodes[DEBUG]:
-		print(combat_creature_nodes[TARGETTING].los_on_target)
+		if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_debug:
+			print(combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_on_target)
+		
+		if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].attack_distance_debug:
+			match combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range:
+				PROXIMITY_RANGE.PROX_CLOSE:
+					print("Target in close range")
+				PROXIMITY_RANGE.PROX_MEDIUM:
+					print("Target in medium range")
+				PROXIMITY_RANGE.PROX_FAR:
+					print("Target in far range")
+				PROXIMITY_RANGE.PROX_OOMR:
+					print("Target out of melee range")
