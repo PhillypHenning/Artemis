@@ -9,12 +9,20 @@ var reported_health = 0
 
 @export var amount_healed: int = 3
 @onready var target_dummy = $TargetDummy
+@onready var bullet_spawn_1 = $BulletSpawnPointGroup/BulletSpawn1
+@onready var bullet_spawn_2 = $BulletSpawnPointGroup/BulletSpawn2
+@onready var bullet_spawn_3 = $BulletSpawnPointGroup/BulletSpawn3
+@onready var selected_bullet_spawn_visualizer = $BulletSpawnPointGroup/SelectedBulletSpawnVisualizer
+
 
 var debug_range = proximities.OOMR
+var selected_bullet_spawn = null
 
 func _ready() -> void:
 	ability_handler._init_ability_handler(self)
 	_on_target_dummy_reset_pressed()
+	
+	_on_set_bullet_spawn_1_pressed()
 
 func _process(_delta) -> void:
 	pass
@@ -77,3 +85,18 @@ func _on_set_far_pressed():
 
 func _on_set_oomr_pressed():
 	debug_range = proximities.OOMR
+
+
+func _on_set_bullet_spawn_1_pressed():
+	selected_bullet_spawn = bullet_spawn_1
+	selected_bullet_spawn_visualizer.position = selected_bullet_spawn.position
+
+
+func _on_set_bullet_spawn_2_pressed():
+	selected_bullet_spawn = bullet_spawn_2
+	selected_bullet_spawn_visualizer.position = selected_bullet_spawn.position
+
+
+func _on_set_bullet_spawn_3_pressed():
+	selected_bullet_spawn = bullet_spawn_3
+	selected_bullet_spawn_visualizer.position = selected_bullet_spawn.position

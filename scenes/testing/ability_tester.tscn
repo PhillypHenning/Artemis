@@ -81,6 +81,43 @@ offset_right = 1893.0
 offset_bottom = 448.0
 text = "Set Proxy Medium"
 
+[node name="SetBulletSpawn 1" type="Button" parent="Buttons"]
+offset_left = 1000.0
+offset_top = 64.0
+offset_right = 1151.0
+offset_bottom = 95.0
+text = "Set Bullet Spawn 1"
+
+[node name="SetBulletSpawn2" type="Button" parent="Buttons"]
+offset_left = 1000.0
+offset_top = 112.0
+offset_right = 1151.0
+offset_bottom = 143.0
+text = "Set Bullet Spawn 2"
+
+[node name="SetBulletSpawn3" type="Button" parent="Buttons"]
+offset_left = 1000.0
+offset_top = 160.0
+offset_right = 1151.0
+offset_bottom = 191.0
+text = "Set Bullet Spawn 3"
+
+[node name="BulletSpawnPointGroup" type="Node2D" parent="."]
+
+[node name="BulletSpawn1" type="Node2D" parent="BulletSpawnPointGroup"]
+position = Vector2(1216, 64)
+
+[node name="BulletSpawn2" type="Node2D" parent="BulletSpawnPointGroup"]
+position = Vector2(1216, 960)
+
+[node name="BulletSpawn3" type="Node2D" parent="BulletSpawnPointGroup"]
+position = Vector2(1792, 960)
+
+[node name="SelectedBulletSpawnVisualizer" type="ColorRect" parent="BulletSpawnPointGroup"]
+offset_right = 8.0
+offset_bottom = 8.0
+color = Color(0.998292, 0, 0.105997, 1)
+
 [connection signal="pressed" from="Buttons/TargetDummyReset" to="." method="_on_target_dummy_reset_pressed"]
 [connection signal="pressed" from="Buttons/HealOverTimeAbilityButton" to="." method="_on_heal_over_time_ability_button_pressed"]
 [connection signal="pressed" from="Buttons/HealOverTimeAbilityButton" to="." method="_on_button_pressed"]
@@ -92,3 +129,6 @@ text = "Set Proxy Medium"
 [connection signal="pressed" from="Buttons/SetFar" to="." method="_on_set_far_pressed"]
 [connection signal="pressed" from="Buttons/SetOOMR" to="." method="_on_set_oomr_pressed"]
 [connection signal="pressed" from="Buttons/SetMedium" to="." method="_on_set_medium_pressed"]
+[connection signal="pressed" from="Buttons/SetBulletSpawn 1" to="." method="_on_set_bullet_spawn_1_pressed"]
+[connection signal="pressed" from="Buttons/SetBulletSpawn2" to="." method="_on_set_bullet_spawn_2_pressed"]
+[connection signal="pressed" from="Buttons/SetBulletSpawn3" to="." method="_on_set_bullet_spawn_3_pressed"]
