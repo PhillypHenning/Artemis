@@ -3,6 +3,7 @@ extends Node
 
 var healing_abilities = preload("res://scripts/combat/abilities/healing_abilities.gd").new()
 var movement_abilities = preload("res://scripts/combat/abilities/movement_abilities.gd").new()
+var offensive_test_abilities = preload("res://scripts/combat/abilities/offensive/test_abilities.gd").new()
 
 enum {
 	HEALING,
@@ -21,7 +22,11 @@ enum MOVEMENT_ABILITY_IDS {
 	TESTING_DASH
 }
 
-enum OFFENSIVE_ABILITY_IDS {
+enum OFFENSIVE_ABILITY_TYPES {
+	TEST
+}
+
+enum OFFENSIVE_ABILITY_TEST_IDS {
 	TESTING_CLOSE_MELEE
 }
 
@@ -38,7 +43,17 @@ var ABILITIES = {
 			},
 		},
 	},
-	OFFENSIVE: {},
+	OFFENSIVE: {
+		OFFENSIVE_ABILITY_TYPES.TEST: {
+			OFFENSIVE_ABILITY_TEST_IDS.TESTING_CLOSE_MELEE: {
+				"target_callable": offensive_test_abilities._close_melee_attack,
+				"parameters": {
+					"target_location": null,
+					"amount": 0
+				}
+			}
+		}
+	},
 	DEFENSIVE: {},
 	UTILITY: {},
 	MOVEMENT: {

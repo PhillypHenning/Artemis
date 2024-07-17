@@ -1,22 +1,49 @@
-[gd_scene load_steps=2 format=3 uid="uid://mq1v0ii5ap70"]
+[gd_scene load_steps=4 format=3 uid="uid://mq1v0ii5ap70"]
 
-[ext_resource type="Script" path="res://scripts/testing/ability_tester.gd" id="1_ny8fn"]
+[ext_resource type="Script" path="res://scripts/combat/testing/ability_tester.gd" id="1_ny8fn"]
+[ext_resource type="PackedScene" uid="uid://c8cdet8dkmps6" path="res://scenes/combat/creatures/target_dummy.tscn" id="2_x1170"]
+[ext_resource type="Script" path="res://scripts/combat/testing/AttackPoint.gd" id="3_y7r00"]
 
 [node name="AbilityTesterGroup" type="Node"]
-
-[node name="AbilityTester1" type="Node" parent="."]
 script = ExtResource("1_ny8fn")
 
-[node name="AbilityTester2" type="Node" parent="."]
-script = ExtResource("1_ny8fn")
-amount_healed = 5
+[node name="TargetDummy" parent="." instance=ExtResource("2_x1170")]
+position = Vector2(1728, 128)
 
-[node name="Button" type="Button" parent="."]
+[node name="Buttons" type="Node" parent="."]
+
+[node name="TargetDummyReset" type="Button" parent="Buttons"]
+offset_left = 1592.0
+offset_top = 192.0
+offset_right = 1856.0
+offset_bottom = 344.0
+text = "Reset Target Dummy"
+
+[node name="HealOverTimeAbilityButton" type="Button" parent="Buttons"]
 offset_left = 64.0
 offset_top = 64.0
-offset_right = 496.0
-offset_bottom = 248.0
+offset_right = 320.0
+offset_bottom = 192.0
 text = "Test Heal Over Time Ability"
 
-[connection signal="pressed" from="Button" to="AbilityTester1" method="_on_button_pressed"]
-[connection signal="pressed" from="Button" to="AbilityTester2" method="_on_button_pressed"]
+[node name="CloseMeleeAttackAbilityButton" type="Button" parent="Buttons"]
+offset_left = 64.0
+offset_top = 256.0
+offset_right = 320.0
+offset_bottom = 384.0
+text = "Test Close Melee Attack Ability"
+
+[node name="AttackPoint" type="Node2D" parent="."]
+position = Vector2(1408, 128)
+script = ExtResource("3_y7r00")
+
+[node name="ColorRect" type="ColorRect" parent="AttackPoint"]
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+
+[connection signal="pressed" from="Buttons/TargetDummyReset" to="." method="_on_target_dummy_reset_pressed"]
+[connection signal="pressed" from="Buttons/HealOverTimeAbilityButton" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Buttons/HealOverTimeAbilityButton" to="." method="_on_heal_over_time_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/CloseMeleeAttackAbilityButton" to="." method="_on_close_melee_attack_ability_button_pressed"]
