@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://dmbo4cnfyxrlw"]
+
+[ext_resource type="Script" path="res://scripts/combat/projectiles/test_projectile.gd" id="1_f38tk"]
+[ext_resource type="Texture2D" uid="uid://bfu1tnnn5cbfi" path="res://graphics/combat/arrow.png" id="1_ufygj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l00ov"]
+size = Vector2(13, 13)
+
+[node name="TestProjectile" type="Area2D"]
+collision_layer = 0
+collision_mask = 15
+script = ExtResource("1_f38tk")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-6, -4)
+rotation = 1.5708
+scale = Vector2(0.025, 0.025)
+texture = ExtResource("1_ufygj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(21.5, -0.5)
+shape = SubResource("RectangleShape2D_l00ov")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

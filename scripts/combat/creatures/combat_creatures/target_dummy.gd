@@ -28,7 +28,7 @@ func _process(delta: float) -> void:
 
 	if reported_health != combat_creature_health_characteristics.current_health:
 		reported_health = combat_creature_health_characteristics.current_health
-		print(reported_health)
+		print("Target Dummy current_health: {health}".format({"health": reported_health}))
 
 func _init_attach_creature_to_card(card: Node):
 	combat_creature_nodes[COMBAT_CARD].node = card

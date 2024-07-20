@@ -1,22 +1,142 @@
-[gd_scene load_steps=2 format=3 uid="uid://mq1v0ii5ap70"]
+[gd_scene load_steps=3 format=3 uid="uid://mq1v0ii5ap70"]
 
-[ext_resource type="Script" path="res://scripts/testing/ability_tester.gd" id="1_ny8fn"]
+[ext_resource type="Script" path="res://scripts/combat/testing/ability_tester.gd" id="1_ny8fn"]
+[ext_resource type="PackedScene" uid="uid://c8cdet8dkmps6" path="res://scenes/combat/creatures/target_dummy.tscn" id="2_x1170"]
 
 [node name="AbilityTesterGroup" type="Node"]
-
-[node name="AbilityTester1" type="Node" parent="."]
 script = ExtResource("1_ny8fn")
 
-[node name="AbilityTester2" type="Node" parent="."]
-script = ExtResource("1_ny8fn")
-amount_healed = 5
+[node name="TargetDummy" parent="." instance=ExtResource("2_x1170")]
+position = Vector2(1728, 128)
 
-[node name="Button" type="Button" parent="."]
-offset_left = 128.0
-offset_top = 488.0
-offset_right = 560.0
-offset_bottom = 672.0
-text = "Test Ability 1"
+[node name="Buttons" type="Node" parent="."]
 
-[connection signal="pressed" from="Button" to="AbilityTester1" method="_on_button_pressed"]
-[connection signal="pressed" from="Button" to="AbilityTester2" method="_on_button_pressed"]
+[node name="TargetDummyReset" type="Button" parent="Buttons"]
+offset_left = 1600.0
+offset_top = 192.0
+offset_right = 1856.0
+offset_bottom = 320.0
+text = "Reset Target Dummy"
+
+[node name="HealOverTimeAbilityButton" type="Button" parent="Buttons"]
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 281.0
+offset_bottom = 95.0
+text = "Test Heal Over Time Ability"
+
+[node name="CloseMeleeAttackAbilityButton" type="Button" parent="Buttons"]
+offset_left = 64.0
+offset_top = 128.0
+offset_right = 308.0
+offset_bottom = 159.0
+text = "Test Close Melee Attack Ability"
+
+[node name="MediumMeleeAttackAbilityButton" type="Button" parent="Buttons"]
+offset_left = 64.0
+offset_top = 192.0
+offset_right = 308.0
+offset_bottom = 223.0
+text = "Test Medium Melee Attack Ability"
+
+[node name="FarMeleeAttackAbilityButton" type="Button" parent="Buttons"]
+offset_left = 64.0
+offset_top = 256.0
+offset_right = 308.0
+offset_bottom = 287.0
+text = "Test Far Melee Attack Ability"
+
+[node name="MultiProxyMeleeAttackAbilityButton" type="Button" parent="Buttons"]
+offset_left = 64.0
+offset_top = 320.0
+offset_right = 355.0
+offset_bottom = 351.0
+text = "Test Multi Proxy Melee Attack Ability"
+
+[node name="SetClose" type="Button" parent="Buttons"]
+offset_left = 1584.0
+offset_top = 384.0
+offset_right = 1710.0
+offset_bottom = 448.0
+text = "Set Proxy Close"
+
+[node name="SetFar" type="Button" parent="Buttons"]
+offset_left = 1592.0
+offset_top = 480.0
+offset_right = 1702.0
+offset_bottom = 544.0
+text = "Set Proxy Far"
+
+[node name="SetOOMR" type="Button" parent="Buttons"]
+offset_left = 1752.0
+offset_top = 480.0
+offset_right = 1887.0
+offset_bottom = 544.0
+text = "Set Proxy OOMR"
+
+[node name="SetMedium" type="Button" parent="Buttons"]
+offset_left = 1744.0
+offset_top = 384.0
+offset_right = 1893.0
+offset_bottom = 448.0
+text = "Set Proxy Medium"
+
+[node name="SetBulletSpawn 1" type="Button" parent="Buttons"]
+offset_left = 1000.0
+offset_top = 64.0
+offset_right = 1151.0
+offset_bottom = 95.0
+text = "Set Bullet Spawn 1"
+
+[node name="SetBulletSpawn2" type="Button" parent="Buttons"]
+offset_left = 1000.0
+offset_top = 112.0
+offset_right = 1151.0
+offset_bottom = 143.0
+text = "Set Bullet Spawn 2"
+
+[node name="SetBulletSpawn3" type="Button" parent="Buttons"]
+offset_left = 1000.0
+offset_top = 160.0
+offset_right = 1151.0
+offset_bottom = 191.0
+text = "Set Bullet Spawn 3"
+
+[node name="SpawnBulletButton" type="Button" parent="Buttons"]
+offset_left = 64.0
+offset_top = 384.0
+offset_right = 176.0
+offset_bottom = 415.0
+text = "Spawn Bullet"
+
+[node name="BulletSpawnPointGroup" type="Node2D" parent="."]
+
+[node name="BulletSpawn1" type="Node2D" parent="BulletSpawnPointGroup"]
+position = Vector2(1216, 64)
+
+[node name="BulletSpawn2" type="Node2D" parent="BulletSpawnPointGroup"]
+position = Vector2(1216, 960)
+
+[node name="BulletSpawn3" type="Node2D" parent="BulletSpawnPointGroup"]
+position = Vector2(1792, 960)
+
+[node name="SelectedBulletSpawnVisualizer" type="ColorRect" parent="BulletSpawnPointGroup"]
+offset_right = 8.0
+offset_bottom = 8.0
+color = Color(0.998292, 0, 0.105997, 1)
+
+[connection signal="pressed" from="Buttons/TargetDummyReset" to="." method="_on_target_dummy_reset_pressed"]
+[connection signal="pressed" from="Buttons/HealOverTimeAbilityButton" to="." method="_on_heal_over_time_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/HealOverTimeAbilityButton" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Buttons/CloseMeleeAttackAbilityButton" to="." method="_on_close_melee_attack_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/MediumMeleeAttackAbilityButton" to="." method="_on_medium_melee_attack_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/FarMeleeAttackAbilityButton" to="." method="_on_far_melee_attack_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/MultiProxyMeleeAttackAbilityButton" to="." method="_on_multi_proxy_melee_attack_ability_button_pressed"]
+[connection signal="pressed" from="Buttons/SetClose" to="." method="_on_set_close_pressed"]
+[connection signal="pressed" from="Buttons/SetFar" to="." method="_on_set_far_pressed"]
+[connection signal="pressed" from="Buttons/SetOOMR" to="." method="_on_set_oomr_pressed"]
+[connection signal="pressed" from="Buttons/SetMedium" to="." method="_on_set_medium_pressed"]
+[connection signal="pressed" from="Buttons/SetBulletSpawn 1" to="." method="_on_set_bullet_spawn_1_pressed"]
+[connection signal="pressed" from="Buttons/SetBulletSpawn2" to="." method="_on_set_bullet_spawn_2_pressed"]
+[connection signal="pressed" from="Buttons/SetBulletSpawn3" to="." method="_on_set_bullet_spawn_3_pressed"]
+[connection signal="pressed" from="Buttons/SpawnBulletButton" to="." method="_on_spawn_bullet_button_pressed"]
