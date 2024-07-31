@@ -42,7 +42,9 @@ var combat_creature_characteristics: Dictionary = {
 		starting_speed = 0,
 		current_speed = 0,
 		max_speed = 0,
-		is_using_movement_ability = false
+		is_using_movement_ability = false,
+		antsy = 0.0,
+		max_antsy = 10.0,
 	},
 	DODGING: {
 		is_dodging = false,

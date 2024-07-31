@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1tnegb4rajyp"]
+
+[ext_resource type="PackedScene" uid="uid://dira860s41xvs" path="res://scenes/combat/creatures/GOAP_Test_BOT.tscn" id="1_wnt0l"]
+
+[node name="GoapAITesting" type="Node2D"]
+
+[node name="TargetDummy" parent="." instance=ExtResource("1_wnt0l")]
+position = Vector2(1568, 416)
+
+[node name="Debug" type="Node" parent="."]
+
+[node name="CurrentPlanText" type="TextEdit" parent="Debug"]
+offset_left = 64.0
+offset_top = 448.0
+offset_right = 384.0
+offset_bottom = 1024.0
+
+[node name="GoalsText" type="TextEdit" parent="Debug"]
+offset_left = 448.0
+offset_top = 448.0
+offset_right = 768.0
+offset_bottom = 1024.0

@@ -167,9 +167,6 @@ func _process(_delta: float) -> void:
 	_handle_look_at_target()
 
 
-
-
-
 ## BASIC MOVEMENT
 func _handle_combat_creature_basic_movement(direction: Vector2) -> void:
 	if !combat_creature_nodes[MOVEMENT].movement_override:
