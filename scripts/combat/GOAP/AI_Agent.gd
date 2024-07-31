@@ -48,34 +48,6 @@ var static_actions: Array = [
 ]
 var available_actions: Array = []
 
-var simulated_character: Dictionary = {
-	"health": 10.0,
-	"max_health": 10.0,
-	"health_severity": SEVERITY_LEVEL.NONE,
-	
-	"stamina": 8.0,
-	"max_stamina": 8.0,
-	"stamina_severity": SEVERITY_LEVEL.NONE,
-	
-	"antsy": 0.0,
-	"max_antsy": 5.0,
-	"antsy_severity": SEVERITY_LEVEL.NONE,
-	
-	"has_los": true,
-	
-	"target_in_attack_range": false,
-	"character_can_attack": true,
-	
-	"defeat_enemy": false,
-	
-	"character_is_being_attacked": false,
-	"character_is_defending": false,
-	
-	"speed": 300,
-	"character_position": Vector2(0,0),
-	"target_position": Vector2(300,300),
-}
-
 var game_start_time: float
 
 var goal_keep_moving: Goal = GoalPack.new()
@@ -94,10 +66,10 @@ func _ready():
 	# Improvements that could be made:
 	##	1. conserve_health
 	##		- Conserve health goes beyond breaking los though this is a good start. Another option for "Conserving health" would be to focus on defensive actions. In this scenario, when a creature takes damage it would temporarily boost the priority of the "defense_action" goal. 
-	primary_goals.append(goal_keep_moving.new_goal_with_timer("keep_moving", calculate_keep_moving_priority, 1, keep_moving_interval_increase, get_parent(), {"antsy": 0}))
-	primary_goals.append(goal_conserve_health.new_goal_with_timer("conserve_health", calculate_conserve_health_priority, 2.5, conserve_health_interval_decrease, get_parent(), {"has_los": false}))
-	primary_goals.append(goal_attack_enemy.new_goal_with_static_priority("defeat_enemy", 4.5, {"defeat_enemy": true}))
-	primary_goals.append(goal_defend_against_attack.new_goal_with_static_priority("defense_action", 7, {"character_is_defending": true}))
+	primary_goals.append(goal_keep_moving.new_goal_with_timer("keep_moving", calculate_keep_moving_priority, 1, keep_moving_interval_increase, get_parent(), {"{1}.antsy".format({1:Characteristics.MOVEMENT}): 0}))
+	#primary_goals.append(goal_conserve_health.new_goal_with_timer("conserve_health", calculate_conserve_health_priority, 2.5, conserve_health_interval_decrease, get_parent(), {"has_los": false}))
+	#primary_goals.append(goal_attack_enemy.new_goal_with_static_priority("defeat_enemy", 4.5, {"defeat_enemy": true}))
+	#primary_goals.append(goal_defend_against_attack.new_goal_with_static_priority("defense_action", 7, {"character_is_defending": true}))
 
 	character_node = get_parent()
 	
@@ -113,8 +85,10 @@ func _init():
 
 func _process(_delta: float) -> void:
 	determine_goal_priority()
-	#run_planner()
+	run_planner()
 	#check_if_enemy_is_defeated()
+	
+	# DEBUG
 	debug_available_plan()
 	debug_goals()
 
@@ -131,7 +105,7 @@ func determine_goal_priority():
 
 func run_planner() -> void:
 	var planner = PlannerPack.new()
-	current_plan = planner.build_plan(available_actions, static_actions, primary_goals, simulated_character)
+	current_plan = planner.build_plan(available_actions, static_actions, primary_goals, character_node)
 
 
 
@@ -150,8 +124,8 @@ func calculate_keep_moving_priority(character: Object) -> float:
 func keep_moving_interval_increase() -> void:
 	character_node.combat_creature_movement_characteristics.antsy = clamp((character_node.combat_creature_movement_characteristics.antsy+.3), 0, character_node.combat_creature_movement_characteristics.max_antsy)
 
-func check_if_enemy_is_defeated() -> void:
-	simulated_character.defeat_enemy = false
+#func check_if_enemy_is_defeated() -> void:
+	#simulated_character.defeat_enemy = false
 ##-- -------------- --##
 
 
@@ -164,13 +138,17 @@ func debug_available_plan() -> void:
 	text_string = "Current Plan:"
 	for action in current_plan:
 		text_string = "{text_string}\n\tAction: [{name}]".format({"text_string": text_string, "name": action.action_name})
-	current_plan_text.text = text_string
+	
+	if current_plan_text:
+		current_plan_text.text = text_string
 
 func debug_goals() -> void:
 	var goals_text: String
+	goals_text = "Current Goals:"
 	for goal in primary_goals:
 		goals_text = "{goal_text}\nGoal: [{goal}]\n\tPriority: [{priority}]\n\tCriteria:".format({"goal_text": goals_text, "goal": goal.goal_name, "priority": goal.goal_priority})
 		for criteria in goal.goal_criteria:
 			goals_text = "{goal_text}\n\t\t[{criteria}] : [{value}]".format({"goal_text": goals_text, "criteria": criteria, "value": goal.goal_criteria[criteria]})
-	goals_textbox.text = goals_text
+	if goals_textbox:
+		goals_textbox.text = goals_text
 ##-- ----- --##

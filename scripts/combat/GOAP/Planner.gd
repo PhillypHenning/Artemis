@@ -1,6 +1,8 @@
 extends Node
 class_name Planner
 
+const Characteristics = preload("res://scripts/combat/creatures/combat_creature_characteristics.gd")
+
 # build_plan
 # 	1. Combines available_actions and static_actions
 #	2. Sorts the primary_goals according to their goal_priority
@@ -10,7 +12,7 @@ class_name Planner
 #		b. If the plan is returned empty, then it moves on to the next goal
 #		c. If the plan isn't empty it returns the plan (Array of actions)
 #	5. Return the empty plan
-func build_plan(available_actions: Array, static_actions: Array, primary_goals: Array, world_state: Dictionary) -> Array:
+func build_plan(available_actions: Array, static_actions: Array, primary_goals: Array, character: Object) -> Array:
 	# Combine static and available actions
 	var all_actions = available_actions + static_actions
 	
@@ -20,15 +22,35 @@ func build_plan(available_actions: Array, static_actions: Array, primary_goals: 
 	# Initialize the plan as an empty array
 	var plan = []
 
-	# Use A* algorithm or any other suitable planning algorithm to build the plan
 	for goal in primary_goals:
-		if build_node_plan("a*", plan, all_actions, goal, world_state, goal.goal_criteria):
+		var current_state = flatten_required_goals(character, goal.goal_criteria)
+		var p_goal_criteria = process_goal_criteria(goal.goal_criteria)
+		if build_node_plan("a*", plan, all_actions, goal, current_state, p_goal_criteria):
 			if plan.is_empty():
 				continue
 			else:
 				return plan
 	return plan
-	
+
+func flatten_required_goals(character: Object, goal_criteria: Dictionary) -> Dictionary:
+	var flatten_dictionary: Dictionary = {}
+	for key in goal_criteria.keys():
+		var flat_key = key.split(".")
+		var fcharacteristic = character.characteristics.combat_creature_characteristics.get(int(flat_key[0]))
+		if fcharacteristic:
+			flatten_dictionary[flat_key[1]] = fcharacteristic.get(flat_key[1])
+	return flatten_dictionary
+
+
+func process_goal_criteria(goal_criteria: Dictionary) -> Dictionary:
+	var processed_goal_criteria: Dictionary = {}
+	var keys = goal_criteria.keys()
+	for key in keys:
+		var flat_key = key.split(".")
+		processed_goal_criteria[flat_key[1]] = goal_criteria[key]
+	return processed_goal_criteria
+
+
 # Recursively build a plan (One of A*, DFS, or BFS)(A* is the only implemented one at this time)
 func build_node_plan(algorithm: String, plan: Array, actions: Array, goal: Goal, current_state: Dictionary, goal_criteria: Dictionary) -> bool:
 	match algorithm:
