@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://dira860s41xvs"]
+
+[ext_resource type="Script" path="res://scripts/combat/creatures/combat_creatures/target_dummy.gd" id="1_nu3om"]
+[ext_resource type="Texture2D" uid="uid://bgjksahkabcfy" path="res://icon.svg" id="2_6essc"]
+[ext_resource type="Script" path="res://scripts/combat/GOAP/AI_Agent.gd" id="3_6dcu0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xnifc"]
+size = Vector2(64, 64)
+
+[node name="GoapTestBot" type="CharacterBody2D"]
+script = ExtResource("1_nu3om")
+metadata/_edit_group_ = true
+
+[node name="Sprite" type="Sprite2D" parent="."]
+modulate = Color(1, 0, 0.0156863, 1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_6essc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_xnifc")
+
+[node name="BotBrain" type="Node" parent="."]
+script = ExtResource("3_6dcu0")
