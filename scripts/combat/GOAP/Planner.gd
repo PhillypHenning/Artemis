@@ -1,7 +1,7 @@
 extends Node
 class_name Planner
 
-const Characteristics = preload("res://scripts/combat/creatures/combat_creature_characteristics.gd")
+var Utils = preload("res://scripts/combat/GOAP/Utils.gd").new()
 
 # build_plan
 # 	1. Combines available_actions and static_actions
@@ -23,32 +23,21 @@ func build_plan(available_actions: Array, static_actions: Array, primary_goals: 
 	var plan = []
 
 	for goal in primary_goals:
-		var current_state = flatten_required_goals(character, goal.goal_criteria)
-		var p_goal_criteria = process_goal_criteria(goal.goal_criteria)
-		if build_node_plan("a*", plan, all_actions, goal, current_state, p_goal_criteria):
+		var current_state = flatten_required_goals(character.characteristics.combat_creature_characteristics, goal.goal_criteria)
+		if build_node_plan("a*", plan, all_actions, goal, current_state, goal.goal_criteria):
 			if plan.is_empty():
 				continue
 			else:
 				return plan
 	return plan
 
-func flatten_required_goals(character: Object, goal_criteria: Dictionary) -> Dictionary:
+func flatten_required_goals(characteristics: Dictionary, goal_criteria: Dictionary) -> Dictionary:
 	var flatten_dictionary: Dictionary = {}
 	for key in goal_criteria.keys():
-		var flat_key = key.split(".")
-		var fcharacteristic = character.characteristics.combat_creature_characteristics.get(int(flat_key[0]))
-		if fcharacteristic:
-			flatten_dictionary[flat_key[1]] = fcharacteristic.get(flat_key[1])
+		
+		var found_value = Utils.find_value_in_combat_creature_characteristics(key, characteristics)
+		flatten_dictionary[key] = found_value
 	return flatten_dictionary
-
-
-func process_goal_criteria(goal_criteria: Dictionary) -> Dictionary:
-	var processed_goal_criteria: Dictionary = {}
-	var keys = goal_criteria.keys()
-	for key in keys:
-		var flat_key = key.split(".")
-		processed_goal_criteria[flat_key[1]] = goal_criteria[key]
-	return processed_goal_criteria
 
 
 # Recursively build a plan (One of A*, DFS, or BFS)(A* is the only implemented one at this time)

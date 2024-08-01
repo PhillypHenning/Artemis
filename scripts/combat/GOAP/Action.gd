@@ -2,6 +2,8 @@ extends Node
 
 class_name Action
 
+var Utils = preload("res://scripts/combat/GOAP/Utils.gd").new()
+
 var action_name: String
 var preconditions: Dictionary = {}
 var effects: Dictionary = {}
@@ -29,15 +31,11 @@ func is_valid(agent_state: Dictionary, key) -> bool:
 	return false
 
 
-func apply(agent_state: Dictionary) -> Dictionary:
+func apply(agent_state: Dictionary, combat_creature: bool = false) -> Dictionary:
 	var new_state = agent_state.duplicate()
 	for key in effects.keys():
-		if agent_state.has(key):
-			match typeof(agent_state[key]):
-				TYPE_FLOAT:
-					new_state[key] = clamp(new_state[key]+effects[key], 0, new_state.get("max_{value}".format({"value": key}), 100)) 
-				TYPE_INT:
-					new_state[key] = clamp(new_state[key]+effects[key], 0, new_state.get("max_{value}".format({"value": key}), 100)) 
-				TYPE_BOOL:
-					new_state[key] = effects[key]
+		if combat_creature:
+			new_state = Utils.update_value_in_combat_creature_characteristics(key, effects[key], new_state)
+		else:
+			new_state = Utils.update_value_in_dictionary(key, effects[key], new_state)
 	return new_state

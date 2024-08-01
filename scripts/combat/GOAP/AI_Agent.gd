@@ -6,7 +6,6 @@ const GoalPack = preload("res://scripts/combat/GOAP/Goal.gd")
 const ActionPack = preload("res://scripts/combat/GOAP/Action.gd")
 const PlannerPack = preload("res://scripts/combat/GOAP/Planner.gd")
 const UtilsPack = preload("res://scripts/combat/GOAP/Utils.gd")
-const Characteristics = preload("res://scripts/combat/creatures/combat_creature_characteristics.gd")
 var Utils = UtilsPack.new()
 
 enum SEVERITY_LEVEL {
@@ -23,10 +22,10 @@ var current_plan: Array = []
 var static_actions: Array = [
 	ActionPack.new("DoTheAntsyShuffle", 
 		{
-			"antsy": func(a): return a > 0, # Precondition: Antsy should be lower than "0"
+			"MOVEMENT.antsy": func(a): return a > 0, # Precondition: Antsy should be lower than "0"
 		},
 		{	# Effects
-			"antsy": -1,
+			"MOVEMENT.antsy": -1,
 		}, 
 	),
 	ActionPack.new("MoveTowardsTarget", 
@@ -66,26 +65,20 @@ func _ready():
 	# Improvements that could be made:
 	##	1. conserve_health
 	##		- Conserve health goes beyond breaking los though this is a good start. Another option for "Conserving health" would be to focus on defensive actions. In this scenario, when a creature takes damage it would temporarily boost the priority of the "defense_action" goal. 
-	primary_goals.append(goal_keep_moving.new_goal_with_timer("keep_moving", calculate_keep_moving_priority, 1, keep_moving_interval_increase, get_parent(), {"{1}.antsy".format({1:Characteristics.MOVEMENT}): 0}))
+	primary_goals.append(goal_keep_moving.new_goal_with_timer("keep_moving", calculate_keep_moving_priority, 1, keep_moving_interval_increase, character_node, {"MOVEMENT.antsy": 0}))
 	#primary_goals.append(goal_conserve_health.new_goal_with_timer("conserve_health", calculate_conserve_health_priority, 2.5, conserve_health_interval_decrease, get_parent(), {"has_los": false}))
 	#primary_goals.append(goal_attack_enemy.new_goal_with_static_priority("defeat_enemy", 4.5, {"defeat_enemy": true}))
 	#primary_goals.append(goal_defend_against_attack.new_goal_with_static_priority("defense_action", 7, {"character_is_defending": true}))
 
-	character_node = get_parent()
-	
 	# Debug
-	var root_node = get_tree().current_scene
+	var root_node = character_node.get_tree().current_scene
 	current_plan_text = root_node.find_child("CurrentPlanText")
 	goals_textbox = root_node.find_child("GoalsText")
-	
-
-func _init():
-	game_start_time = Time.get_unix_time_from_system()
 
 
 func _process(_delta: float) -> void:
 	determine_goal_priority()
-	run_planner()
+	#run_planner()
 	#check_if_enemy_is_defeated()
 	
 	# DEBUG
@@ -97,7 +90,7 @@ func _process(_delta: float) -> void:
 
 
 # Takes an array of goals, runs the "calculate_goal_priority" function which either calls the goal callable or returns the static priority. Sorts the goals from highest priority to lowest.
-func determine_goal_priority():
+func determine_goal_priority() -> void:
 	var current_goal_priorities: Array = []
 	for i in range(primary_goals.size()):
 		primary_goals[i].calculate_goal_priority(character_node)
