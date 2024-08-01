@@ -16,6 +16,10 @@ var combat_creature_status_effects = preload("res://scripts/combat/status_effect
 
 var combat_creature_proximities = preload("res://scripts/combat/statics/proximity.gd").new()
 
+var combat_creature_brain = preload("res://scripts/combat/GOAP/AI_Agent.gd").new()
+var combat_creature_nervous_system = preload("res://scripts/combat/AI_Executor/AI_Executor.gd").new()
+
+
 enum {
 	TIMERS_GROUP,
 	POSITIONS,
@@ -80,6 +84,8 @@ var combat_creature_nodes = {
 	DEBUG: false
 }
 
+var current_plan: Array
+
 # INITIALIZATION FUNCTIONS
 func _ready() -> void:
 	combat_creature_nodes[PARENT_NODE].arena = find_parent("CombatArena")
@@ -103,6 +109,13 @@ func _ready() -> void:
 	# LOS
 	_init_create_raycast()
 	
+	# GOAP
+	combat_creature_brain.character_node = self
+	combat_creature_brain._ready()
+	
+	# AI Executor
+	combat_creature_nervous_system.character_node = self
+
 
 func _init_initial_stat_set(health: int, stamina: int, speed: int) -> void:
 	combat_creature_health_characteristics.starting_health = health
@@ -162,9 +175,19 @@ func _init_set_mask() -> void:
 
 
 # PROCESS FUNCTIONS
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	_handle_debug()
 	_handle_look_at_target()
+	combat_creature_brain._process(delta)
+	
+	if current_plan.is_empty():
+		# Build plan
+		combat_creature_brain.run_planner()
+		current_plan = combat_creature_brain.current_plan
+	else:
+		# Execute plan
+		combat_creature_brain.current_plan = combat_creature_nervous_system.run_planner()
+		current_plan = combat_creature_brain.current_plan
 
 
 ## BASIC MOVEMENT

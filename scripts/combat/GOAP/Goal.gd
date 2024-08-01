@@ -32,6 +32,7 @@ func new_goal_with_timer(inc_goal_name: String,  inc_goal_priority_callable: Cal
 	timer.wait_time = increase_interval
 	timer.one_shot = false
 	timer.autostart = true
+
 	timer.connect("timeout", timer_callable)
 	root.call_deferred("add_child", timer)
 	return self
