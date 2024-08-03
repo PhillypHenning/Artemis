@@ -4,7 +4,6 @@ extends Node
 var healing_abilities = preload("res://scripts/combat/abilities/healing_abilities.gd").new()
 var movement_abilities = preload("res://scripts/combat/abilities/movement_abilities.gd").new()
 var offensive_test_abilities = preload("res://scripts/combat/abilities/offensive/test_abilities.gd").new()
-var proximities = preload("res://scripts/combat/statics/proximity.gd").new()
 
 var test_bullet: PackedScene = preload("res://scenes/combat/projectiles/test_projectile.tscn")
 
@@ -58,7 +57,7 @@ var ABILITIES = {
 				"parameters": {
 					"target_location": null,
 					"amount": 0,
-					"proximity_needed": [proximities.CLOSE],
+					"proximity_needed": [CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE],
 				}
 			},
 			OFFENSIVE_ABILITY_TEST_IDS.TESTING_MEDIUM_MELEE: {
@@ -66,7 +65,7 @@ var ABILITIES = {
 				"parameters": {
 					"target_location": null,
 					"amount": 0,
-					"proximity_needed": [proximities.MEDIUM],
+					"proximity_needed": [CombatCreatureCharacteristics.PROXIMITY.MELEE_MEDIUM],
 				}
 			},
 			OFFENSIVE_ABILITY_TEST_IDS.TESTING_FAR_MELEE: {
@@ -74,7 +73,7 @@ var ABILITIES = {
 				"parameters": {
 					"target_location": null,
 					"amount": 0,
-					"proximity_needed": [proximities.FAR],
+					"proximity_needed": [CombatCreatureCharacteristics.PROXIMITY.MELEE_FAR],
 				}
 			},
 			OFFENSIVE_ABILITY_TEST_IDS.TESTING_MULTI_PROXY_MELEE: {
@@ -82,7 +81,7 @@ var ABILITIES = {
 				"parameters": {
 					"target_location": null,
 					"amount": 0,
-					"proximity_needed": [proximities.CLOSE, proximities.MEDIUM],
+					"proximity_needed": [CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE, CombatCreatureCharacteristics.PROXIMITY.MELEE_MEDIUM],
 				}
 			},
 			OFFENSIVE_ABILITY_TEST_IDS.TESTING_PROJECTILES: {

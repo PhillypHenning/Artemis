@@ -27,22 +27,6 @@ var static_actions: Array = [
 			"current_antsy": float(-1),
 		}, 
 	),
-	ActionPack.new("MoveTowardsTarget", 
-		{
-			"target_in_attack_range": false
-		},
-		{	# Effects
-			"target_in_attack_range": true
-		},
-	),
-	ActionPack.new("BreakLineOfSight", 
-		{	
-			"has_los": true
-		},
-		{	# Effects
-			"has_los": false,
-		},
-	),
 ]
 var available_actions: Array = []
 
@@ -56,13 +40,7 @@ var character_node: CombatCreatureBaseClass
 
 
 func _ready(): 
-	# Improvements that could be made:
-	##	1. conserve_health
-	##		- Conserve health goes beyond breaking los though this is a good start. Another option for "Conserving health" would be to focus on defensive actions. In this scenario, when a creature takes damage it would temporarily boost the priority of the "defense_action" goal. 
 	primary_goals.append(goal_keep_moving.new_goal_with_timer("keep_moving", calculate_keep_moving_priority, 1, keep_moving_interval_increase, character_node, {"current_antsy": float(0)}))
-	#primary_goals.append(goal_conserve_health.new_goal_with_timer("conserve_health", calculate_conserve_health_priority, 2.5, conserve_health_interval_decrease, character_node, {"has_los": false}))
-	#primary_goals.append(goal_attack_enemy.new_goal_with_static_priority("defeat_enemy", 4.5, {"defeat_enemy": true}))
-	#primary_goals.append(goal_defend_against_attack.new_goal_with_static_priority("defense_action", 7, {"character_is_defending": true}))
 
 
 # Takes an array of goals, runs the "calculate_goal_priority" function which either calls the goal callable or returns the static priority. Sorts the goals from highest priority to lowest.

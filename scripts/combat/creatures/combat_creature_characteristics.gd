@@ -19,6 +19,12 @@ enum SEVERITY_LEVEL {
 	MAX = 100,
 }
 
+enum PROXIMITY {
+	MELEE_CLOSE = 75,
+	MELEE_MEDIUM = 175,
+	MELEE_FAR = 300,
+	OOMR
+}
 
 # -- DETAILS -- #
 var character_type: CHARACTER_TYPE
@@ -54,6 +60,8 @@ var friendly_target: CharacterBody2D
 # -- LINE OF SIGHT -- #
 var los_on_targets: Dictionary
 var los_on_target: bool
+# -- IDEAL RANGE -- #
+var current_ideal_range: PROXIMITY
 
 
 func calculate_severity_level(state: Dictionary, key: String, reversed: bool = false) -> Dictionary:
@@ -88,3 +96,4 @@ func calculate_severity_level(state: Dictionary, key: String, reversed: bool = f
 			severity = SEVERITY_LEVEL.NONE
 	state["{key}_severity".format({"key": key})] = severity
 	return state
+

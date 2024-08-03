@@ -6,8 +6,6 @@ var characteristics = preload("res://scripts/combat/creatures/combat_creature_ch
 var combat_creature_abilities = preload("res://scripts/combat/abilities/abilities_handler.gd").new()
 var combat_creature_status_effects = preload("res://scripts/combat/status_effects/status_effect_handler.gd").new()
 
-var combat_creature_proximities = preload("res://scripts/combat/statics/proximity.gd").new()
-
 var combat_creature_brain = preload("res://scripts/combat/ai/goap/agent.gd").new()
 var combat_creature_nervous_system = preload("res://scripts/combat/ai/executor/ai_executor.gd").new()
 
@@ -295,10 +293,10 @@ func _handle_look_at_target() -> void:
 
 	# PROXIMITY
 	if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].close_proximity:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = combat_creature_proximities.CLOSE
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE
 	elif combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].medium_proximity:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = combat_creature_proximities.MEDIUM
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = CombatCreatureCharacteristics.PROXIMITY.MELEE_MEDIUM
 	elif combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].far_proximity:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = combat_creature_proximities.FAR
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = CombatCreatureCharacteristics.PROXIMITY.MELEE_FAR
 	else:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = combat_creature_proximities.OOMR
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = CombatCreatureCharacteristics.PROXIMITY.OOMR
