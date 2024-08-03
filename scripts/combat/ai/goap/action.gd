@@ -2,7 +2,7 @@ extends Node
 
 class_name Action
 
-var Utils = preload("res://scripts/combat/GOAP/Utils.gd").new()
+var Utils = preload("res://scripts/combat/ai/goap/utils.gd").new()
 
 var action_name: String
 var preconditions: Dictionary = {}

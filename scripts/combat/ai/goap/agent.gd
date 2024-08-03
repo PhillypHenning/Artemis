@@ -2,10 +2,10 @@ extends Node
 
 class_name AI_Agent
 
-const GoalPack = preload("res://scripts/combat/GOAP/Goal.gd")
-const ActionPack = preload("res://scripts/combat/GOAP/Action.gd")
-const PlannerPack = preload("res://scripts/combat/GOAP/Planner.gd")
-const UtilsPack = preload("res://scripts/combat/GOAP/Utils.gd")
+const GoalPack = preload("res://scripts/combat/ai/goap/goal.gd")
+const ActionPack = preload("res://scripts/combat/ai/goap/action.gd")
+const PlannerPack = preload("res://scripts/combat/ai/goap/planner.gd")
+const UtilsPack = preload("res://scripts/combat/ai/goap/utils.gd")
 var Utils = UtilsPack.new()
 
 enum SEVERITY_LEVEL {

@@ -1,7 +1,7 @@
 extends Node
 class_name Planner
 
-var Utils = preload("res://scripts/combat/GOAP/Utils.gd").new()
+var Utils = preload("res://scripts/combat/ai/goap/utils.gd").new()
 
 # build_plan
 # 	1. Combines available_actions and static_actions

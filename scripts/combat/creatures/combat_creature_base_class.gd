@@ -16,9 +16,8 @@ var combat_creature_status_effects = preload("res://scripts/combat/status_effect
 
 var combat_creature_proximities = preload("res://scripts/combat/statics/proximity.gd").new()
 
-var combat_creature_brain = preload("res://scripts/combat/GOAP/AI_Agent.gd").new()
-var combat_creature_nervous_system = preload("res://scripts/combat/AI_Executor/AI_Executor.gd").new()
-
+var combat_creature_brain = preload("res://scripts/combat/ai/goap/agent.gd").new()
+var combat_creature_nervous_system = preload("res://scripts/combat/ai/executor/ai_executor.gd").new()
 
 enum {
 	TIMERS_GROUP,
@@ -318,11 +317,11 @@ func _handle_look_at_target() -> void:
 
 
 func _handle_debug() -> void:
-	var text = "Debug:\n"
+	#var text = "Debug:\n"
 	if combat_creature_nodes[DEBUG]:
 		if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_debug:
 			queue_redraw()
-			text = "{text}\tlos_on_target: [{los}]".format({"text": text, "los": combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_on_target})
+			#text = "{text}\tlos_on_target: [{los}]".format({"text": text, "los": combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_on_target})
 		
 		if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].attack_distance_debug:
 			match combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range:
@@ -334,4 +333,4 @@ func _handle_debug() -> void:
 					print("Target in far range")
 				combat_creature_proximities.OOMR:
 					print("Target out of melee range")
-	debug_state_text.text = text
+	#debug_state_text.text = text
