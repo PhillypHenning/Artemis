@@ -43,3 +43,7 @@ func _use_heal_to_full_ability() -> void:
 	ability.parameters.wait_time = 10 # WILL BE REPLACED IN healing_abilities.gd with an evaluation based on creature stats
 	ability.parameters.amount = 100 	# WILL BE REPLACED IN healing_abilities.gd with an evaluation based on creature stats
 	ability.target_callable.call(self, ability)
+
+
+func _on_button_pressed():
+	_use_combat_creature_take_damage(1)

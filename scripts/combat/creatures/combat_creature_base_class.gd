@@ -36,7 +36,7 @@ enum TARGETTING_DETAILS {
 	PROXIMITY
 }
 
-var combat_creature_nodes = {
+@export var combat_creature_nodes = {
 	TIMERS_GROUP: {
 		"node": null,
 		"name": "TimersGroup"
@@ -62,7 +62,7 @@ var combat_creature_nodes = {
 			"los_on_target": false,
 			"los_visualizer": null,
 			"los_debug_color": Color.RED,
-			"los_debug": false
+			"los_debug": true
 		},
 		TARGETTING_DETAILS.PROXIMITY: {
 			"attack_distance_debug": false,
@@ -81,10 +81,15 @@ var combat_creature_nodes = {
 		"node": null,
 		"size": null
 	},
-	DEBUG: false
+	DEBUG: true
 }
 
 var current_plan: Array
+
+# DEBUG
+var debug_state_text = TextEdit
+@export var ai_brain_on = true
+
 
 # INITIALIZATION FUNCTIONS
 func _ready() -> void:
@@ -110,14 +115,18 @@ func _ready() -> void:
 	_init_create_raycast()
 	
 	# GOAP
-	combat_creature_brain.character_node = self
-	combat_creature_brain._ready()
+	if ai_brain_on:
+		combat_creature_brain.character_node = self
+		combat_creature_brain._ready()
+		
+		# AI Executor
+		combat_creature_nervous_system.character_node = self
 	
-	# AI Executor
-	combat_creature_nervous_system.character_node = self
+	# DEBUG
+	var root_node = get_tree().current_scene
+	debug_state_text = root_node.find_child("DebugStateText")
 
-
-func _init_initial_stat_set(health: int, stamina: int, speed: int) -> void:
+func _init_initial_stat_set(health: float, stamina: float, speed: float) -> void:
 	combat_creature_health_characteristics.starting_health = health
 	combat_creature_health_characteristics.current_health = health
 	combat_creature_health_characteristics.max_health = health
@@ -176,10 +185,11 @@ func _init_set_mask() -> void:
 
 # PROCESS FUNCTIONS
 func _process(delta: float) -> void:
-	_handle_debug()
+	# TARGETTING
 	_handle_look_at_target()
-	combat_creature_brain._process(delta)
 	
+	# GOAP AI
+	combat_creature_brain._process(delta)	
 	if current_plan.is_empty():
 		# Build plan
 		combat_creature_brain.run_planner()
@@ -188,7 +198,9 @@ func _process(delta: float) -> void:
 		# Execute plan
 		combat_creature_brain.current_plan = combat_creature_nervous_system.run_planner()
 		current_plan = combat_creature_brain.current_plan
-
+	
+	# DEBUG
+	_handle_debug()
 
 ## BASIC MOVEMENT
 func _handle_combat_creature_basic_movement(direction: Vector2) -> void:
@@ -224,6 +236,8 @@ func _use_combat_creature_take_damage(amount_of_incoming_damage: int) -> void:
 		combat_creature_health_characteristics.current_health = clamp(combat_creature_health_characteristics.current_health-amount_of_incoming_damage, 0, combat_creature_health_characteristics.max_health)
 		_handle_update_combat_card()
 		combat_creature_status_effects._start_status_effect(combat_creature_status_effects.status_effects[combat_creature_status_effects.DAMAGE_IMMUNITY], {"target": self})
+		combat_creature_health_characteristics=characteristics.calculate_severity_level(combat_creature_health_characteristics, "health")
+		combat_creature_brain.goal_conserve_health.goal_priority = (combat_creature_health_characteristics.health_severity/10)
 		
 	if combat_creature_health_characteristics.current_health <= 0:
 		combat_creature_health_characteristics.is_dead = true
@@ -304,9 +318,11 @@ func _handle_look_at_target() -> void:
 
 
 func _handle_debug() -> void:
+	var text = "Debug:\n"
 	if combat_creature_nodes[DEBUG]:
 		if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_debug:
-			print(combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_on_target)
+			queue_redraw()
+			text = "{text}\tlos_on_target: [{los}]".format({"text": text, "los": combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_on_target})
 		
 		if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].attack_distance_debug:
 			match combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range:
@@ -318,3 +334,4 @@ func _handle_debug() -> void:
 					print("Target in far range")
 				combat_creature_proximities.OOMR:
 					print("Target out of melee range")
+	debug_state_text.text = text

@@ -66,7 +66,7 @@ func _ready():
 	##	1. conserve_health
 	##		- Conserve health goes beyond breaking los though this is a good start. Another option for "Conserving health" would be to focus on defensive actions. In this scenario, when a creature takes damage it would temporarily boost the priority of the "defense_action" goal. 
 	primary_goals.append(goal_keep_moving.new_goal_with_timer("keep_moving", calculate_keep_moving_priority, 1, keep_moving_interval_increase, character_node, {"MOVEMENT.antsy": 0}))
-	#primary_goals.append(goal_conserve_health.new_goal_with_timer("conserve_health", calculate_conserve_health_priority, 2.5, conserve_health_interval_decrease, get_parent(), {"has_los": false}))
+	primary_goals.append(goal_conserve_health.new_goal_with_timer("conserve_health", calculate_conserve_health_priority, 2.5, conserve_health_interval_decrease, character_node, {"has_los": false}))
 	#primary_goals.append(goal_attack_enemy.new_goal_with_static_priority("defeat_enemy", 4.5, {"defeat_enemy": true}))
 	#primary_goals.append(goal_defend_against_attack.new_goal_with_static_priority("defense_action", 7, {"character_is_defending": true}))
 
