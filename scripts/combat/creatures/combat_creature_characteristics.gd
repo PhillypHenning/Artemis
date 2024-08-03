@@ -1,17 +1,8 @@
+class_name CombatCreatureCharacteristics
+
 extends Node
 
-enum {
-	TYPE,
-	DETAILS,
-	HEALTH,
-	STAMINA,
-	MOVEMENT,
-	DODGING,
-	DASHING,
-	ATTACKING
-}
-
-enum {
+enum CHARACTER_TYPE {
 	PLAYER,
 	NPC_FRIENDLY,
 	NPC_NEUTRAL,
@@ -29,48 +20,40 @@ enum SEVERITY_LEVEL {
 }
 
 
-var combat_creature_characteristics: Dictionary = {
-	TYPE: {
-		character_type = null
-	},
-	DETAILS : {
-		name: ""
-	},
-	HEALTH: {
-		starting_health = 0.0,
-		current_health = 0.0,
-		max_health = 0.0,
-		health_severity = SEVERITY_LEVEL.NONE,
-		is_dead = false,
-		can_take_damage = true,
-		can_take_damage_after_time = .25
-	},
-	STAMINA : {
-		starting_stamina = 0,
-		current_stamina = 0,
-		max_stamina = 0
-	},
-	MOVEMENT: {
-		starting_speed = 0,
-		current_speed = 0,
-		max_speed = 0,
-		is_using_movement_ability = false,
-		antsy = 0.0,
-		max_antsy = 10.0,
-	},
-	DODGING: {
-		is_dodging = false,
-		has_iframes = false,
-		time_length_of_iframes = 0,
-	},
-	DASHING: {
-		is_dashing = false,	
-	},
-	ATTACKING: {
-		is_attacking = false
-	}
-}
-
+# -- DETAILS -- #
+var character_type: CHARACTER_TYPE
+var character_name: String
+# -- HEALTH -- #
+var current_health: float
+var max_health: float
+var health_severity: SEVERITY_LEVEL
+var is_dead: bool
+var can_take_damage: bool
+var can_take_damage_after_time: float
+# -- STAMINA -- #
+var current_stamina: int
+var max_stamina: int
+# -- MOVEMENT -- #
+var starting_speed: float
+var current_speed: float
+const max_speed: float = 1000
+var is_using_movement_ability: bool
+var current_antsy: float
+const max_antsy: int = 10
+# -- EVASION -- #
+var is_using_evasive_ability: bool
+var has_iframes: bool
+var time_length_of_iframes: float
+# -- ATTACKING -- #
+var is_attacking: bool
+# -- TARGETTING -- #
+var enemy_targets: Array
+var friendly_targets: Array
+var enemy_target: CharacterBody2D
+var friendly_target: CharacterBody2D
+# -- LINE OF SIGHT -- #
+var los_on_targets: Dictionary
+var los_on_target: bool
 
 
 func calculate_severity_level(state: Dictionary, key: String, reversed: bool = false) -> Dictionary:

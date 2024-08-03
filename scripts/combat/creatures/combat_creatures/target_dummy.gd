@@ -1,18 +1,15 @@
 extends CombatCreatureBaseClass
 
-@export var health: 	int = 100
-@export var stamina: 	int = 10
-@export var speed: 		int = 400
+var health: float = 100
+var stamina: int = 10
+var speed: float = 400
 
 var ability_handler = preload("res://scripts/combat/abilities/abilities_handler.gd").new()
 
-var reported_health = 0
-
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	combat_creature_details.name = "Target Dummy"
-	combat_creature_type.character_type = characteristics.NPC_ENEMY
+	characteristics.character_name = "Target Dummy"
+	characteristics.character_type = CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY
 	super._ready()
 	_init_initial_stat_set(health, stamina, speed)
 	ability_handler._init_ability_handler(self)
@@ -25,10 +22,6 @@ func _process(delta: float) -> void:
 
 	if Input.is_action_just_pressed("use_stamina"):
 		_use_combat_creature_use_stamina(1)
-
-	if reported_health != combat_creature_health_characteristics.current_health:
-		reported_health = combat_creature_health_characteristics.current_health
-		print("Target Dummy current_health: {health}".format({"health": reported_health}))
 
 func _init_attach_creature_to_card(card: Node):
 	combat_creature_nodes[COMBAT_CARD].node = card

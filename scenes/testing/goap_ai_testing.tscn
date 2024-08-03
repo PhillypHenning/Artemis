@@ -1,66 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://d1tnegb4rajyp"]
+[gd_scene load_steps=4 format=3 uid="uid://d1tnegb4rajyp"]
 
-[ext_resource type="Script" path="res://scenes/testing/goap_ai_testing.gd" id="1_e1084"]
+[ext_resource type="Script" path="res://scripts/combat/testing/goap_ai_testing.gd" id="1_a2lvv"]
 [ext_resource type="PackedScene" uid="uid://dira860s41xvs" path="res://scenes/combat/creatures/goap_test_bot.tscn" id="1_wnt0l"]
 [ext_resource type="PackedScene" uid="uid://djxjpynabyfcs" path="res://scenes/combat/obstacles/combat_obstacle_boulder.tscn" id="2_h8dch"]
-[ext_resource type="PackedScene" uid="uid://c8cdet8dkmps6" path="res://scenes/combat/creatures/target_dummy.tscn" id="3_tbp60"]
 
 [node name="GoapAITesting" type="Node2D"]
-script = ExtResource("1_e1084")
-
-[node name="TargetDummy" parent="." instance=ExtResource("1_wnt0l")]
-position = Vector2(1568, 608)
-
-[node name="TargetDummy2" parent="." instance=ExtResource("3_tbp60")]
-position = Vector2(1568, 96)
-combat_creature_nodes = {
-0: {
-"name": "TimersGroup",
-"node": null
-},
-1: {
-"dash_direction": null,
-"last_known_direction": null
-},
-2: {
-"arena": null
-},
-3: {
-"health_bar": null,
-"node": null,
-"stamina_counter": null
-},
-4: {
-0: {
-"los_debug": false,
-"los_debug_color": Color(1, 0, 0, 1),
-"los_on_target": false,
-"los_raycast": null,
-"los_raycast_name": "LosRaycast",
-"los_visualizer": null
-},
-1: {
-"attack_distance_debug": false,
-"close_proximity": 75,
-"distance_to_target": null,
-"far_proximity": 300,
-"medium_proximity": 175,
-"proximity_offset": null,
-"proximity_range": null
-},
-"enemy_target": null,
-"friendly_target": null
-},
-5: {
-"movement_override": null
-},
-6: {
-"node": null,
-"size": null
-},
-7: false
-}
-ai_brain_on = false
+script = ExtResource("1_a2lvv")
 
 [node name="Debug" type="Node" parent="."]
 
@@ -95,4 +40,8 @@ position = Vector2(1320, 400)
 [node name="CombatObstacleBoulder2" parent="." instance=ExtResource("2_h8dch")]
 position = Vector2(1784, 224)
 
-[connection signal="pressed" from="Debug/Button" to="TargetDummy" method="_on_button_pressed"]
+[node name="GoapTestBot" parent="." instance=ExtResource("1_wnt0l")]
+position = Vector2(1568, 672)
+
+[node name="GoapTestBot2" parent="." instance=ExtResource("1_wnt0l")]
+position = Vector2(1568, 96)

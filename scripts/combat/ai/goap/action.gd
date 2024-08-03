@@ -18,24 +18,30 @@ func _init(init_action_name: String, init_preconditions: Dictionary, init_effect
 	self.cost = init_cost
 	self.is_static_action = init_is_static_action
 
+
 # is_valid takes the world state and a key
 # It first checks if the action (self) has a precondition that matches the key
 # It then checks the type of they key based on the world state.
-func is_valid(agent_state: Dictionary, key) -> bool:
+func is_valid(cc_characteristics: CombatCreatureCharacteristics, key) -> bool:
 	if preconditions.has(key):
 		match typeof(preconditions[key]):
 			TYPE_BOOL:
-				return agent_state.get(key) == preconditions[key]
+				return cc_characteristics.get(key) == preconditions[key]
 			TYPE_CALLABLE:
-				return preconditions[key].call(agent_state.get(key))
+				return preconditions[key].call(cc_characteristics.get(key))
 	return false
 
 
-func apply(agent_state: Dictionary, combat_creature: bool = false) -> Dictionary:
-	var new_state = agent_state.duplicate()
+func apply(cc_characteristics: CombatCreatureCharacteristics) -> CombatCreatureCharacteristics:
+	var new_cc_characteristics: CombatCreatureCharacteristics = cc_characteristics
 	for key in effects.keys():
-		if combat_creature:
-			new_state = Utils.update_value_in_combat_creature_characteristics(key, effects[key], new_state)
-		else:
-			new_state = Utils.update_value_in_dictionary(key, effects[key], new_state)
-	return new_state
+		match typeof(effects[key]):
+			TYPE_INT:
+				var new_value = new_cc_characteristics.get(key) + effects[key]
+				var max_key = key.replace("current", "max")
+				new_cc_characteristics.key = clamp(new_value, 0, new_cc_characteristics.get(max_key))
+			TYPE_FLOAT:
+				var max_key = key.replace("current", "max")
+				var new_value = clampf((new_cc_characteristics.get(key) + effects[key]), 0, new_cc_characteristics.get(max_key))
+				new_cc_characteristics.set(key, new_value)
+	return new_cc_characteristics

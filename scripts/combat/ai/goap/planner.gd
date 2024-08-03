@@ -12,7 +12,7 @@ var Utils = preload("res://scripts/combat/ai/goap/utils.gd").new()
 #		b. If the plan is returned empty, then it moves on to the next goal
 #		c. If the plan isn't empty it returns the plan (Array of actions)
 #	5. Return the empty plan
-func build_plan(available_actions: Array, static_actions: Array, primary_goals: Array, character: Object) -> Array:
+func build_plan(available_actions: Array, static_actions: Array, primary_goals: Array, cc_characteristics: CombatCreatureCharacteristics) -> Array:
 	# Combine static and available actions
 	var all_actions = available_actions + static_actions
 	
@@ -23,29 +23,20 @@ func build_plan(available_actions: Array, static_actions: Array, primary_goals: 
 	var plan = []
 
 	for goal in primary_goals:
-		var current_state = flatten_required_goals(character.characteristics.combat_creature_characteristics, goal.goal_criteria)
-		if build_node_plan("a*", plan, all_actions, goal, current_state, goal.goal_criteria):
+		if build_node_plan("a*", plan, all_actions, goal, cc_characteristics, goal.goal_criteria):
 			if plan.is_empty():
 				continue
 			else:
 				return plan
 	return plan
 
-func flatten_required_goals(characteristics: Dictionary, goal_criteria: Dictionary) -> Dictionary:
-	var flatten_dictionary: Dictionary = {}
-	for key in goal_criteria.keys():
-		
-		var found_value = Utils.find_value_in_combat_creature_characteristics(key, characteristics)
-		flatten_dictionary[key] = found_value
-	return flatten_dictionary
-
 
 # Recursively build a plan (One of A*, DFS, or BFS)(A* is the only implemented one at this time)
-func build_node_plan(algorithm: String, plan: Array, actions: Array, goal: Goal, current_state: Dictionary, goal_criteria: Dictionary) -> bool:
+func build_node_plan(algorithm: String, plan: Array, actions: Array, goal: Goal, cc_characteristics: CombatCreatureCharacteristics, goal_criteria: Dictionary) -> bool:
 	match algorithm:
 		"a*":
 			# Base Case: Check if the current state already satisfies the goal
-			if satisfies_goal(current_state, goal_criteria):
+			if goal_criteria_is_already_satisfied(cc_characteristics, goal_criteria):
 				return true
 
 			# Find actions that will satisfy the goals desired world state
@@ -54,7 +45,7 @@ func build_node_plan(algorithm: String, plan: Array, actions: Array, goal: Goal,
 			var valid_actions = []
 			for criteria_key in goal_criteria:
 				for action in actions:
-					if action.is_valid(current_state, criteria_key):
+					if action.is_valid(cc_characteristics, criteria_key):
 						valid_actions.append(action)
 						# Add any preconditions to the goal_criteria list
 						# Example:
@@ -70,13 +61,13 @@ func build_node_plan(algorithm: String, plan: Array, actions: Array, goal: Goal,
 			for action in valid_actions:
 
 				# Create a hypothetical new state by applying the action
-				var new_state = action.apply(current_state)
+				var new_cc_characteristics: CombatCreatureCharacteristics = action.apply(cc_characteristics)
 
 				# Add the action to the current plan
 				plan.append(action)
 
 				# Recursively attempt to build the rest of the plan with the new state
-				if build_node_plan("a*", plan, actions, goal, new_state, goal_criteria):
+				if build_node_plan("a*", plan, actions, goal, new_cc_characteristics, goal_criteria):
 					return true
 
 				# Backtrack if the current action did not lead to a valid plan
@@ -84,10 +75,10 @@ func build_node_plan(algorithm: String, plan: Array, actions: Array, goal: Goal,
 	return false
 
 
-func satisfies_goal(agent_state: Dictionary, goal_criteria: Dictionary) -> bool:
+func goal_criteria_is_already_satisfied(cc_characteristics: CombatCreatureCharacteristics, goal_criteria: Dictionary) -> bool:
 	var tracker: bool = false
 	for key in goal_criteria.keys():
-		tracker = agent_state.get(key) == goal_criteria[key]
+		tracker = cc_characteristics.get(key) == goal_criteria[key]
 		if !tracker:
 			return false
 	return tracker
