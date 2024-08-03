@@ -165,6 +165,7 @@ func _init_ai() -> void:
 func _process(_delta: float) -> void:
 	# TARGETTING
 	_handle_look_at_target()
+	calculate_ideal_combat_range()
 	
 	# GOAP AI
 	if ai_brain_state:
@@ -300,3 +301,10 @@ func _handle_look_at_target() -> void:
 		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = CombatCreatureCharacteristics.PROXIMITY.MELEE_FAR
 	else:
 		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = CombatCreatureCharacteristics.PROXIMITY.OOMR
+
+
+func calculate_ideal_combat_range() -> void:
+	# Based on the combat_creature_brain.available_actions determine the best combat range
+	# If the combat_creature_brain.available_actions array is empty, then the ideal range should be the border of melee_far and range_close
+	if len(combat_creature_brain.available_actions) == 0:
+		characteristics.current_ideal_range = CombatCreatureCharacteristics.PROXIMITY.MELEE_FAR + 1

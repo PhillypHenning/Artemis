@@ -49,11 +49,12 @@ func handle_goals() -> void:
 
 func handle_state() -> void:
 	var text = "State:\n"
-	text = "{text}\tlos_on_target: [{los}]\n\tcurrent_antsy: [{antsy}]".format(
+	text = "{text}\tlos_on_target: [{los}]\n\tcurrent_antsy: [{antsy}]\n\tcurrent_ideal_range: [{ideal_range}]".format(
 		{
 			"text": text, 
 			"los": active_ai.characteristics.los_on_target,
 			"antsy": active_ai.characteristics.current_antsy,
+			"ideal_range": active_ai.characteristics.current_ideal_range,
 		}
 	)
 	debug_state_textbox.text = text
