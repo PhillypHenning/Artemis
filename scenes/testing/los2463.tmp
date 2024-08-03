@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://du3u0ye2ntxa3"]
+
+[ext_resource type="Script" path="res://scripts/combat/testing/los_testing.gd" id="1_vmhov"]
+[ext_resource type="PackedScene" uid="uid://bch1inx7rhsor" path="res://scenes/combat/creatures/player_controlled_creature.tscn" id="1_wtlk8"]
+[ext_resource type="PackedScene" uid="uid://c8cdet8dkmps6" path="res://scenes/combat/creatures/target_dummy.tscn" id="2_y8dhf"]
+[ext_resource type="PackedScene" uid="uid://djxjpynabyfcs" path="res://scenes/combat/obstacles/combat_obstacle_boulder.tscn" id="4_05yfv"]
+
+[node name="LosTesting" type="Node2D"]
+script = ExtResource("1_vmhov")
+
+[node name="PlayerControlledCreature" parent="." instance=ExtResource("1_wtlk8")]
+position = Vector2(168, 480)
+
+[node name="TargetDummy" parent="." instance=ExtResource("2_y8dhf")]
+position = Vector2(952, 344)
+
+[node name="Button" type="Button" parent="."]
+offset_left = 256.0
+offset_top = 704.0
+offset_right = 504.0
+offset_bottom = 832.0
+text = "Visualize Player LOS"
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 576.0
+offset_top = 704.0
+offset_right = 832.0
+offset_bottom = 824.0
+text = "Visualize Enemy LOS"
+
+[node name="Button3" type="Button" parent="."]
+offset_left = 256.0
+offset_top = 896.0
+offset_right = 512.0
+offset_bottom = 1024.0
+text = "Set Player Target"
+
+[node name="Button4" type="Button" parent="."]
+offset_left = 576.0
+offset_top = 896.0
+offset_right = 832.0
+offset_bottom = 1024.0
+text = "Set Enemy Target"
+
+[node name="CombatObstacleBoulder" parent="." instance=ExtResource("4_05yfv")]
+position = Vector2(584, 416)
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Button2" to="." method="_on_button_2_pressed"]
+[connection signal="pressed" from="Button3" to="." method="_on_button_3_pressed"]
+[connection signal="pressed" from="Button4" to="." method="_on_button_4_pressed"]

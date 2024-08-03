@@ -15,5 +15,4 @@ func _heal_to_full_after_time(parameters: Dictionary) -> void:
 
 
 func _act_on_heal_to_full_after_time_timeout(parameters: Dictionary) -> void:
-	parameters.target.combat_creature_health_characteristics.current_health = clamp(parameters.target.combat_creature_health_characteristics.current_health + parameters.amount, 0, parameters.target.combat_creature_health_characteristics.max_health)
-
+	parameters.target.characteristics.current_health = clamp(parameters.target.characteristics.current_health + parameters.amount, 0, parameters.target.characteristics.max_health)

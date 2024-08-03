@@ -6,8 +6,8 @@ extends CombatCreatureBaseClass
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	combat_creature_type.character_type = characteristics.PLAYER
-	combat_creature_details.name = "Player Controlled Creature"
+	characteristics.character_type = CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER
+	characteristics.character_name = "Player Controlled Creature"
 	super._ready()
 	_init_initial_stat_set(health, stamina, speed)
 

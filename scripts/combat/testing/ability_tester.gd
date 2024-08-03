@@ -39,8 +39,8 @@ func shoot():
 
 
 func _on_target_dummy_reset_pressed():
-	target_dummy.combat_creature_health_characteristics.current_health = 5
-	target_dummy.combat_creature_health_characteristics.max_health = 10
+	target_dummy.characteristics.current_health = 5
+	target_dummy.characteristics.max_health = 10
 
 
 func _on_heal_over_time_ability_button_pressed():
