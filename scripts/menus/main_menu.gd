@@ -22,7 +22,7 @@ func _process(_delta: float) -> void:
 		_on_intro_timer_timeout()
 
 func _on_play_button_pressed():
-	get_tree().change_scene_to_file("res://scenes/Combat/combat_arena.tscn")
+	get_tree().change_scene_to_file("res://scenes/combat/arena/combat_arena.tscn")
 
 
 func _on_settings_button_pressed():
