@@ -270,9 +270,21 @@ func _draw() -> void:
 		draw_line(combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.position, combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.target_position, combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_debug_color, 3.0)
 	
 	if combat_creature_nodes[DEBUG] and combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].attack_distance_debug:
-		draw_circle(Vector2(0,0), (combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].far_proximity + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset), Color.RED)
-		draw_circle(Vector2(0,0), (combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].medium_proximity + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset), Color.BLUE)
-		draw_circle(Vector2(0,0), (combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].close_proximity + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset), Color.GREEN)
+		
+		var m_close = CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
+		var m_medium = CombatCreatureCharacteristics.PROXIMITY.MELEE_MEDIUM + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
+		var m_far = CombatCreatureCharacteristics.PROXIMITY.MELEE_FAR + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
+		var dz = CombatCreatureCharacteristics.PROXIMITY.DEADZONE + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
+		var r_close = CombatCreatureCharacteristics.PROXIMITY.RANGE_CLOSE + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
+		var r_far = CombatCreatureCharacteristics.PROXIMITY.RANGE_FAR + combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
+		
+		draw_circle(Vector2(0,0), r_far, Color.BLUE)
+		draw_circle(Vector2(0,0), r_close, Color.SKY_BLUE)
+		draw_circle(Vector2(0,0), dz, Color.DARK_SLATE_GRAY)
+		draw_circle(Vector2(0,0), m_far, Color.DARK_RED)
+		draw_circle(Vector2(0,0), m_medium, Color.RED)
+		draw_circle(Vector2(0,0), m_close, Color.INDIAN_RED)
+
 
 func _handle_look_at_target() -> void:
 	if !combat_creature_nodes[TARGETTING].enemy_target:

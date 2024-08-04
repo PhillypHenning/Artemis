@@ -16,7 +16,7 @@ var reported_health = 0
 
 @export var Bullet: PackedScene = preload("res://scenes/combat/projectiles/test_projectile.tscn")
 
-var debug_range = proximities.OOMR
+# var debug_range = proximities.OOMR
 var selected_bullet_spawn = null
 
 

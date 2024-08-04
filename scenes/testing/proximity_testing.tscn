@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://ou0e5pon3s1a"]
+
+[ext_resource type="PackedScene" uid="uid://c8cdet8dkmps6" path="res://scenes/combat/creatures/target_dummy.tscn" id="1_gf36g"]
+[ext_resource type="Script" path="res://scripts/combat/testing/proximity_testing.gd" id="1_h1650"]
+
+[node name="ProximityTesting" type="Node2D"]
+script = ExtResource("1_h1650")
+
+[node name="TargetDummy" parent="." instance=ExtResource("1_gf36g")]
+position = Vector2(960, 512)
