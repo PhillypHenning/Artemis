@@ -26,14 +26,14 @@ func _on_button_2_pressed():
 
 
 func _on_button_3_pressed():
-	if !player.combat_creature_nodes[player.TARGETTING].enemy_target:
-		player.combat_creature_nodes[player.TARGETTING].enemy_target = enemy
+	if !player.characteristics.enemy_target:
+		player.characteristics.enemy_target = enemy
 	else:
-		player.combat_creature_nodes[player.TARGETTING].enemy_target = null
+		player.characteristics.enemy_target = null
 
 
 func _on_button_4_pressed():
-	if !enemy.combat_creature_nodes[enemy.TARGETTING].enemy_target:
-		enemy.combat_creature_nodes[enemy.TARGETTING].enemy_target = player
+	if !enemy.characteristics.enemy_target:
+		enemy.characteristics.enemy_target = player
 	else:
-		enemy.combat_creature_nodes[enemy.TARGETTING].enemy_target = null
+		enemy.characteristics.enemy_target = null

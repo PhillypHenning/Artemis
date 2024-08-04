@@ -17,12 +17,15 @@ func _ready():
 	active_ai.ai_brain_state = true
 	active_ai._init_ai()
 	active_ai.characteristics.enemy_target = inactive_ai
+	active_ai.combat_creature_nodes[CombatCreatureBaseClass.DEBUG] = true
+	active_ai.combat_creature_nodes[CombatCreatureBaseClass.TARGETTING][CombatCreatureBaseClass.TARGETTING_DETAILS.LOS].los_debug = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	handle_current_plan()
 	handle_goals()
 	handle_state()
+	active_ai.queue_redraw()
 
 
 func handle_current_plan() -> void:
@@ -53,13 +56,13 @@ func handle_state() -> void:
 	text = "{text}\tlos_on_target: [{los}]
 \tcurrent_antsy: [{antsy}]
 \tcurrent_ideal_range: [{ideal_range}]
-\tdistance_from_target: [{distance_from_target}]".format(
+\tdistance_to_target: [{distance_to_target}]".format(
 		{
 			"text": text, 
 			"los": active_ai.characteristics.los_on_target,
 			"antsy": active_ai.characteristics.current_antsy,
 			"ideal_range": active_ai.characteristics.current_ideal_range,
-			"distance_from_target": '%.2f' % active_ai.characteristics.distance_from_target,
+			"distance_to_target": '%.2f' % active_ai.characteristics.distance_to_target,
 		}
 	)
 	debug_state_textbox.text = text

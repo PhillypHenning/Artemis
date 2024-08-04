@@ -65,7 +65,7 @@ var los_on_targets: Dictionary
 var los_on_target: bool
 # -- IDEAL RANGE -- #
 var current_ideal_range: PROXIMITY
-var distance_from_target: float
+var distance_to_target: float
 
 
 # func calculate_severity_level(state: Dictionary, key: String, reversed: bool = false) -> Dictionary:

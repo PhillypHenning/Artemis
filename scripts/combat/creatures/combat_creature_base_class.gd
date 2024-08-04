@@ -43,8 +43,6 @@ var combat_creature_nodes = {
 		"stamina_counter": null,
 	},
 	TARGETTING: {
-		"enemy_target": null,
-		"friendly_target": null,
 		TARGETTING_DETAILS.LOS: {
 			"los_raycast": null,
 			"los_raycast_name": "LosRaycast",
@@ -55,11 +53,6 @@ var combat_creature_nodes = {
 		TARGETTING_DETAILS.PROXIMITY: {
 			"attack_distance_debug": false,
 			"proximity_offset": null,
-			"distance_to_target": null,
-			"proximity_range": null,
-			"close_proximity": 75,
-			"medium_proximity": 175,
-			"far_proximity": 300,
 		}
 	},
 	MOVEMENT: {
@@ -131,27 +124,32 @@ func _init_create_raycast() -> void:
 	combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.name = combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast_name
 	
 	# Set Default
-	combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(4, true)
+	combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(4, true) # Collide with combat terrain
+	combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(5, true) # Collide with CombatCreatures
 	
 	# Set Specific
-	if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(3, true)
-	if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(1, true)
+	#if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER:
+		#combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(3, true)
+	#if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY:
+		#combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(1, true)
 	
 	self.add_child(combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast)
 
 
 func _init_set_mask() -> void:
+	# Set layer Object exists in
+	self.set_collision_layer_value(5, true)	# Combat Creature
+	
+	# Set layers Object should interact with
 	self.set_collision_mask_value(2, true) 	# Walls
 	self.set_collision_mask_value(4, true)	# Obstacles
-	if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER:
-		self.set_collision_layer_value(1, true)	# Player
-		self.set_collision_mask_value(3, true)	# Enemy
-	if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY:
-		self.set_collision_layer_value(1, false)
-		self.set_collision_layer_value(3, true)	# Enemy
-		self.set_collision_mask_value(1, true)	# Player
+	#if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER:
+		#self.set_collision_layer_value(1, true)	# Player
+		#self.set_collision_mask_value(3, true)	# Enemy
+	#if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY:
+		#self.set_collision_layer_value(1, false)
+		#self.set_collision_layer_value(3, true)	# Enemy
+		#self.set_collision_mask_value(1, true)	# Player
 
 func _init_ai() -> void:
 	combat_creature_brain.character_node = self
@@ -193,7 +191,7 @@ func _handle_combat_creature_basic_movement(direction: Vector2) -> void:
 
 func calculate_distance_to_target() -> void:
 	if characteristics.enemy_target:
-		characteristics.distance_from_target = self.position.distance_to(characteristics.enemy_target.position)
+		characteristics.distance_to_target = self.position.distance_to(characteristics.enemy_target.position) - combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
 
 
 
@@ -292,32 +290,22 @@ func _draw() -> void:
 
 
 func _handle_look_at_target() -> void:
-	if !combat_creature_nodes[TARGETTING].enemy_target:
+	# TARGETTING
+	if !characteristics.enemy_target:
 		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.target_position = get_local_mouse_position()
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target = global_position.distance_to(get_global_mouse_position()) - combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
-		
 	else:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.target_position = combat_creature_nodes[TARGETTING].enemy_target.global_position - combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.global_position
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target = global_position.distance_to(combat_creature_nodes[TARGETTING].enemy_target.global_position) - combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_offset
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.target_position = characteristics.enemy_target.global_position - combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.global_position
 
 	# LOS
-	if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.is_colliding() and combat_creature_nodes[DEBUG]:
+	characteristics.los_on_target = false
+	if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.is_colliding():
 		var target = combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.get_collider() # A CollisionObject2D.
-
-		if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER:
-			characteristics.los_on_target = target.get_collision_layer_value(3)
-		if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY:
-			characteristics.los_on_target = target.get_collision_layer_value(1)
-
-	# PROXIMITY
-	if combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].close_proximity:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE
-	elif combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].medium_proximity:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = CombatCreatureCharacteristics.PROXIMITY.MELEE_MEDIUM
-	elif combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].distance_to_target < combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].far_proximity:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = CombatCreatureCharacteristics.PROXIMITY.MELEE_FAR
-	else:
-		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.PROXIMITY].proximity_range = CombatCreatureCharacteristics.PROXIMITY.OOMR
+		
+		if target == characteristics.enemy_target:
+			characteristics.los_on_target = true
+		elif target.get_collision_layer_value(4):
+			# Raycast is hitting terrain
+			pass
 
 
 func calculate_ideal_combat_range() -> void:

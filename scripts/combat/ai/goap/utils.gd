@@ -37,7 +37,6 @@ func update_value_in_combat_creature_characteristics(key: String, value, charact
 	return new_characteristics
 
 func update_value_in_dictionary(key: String, value, state: Dictionary) -> Dictionary:
-	var processed_value
 	match typeof(state[key]):
 		TYPE_FLOAT:
 			state[key] = clamp(state[key]+value, 0, state.get("max_{value}".format({"value": key}), 100)) 

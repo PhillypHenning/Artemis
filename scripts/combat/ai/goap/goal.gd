@@ -15,7 +15,7 @@ func new_goal_with_callable(inc_goal_name: String, inc_goal_priority_callable: C
 	self.goal_priority_callable = inc_goal_priority_callable
 	self.goal_criteria = criteria
 	return self
-	
+
 func new_goal_with_static_priority(inc_goal_name: String, inc_goal_priority: float, criteria: Dictionary) -> Goal:
 	self.goal_name = inc_goal_name
 	self.goal_priority = inc_goal_priority

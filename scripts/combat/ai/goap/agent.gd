@@ -5,8 +5,8 @@ class_name AI_Agent
 const GoalPack = preload("res://scripts/combat/ai/goap/goal.gd")
 const ActionPack = preload("res://scripts/combat/ai/goap/action.gd")
 const PlannerPack = preload("res://scripts/combat/ai/goap/planner.gd")
-const UtilsPack = preload("res://scripts/combat/ai/goap/utils.gd")
-var Utils = UtilsPack.new()
+
+var template_goal = GoalPack.new()
 
 enum SEVERITY_LEVEL {
 	NONE = 0,
@@ -33,14 +33,31 @@ var available_actions: Array = []
 var game_start_time: float
 
 var goal_keep_moving: Goal = GoalPack.new()
-var goal_conserve_health: Goal = GoalPack.new()
-var goal_attack_enemy: Goal = GoalPack.new()
-var goal_defend_against_attack: Goal = GoalPack.new()
 var character_node: CombatCreatureBaseClass
 
 
 func _ready(): 
-	primary_goals.append(goal_keep_moving.new_goal_with_timer("keep_moving", calculate_keep_moving_priority, 1, keep_moving_interval_increase, character_node, {"current_antsy": float(0)}))
+	primary_goals.append(
+		template_goal.duplicate().new_goal_with_timer(
+			"KeepMoving", # Goal Name
+			calculate_keep_moving_priority, # Goal Priority Callable
+			1, # Timer interval
+			keep_moving_interval_increase, # Timer callable
+			character_node, # Root Node to attach Timer to
+			{ # Criteria
+				"current_antsy": float(0)
+			}
+		)
+	)
+	#primary_goals.append(
+		#template_goal.duplicate().new_goal_with_static_priority(
+			#"MoveToIdealRange", 	# Goal Name
+			#4,						# Goal Priority
+			#{						# Criteria
+				#"distance_to_target" : "current_ideal_range"
+			#}
+		#)
+	#)
 
 
 # Takes an array of goals, runs the "calculate_goal_priority" function which either calls the goal callable or returns the static priority. Sorts the goals from highest priority to lowest.
@@ -57,12 +74,12 @@ func run_planner() -> Array:
 
 
 ##-- GOAL CALCULATIONS --##
-func calculate_conserve_health_priority(_character: Object) -> float:
-	return goal_conserve_health.goal_priority
+#func calculate_conserve_health_priority(_character: Object) -> float:
+	#return goal_conserve_health.goal_priority
 
 
-func conserve_health_interval_decrease() -> void:
-	goal_conserve_health.goal_priority -= .5
+#func conserve_health_interval_decrease() -> void:
+	#goal_conserve_health.goal_priority -= .5
 
 
 func calculate_keep_moving_priority(character: Object) -> float:
