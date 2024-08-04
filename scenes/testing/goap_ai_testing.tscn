@@ -21,27 +21,20 @@ offset_top = 448.0
 offset_right = 768.0
 offset_bottom = 1024.0
 
-[node name="Button" type="Button" parent="Debug"]
+[node name="DebugStateText" type="TextEdit" parent="Debug"]
 offset_left = 64.0
 offset_top = 64.0
-offset_right = 256.0
-offset_bottom = 128.0
-text = "Take Damage"
-
-[node name="DebugStateText" type="TextEdit" parent="Debug"]
-offset_left = 832.0
-offset_top = 704.0
-offset_right = 1088.0
-offset_bottom = 1024.0
+offset_right = 384.0
+offset_bottom = 384.0
 
 [node name="CombatObstacleBoulder" parent="." instance=ExtResource("2_h8dch")]
-position = Vector2(1320, 400)
+position = Vector2(1128, 528)
 
 [node name="CombatObstacleBoulder2" parent="." instance=ExtResource("2_h8dch")]
-position = Vector2(1784, 224)
+position = Vector2(1592, 352)
 
 [node name="GoapTestBot" parent="." instance=ExtResource("1_wnt0l")]
-position = Vector2(1568, 672)
+position = Vector2(1376, 800)
 
 [node name="GoapTestBot2" parent="." instance=ExtResource("1_wnt0l")]
-position = Vector2(1568, 96)
+position = Vector2(1376, 224)

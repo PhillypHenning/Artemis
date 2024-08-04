@@ -16,6 +16,7 @@ func _ready():
 	# Turn on "active_ai" brain
 	active_ai.ai_brain_state = true
 	active_ai._init_ai()
+	active_ai.characteristics.enemy_target = inactive_ai
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -49,12 +50,16 @@ func handle_goals() -> void:
 
 func handle_state() -> void:
 	var text = "State:\n"
-	text = "{text}\tlos_on_target: [{los}]\n\tcurrent_antsy: [{antsy}]\n\tcurrent_ideal_range: [{ideal_range}]".format(
+	text = "{text}\tlos_on_target: [{los}]
+\tcurrent_antsy: [{antsy}]
+\tcurrent_ideal_range: [{ideal_range}]
+\tdistance_from_target: [{distance_from_target}]".format(
 		{
 			"text": text, 
 			"los": active_ai.characteristics.los_on_target,
 			"antsy": active_ai.characteristics.current_antsy,
 			"ideal_range": active_ai.characteristics.current_ideal_range,
+			"distance_from_target": '%.2f' % active_ai.characteristics.distance_from_target,
 		}
 	)
 	debug_state_textbox.text = text
