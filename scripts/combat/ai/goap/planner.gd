@@ -24,6 +24,8 @@ func build_plan(available_actions: Array, static_actions: Array, primary_goals: 
 
 	for goal in primary_goals:
 		if build_node_plan("a*", plan, all_actions, goal, cc_characteristics, goal.goal_criteria):
+			print("Building plan for goal: [{goal}]".format({"goal": goal.goal_name}))
+			print("plan: [{plan}]".format({"plan": plan}))
 			if plan.is_empty():
 				continue
 			else:
@@ -78,7 +80,18 @@ func build_node_plan(algorithm: String, plan: Array, actions: Array, goal: Goal,
 func goal_criteria_is_already_satisfied(cc_characteristics: CombatCreatureCharacteristics, goal_criteria: Dictionary) -> bool:
 	var tracker: bool = false
 	for key in goal_criteria.keys():
-		tracker = cc_characteristics.get(key) == goal_criteria[key]
+		match typeof(goal_criteria[key]):
+			TYPE_FLOAT:
+				tracker = cc_characteristics.get(key) == goal_criteria[key]
+			TYPE_STRING:
+				tracker = cc_characteristics.get(key) == cc_characteristics.get(goal_criteria[key])
+			TYPE_DICTIONARY:
+				tracker = goal_criteria[key].callable.call(cc_characteristics.get(goal_criteria[key].target_key), cc_characteristics.get(key))
+			_:
+				push_error("Goal Criteria type not defined [{goal_name}], [{goal_criteria_type}]".format({
+					"goal_name": key,
+					"goal_criteria_type": typeof(goal_criteria[key])
+				}))
 		if !tracker:
 			return false
 	return tracker

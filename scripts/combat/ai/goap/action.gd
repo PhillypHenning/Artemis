@@ -29,6 +29,13 @@ func is_valid(cc_characteristics: CombatCreatureCharacteristics, key) -> bool:
 				return cc_characteristics.get(key) == preconditions[key]
 			TYPE_CALLABLE:
 				return preconditions[key].call(cc_characteristics.get(key))
+			TYPE_DICTIONARY:
+				return preconditions[key].callable.call(cc_characteristics.get(key), cc_characteristics.get(preconditions[key].target_key))
+			_:
+				push_error("Precondition type not defined [{key}], [{key_type}]".format({
+					"key": key,
+					"key_type": typeof(preconditions[key])
+				}))
 	return false
 
 
@@ -44,4 +51,11 @@ func apply(cc_characteristics: CombatCreatureCharacteristics) -> CombatCreatureC
 				var max_key = key.replace("current", "max")
 				var new_value = clampf((new_cc_characteristics.get(key) + effects[key]), 0, new_cc_characteristics.get(max_key))
 				new_cc_characteristics.set(key, new_value)
+			TYPE_DICTIONARY:
+				new_cc_characteristics.set(key, effects[key].callable.call(new_cc_characteristics.get(effects[key].target_key)))
+			_:
+				push_error("Effect type not defined [{key}], [{key_type}]".format({
+					"key": key,
+					"key_type": typeof(effects[key])
+				}))
 	return new_cc_characteristics

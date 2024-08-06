@@ -5,6 +5,7 @@ class_name AI_Agent
 const GoalPack = preload("res://scripts/combat/ai/goap/goal.gd")
 const ActionPack = preload("res://scripts/combat/ai/goap/action.gd")
 const PlannerPack = preload("res://scripts/combat/ai/goap/planner.gd")
+var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
 
 var template_goal = GoalPack.new()
 
@@ -25,7 +26,21 @@ var static_actions: Array = [
 		},
 		{	# Effects
 			"current_antsy": float(-1),
-		}, 
+		},
+	),
+	ActionPack.new("MoveIntoIdealRange", 
+		{
+			"distance_to_target": { # Precondition: distance_to_target != current_ideal_range
+				"target_key": "current_ideal_range",
+				"callable": func(a, b): return !AIUtils.check_if_acceptable_distance(a, b),
+			},
+		},
+		{	# Effects
+			"distance_to_target": { # Effect: distance_to_target = current_ideal_range
+				"target_key": "current_ideal_range",
+				"callable": func(a): return float(a)
+			},
+		},
 	),
 ]
 var available_actions: Array = []
@@ -49,15 +64,18 @@ func _ready():
 			}
 		)
 	)
-	#primary_goals.append(
-		#template_goal.duplicate().new_goal_with_static_priority(
-			#"MoveToIdealRange", 	# Goal Name
-			#4,						# Goal Priority
-			#{						# Criteria
-				#"distance_to_target" : "current_ideal_range"
-			#}
-		#)
-	#)
+	primary_goals.append(
+		template_goal.duplicate().new_goal_with_static_priority(
+			"MoveToIdealRange", 	# Goal Name
+			4,						# Goal Priority
+			{						# Criteria
+				"distance_to_target": { # Effect: distance_to_target = current_ideal_range
+					"target_key": "current_ideal_range",
+					"callable": func(a, b): return AIUtils.check_if_acceptable_distance(a, b)
+				},
+			}
+		)
+	)
 
 
 # Takes an array of goals, runs the "calculate_goal_priority" function which either calls the goal callable or returns the static priority. Sorts the goals from highest priority to lowest.

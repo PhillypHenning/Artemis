@@ -34,7 +34,7 @@ position = Vector2(1128, 528)
 position = Vector2(1592, 352)
 
 [node name="GoapTestBot" parent="." instance=ExtResource("1_wnt0l")]
-position = Vector2(1376, 736)
+position = Vector2(1376, 800)
 
 [node name="GoapTestBot2" parent="." instance=ExtResource("1_wnt0l")]
 position = Vector2(1376, 224)
