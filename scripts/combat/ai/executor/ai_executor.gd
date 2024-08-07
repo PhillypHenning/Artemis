@@ -35,6 +35,7 @@ func do_move_into_ideal_range() -> bool:
 			# Move towards current_ideal_range
 			direction = character_node.global_position.direction_to(character_node.characteristics.enemy_target.position)
 		elif round(character_node.characteristics.distance_to_target) < round(character_node.characteristics.current_ideal_range):
+			# Moving should slow as your approach the target, this should limit the issue of overshooting
 			direction = character_node.global_position.direction_to(character_node.characteristics.enemy_target.position) * -1
 		character_node._handle_combat_creature_basic_movement(direction)
 		return false
