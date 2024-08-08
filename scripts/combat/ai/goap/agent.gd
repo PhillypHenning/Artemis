@@ -22,7 +22,7 @@ var primary_goals: Array = []
 var static_actions: Array = [
 	ActionPack.new("DoTheAntsyShuffle", 
 		{
-			"current_antsy": func(a): return a > 0, # Precondition: Antsy should be lower than "0"
+			"current_antsy": func(a): return a > 1, # Precondition: Antsy should be lower than "0"
 		},
 		{	# Effects
 			"current_antsy": float(-1),
@@ -42,6 +42,16 @@ var static_actions: Array = [
 			},
 		},
 	),
+	ActionPack.new("CircleEnemy",
+		{
+			"distance_to_target": { # Precondition: distance_to_target != current_ideal_range
+				"target_key": "current_ideal_range",
+				"callable": func(a, b): return AIUtils.check_if_acceptable_distance(a, b),
+			},
+		},
+		{
+		}
+	)
 ]
 var available_actions: Array = []
 

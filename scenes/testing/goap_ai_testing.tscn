@@ -16,9 +16,9 @@ offset_right = 384.0
 offset_bottom = 1024.0
 
 [node name="GoalsText" type="TextEdit" parent="Debug"]
-offset_left = 448.0
+offset_left = 456.0
 offset_top = 448.0
-offset_right = 768.0
+offset_right = 960.0
 offset_bottom = 1024.0
 
 [node name="DebugStateText" type="TextEdit" parent="Debug"]
@@ -34,7 +34,7 @@ position = Vector2(1128, 528)
 position = Vector2(1592, 352)
 
 [node name="GoapTestBot" parent="." instance=ExtResource("1_wnt0l")]
-position = Vector2(1376, 736)
+position = Vector2(1752, 848)
 
 [node name="GoapTestBot2" parent="." instance=ExtResource("1_wnt0l")]
 position = Vector2(1376, 224)

@@ -165,13 +165,12 @@ func _process(_delta: float) -> void:
 	_handle_look_at_target()
 	calculate_ideal_combat_range()
 	calculate_distance_to_target()
-	
-	
+
 	# GOAP AI
 	if ai_brain_state:
 		## Prioritize Goals
 		combat_creature_brain.determine_goal_priority()
-		#
+		
 		if current_plan.is_empty():
 			## Build plan
 			current_plan = combat_creature_brain.run_planner()

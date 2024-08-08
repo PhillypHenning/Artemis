@@ -23,9 +23,9 @@ func build_plan(available_actions: Array, static_actions: Array, primary_goals: 
 	var plan = []
 
 	for goal in primary_goals:
-		if build_node_plan("a*", plan, all_actions, goal, cc_characteristics, goal.goal_criteria):
-			print("Building plan for goal: [{goal}]".format({"goal": goal.goal_name}))
-			print("plan: [{plan}]".format({"plan": plan}))
+		# if goal.goal_name == "KeepMoving" and cc_characteristics.current_antsy == 0.3:
+		# 	print("CHECK")
+		if build_node_plan("a*", plan, all_actions, cc_characteristics, goal, goal.goal_criteria):
 			if plan.is_empty():
 				continue
 			else:
@@ -34,27 +34,25 @@ func build_plan(available_actions: Array, static_actions: Array, primary_goals: 
 
 
 # Recursively build a plan (One of A*, DFS, or BFS)(A* is the only implemented one at this time)
-func build_node_plan(algorithm: String, plan: Array, actions: Array, goal: Goal, cc_characteristics: CombatCreatureCharacteristics, goal_criteria: Dictionary) -> bool:
+func build_node_plan(algorithm: String, plan: Array, actions: Array, cc_characteristics: CombatCreatureCharacteristics, goal: Goal, criteria: Dictionary) -> bool:
 	match algorithm:
 		"a*":
 			# Base Case: Check if the current state already satisfies the goal
-			if goal_criteria_is_already_satisfied(cc_characteristics, goal_criteria):
+			if goal_criteria_is_already_satisfied(cc_characteristics, criteria):
 				return true
 
-			# Find actions that will satisfy the goals desired world state
-			# For example:
-			#	For the goal "Keep moving" the desired world state is to have "antsy" at 0
 			var valid_actions = []
-			for criteria_key in goal_criteria:
-				for action in actions:
-					if action.is_valid(cc_characteristics, criteria_key):
-						valid_actions.append(action)
-						# Add any preconditions to the goal_criteria list
-						# Example:
-						##	AttackTarget is used to "defeatenemy"
-						## 	But AttackTarget requires that the character is in range
-						##	The precondition of "GetInRange" is now required to build a plan
-						goal_criteria.merge(action.preconditions)
+			var new_goal_criteria: Dictionary = goal.goal_criteria.duplicate(true)
+			#for criteria_key in new_goal_criteria:
+			for action in actions:
+				if action.is_valid(cc_characteristics, new_goal_criteria):
+					valid_actions.append(action)
+					# Add any preconditions to the new_goal_criteria list
+					# Example:
+					##	AttackTarget is used to "defeatenemy"
+					## 	But AttackTarget requires that the character is in range
+					##	The precondition of "GetInRange" is now required to build a plan
+					new_goal_criteria.merge(action.preconditions)
 			
 			# Improvement: Sorting
 			##	- If multiple actions accomplish the same action, then it will become necessary to filter the actions down to the "best option"
@@ -69,7 +67,7 @@ func build_node_plan(algorithm: String, plan: Array, actions: Array, goal: Goal,
 				plan.append(action)
 
 				# Recursively attempt to build the rest of the plan with the new state
-				if build_node_plan("a*", plan, actions, goal, new_cc_characteristics, goal_criteria):
+				if build_node_plan("a*", plan, actions, new_cc_characteristics, goal, new_goal_criteria):
 					return true
 
 				# Backtrack if the current action did not lead to a valid plan
@@ -86,7 +84,7 @@ func goal_criteria_is_already_satisfied(cc_characteristics: CombatCreatureCharac
 			TYPE_STRING:
 				tracker = cc_characteristics.get(key) == cc_characteristics.get(goal_criteria[key])
 			TYPE_DICTIONARY:
-				tracker = goal_criteria[key].callable.call(cc_characteristics.get(goal_criteria[key].target_key), cc_characteristics.get(key))
+				tracker = goal_criteria[key].callable.call(cc_characteristics.get(key), cc_characteristics.get(goal_criteria[key].target_key))
 			_:
 				push_error("Goal Criteria type not defined [{goal_name}], [{goal_criteria_type}]".format({
 					"goal_name": key,
