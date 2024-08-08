@@ -2,7 +2,7 @@ class_name CombatCreatureBaseClass
 
 extends CharacterBody2D
 
-var characteristics = preload("res://scripts/combat/creatures/combat_creature_characteristics.gd").new()
+var characteristics = preload("res://scripts/combat/creatures/combat_creature_characteristics.tres")
 var combat_creature_abilities = preload("res://scripts/combat/abilities/abilities_handler.gd").new()
 var combat_creature_status_effects = preload("res://scripts/combat/status_effects/status_effect_handler.gd").new()
 
@@ -157,6 +157,7 @@ func _init_ai() -> void:
 		
 	# AI Executor
 	combat_creature_nervous_system.character_node = self
+	combat_creature_nervous_system.prep_ai_executor()
 
 
 # PROCESS FUNCTIONS
@@ -176,7 +177,7 @@ func _process(_delta: float) -> void:
 			current_plan = combat_creature_brain.run_planner()
 		else:
 			## Execute plan
-			current_plan = combat_creature_nervous_system.run_planner()
+			current_plan = combat_creature_nervous_system.run_planner(current_plan)
 
 
 ## BASIC MOVEMENT

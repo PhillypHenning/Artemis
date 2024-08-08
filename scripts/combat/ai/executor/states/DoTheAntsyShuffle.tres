@@ -1,0 +1,7 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://bydldchb7acfy"]
+
+[ext_resource type="Script" path="res://scripts/combat/ai/executor/states/DoTheAntsyShuffle.gd" id="1_c4dhc"]
+
+[resource]
+script = ExtResource("1_c4dhc")
+state_name = null

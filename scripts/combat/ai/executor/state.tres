@@ -1,0 +1,7 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://c6paewc73ol02"]
+
+[ext_resource type="Script" path="res://scripts/combat/ai/executor/state.gd" id="1_ruggb"]
+
+[resource]
+script = ExtResource("1_ruggb")
+state_name = "Template State"

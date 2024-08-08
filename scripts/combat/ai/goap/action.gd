@@ -19,25 +19,6 @@ func _init(init_action_name: String, init_preconditions: Dictionary, init_effect
 	self.is_static_action = init_is_static_action
 
 
-# is_valid takes the world state and a key
-# It first checks if the action (self) has a precondition that matches the key
-# It then checks the type of they key based on the world state.
-#func is_valid(cc_characteristics: CombatCreatureCharacteristics, key) -> bool:
-	#if preconditions.has(key):
-		#match typeof(preconditions[key]):
-			#TYPE_BOOL:
-				#return cc_characteristics.get(key) == preconditions[key]
-			#TYPE_CALLABLE:
-				#return preconditions[key].call(cc_characteristics.get(key))
-			#TYPE_DICTIONARY:
-				#return preconditions[key].callable.call(cc_characteristics.get(key), cc_characteristics.get(preconditions[key].target_key))
-			#_:
-				#push_error("Precondition type not defined [{key}], [{key_type}]".format({
-					#"key": key,
-					#"key_type": typeof(preconditions[key])
-				#}))
-	#return false
-
 func is_valid(cc_characteristics: CombatCreatureCharacteristics, goal_criteria: Dictionary) -> bool:
 	var tracker: bool = false
 	for key in goal_criteria:
@@ -58,11 +39,9 @@ func is_valid(cc_characteristics: CombatCreatureCharacteristics, goal_criteria: 
 	return tracker
 
 
-func apply(cc_characteristics: CombatCreatureCharacteristics) -> CombatCreatureCharacteristics:
-	var new_cc_characteristics: CombatCreatureCharacteristics = cc_characteristics
-	var check_cc_characteristics: CombatCreatureCharacteristics = cc_characteristics.duplicate()
-	#check_cc_characteristics = cc_characteristics
-	check_cc_characteristics.current_antsy = 100
+func apply(cc_characteristics: CombatCreatureCharacteristics, simulate: bool = true) -> CombatCreatureCharacteristics:
+	var new_cc_characteristics: CombatCreatureCharacteristics = cc_characteristics.deep_duplicate()
+	
 	for key in effects.keys():
 		match typeof(effects[key]):
 			TYPE_INT:
@@ -74,7 +53,8 @@ func apply(cc_characteristics: CombatCreatureCharacteristics) -> CombatCreatureC
 				var new_value = clampf((new_cc_characteristics.get(key) + effects[key]), 0, new_cc_characteristics.get(max_key))
 				new_cc_characteristics.set(key, new_value)
 			TYPE_DICTIONARY:
-				new_cc_characteristics.set(key, effects[key].callable.call(new_cc_characteristics.get(effects[key].target_key)))
+				if simulate or effects[key].apply:
+					new_cc_characteristics.set(key, effects[key].callable.call(new_cc_characteristics.get(effects[key].target_key)))
 			_:
 				push_error("Effect type not defined [{key}], [{key_type}]".format({
 					"key": key,

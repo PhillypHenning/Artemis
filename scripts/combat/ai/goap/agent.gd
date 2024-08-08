@@ -25,7 +25,7 @@ var static_actions: Array = [
 			"current_antsy": func(a): return a > 1, # Precondition: Antsy should be lower than "0"
 		},
 		{	# Effects
-			"current_antsy": float(-1),
+			"current_antsy": float(-10),
 		},
 	),
 	ActionPack.new("MoveIntoIdealRange", 
@@ -38,7 +38,8 @@ var static_actions: Array = [
 		{	# Effects
 			"distance_to_target": { # Effect: distance_to_target = current_ideal_range
 				"target_key": "current_ideal_range",
-				"callable": func(a): return float(a)
+				"callable": func(a): return float(a),
+				"apply": false
 			},
 		},
 	),
@@ -115,5 +116,5 @@ func calculate_keep_moving_priority(character: Object) -> float:
 
 
 func keep_moving_interval_increase() -> void:
-	var new_antsy = clamp((character_node.characteristics.current_antsy+.3), 0, character_node.characteristics.max_antsy)
+	var new_antsy = clamp((character_node.characteristics.current_antsy+.5), 0, character_node.characteristics.max_antsy)
 	character_node.characteristics.current_antsy = new_antsy

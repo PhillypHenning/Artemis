@@ -1,45 +1,45 @@
 extends Node
 
 var character_node: CombatCreatureBaseClass
+var current_state: AI_State
+
 var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
 
+var State: Dictionary
+var states_path: String = "res://scripts/combat/ai/executor/states"
+
+func prep_ai_executor():
+	# Loads all states
+	# Improvement: Perhaps it would be better to have an externally managed state loader, at this will be called for every CombatCreature.
+	for file_name in DirAccess.get_files_at(states_path):
+		if (file_name.get_extension() == "tres"):
+			var state = file_name.replace('.tres', '').replace("State", '')
+			State.merge({state: ResourceLoader.load(states_path+"/"+file_name)})
+
 # Execute action
-func run_planner() -> Array:
-	var current_plan = character_node.current_plan
-	var actioned_plan = current_plan.duplicate()
+func run_planner(current_plan: Array) -> Array:
+	var actioned_plan = current_plan.duplicate()	
+	var last_index: int
+	# Run through the current_plan
+	for index in range(current_plan.size()):
+		last_index = index
+		# Get state from action
+		var target_state = State.get(current_plan[index].action_name)
+		
+		if target_state:
+			if !current_state:
+				current_state = target_state # Set current_state to target_state
+				break
+		else:
+			push_error("State is undefined.. [{state}]".format({"state": current_plan[index].action_name}))
 
-	for action in current_plan:
-		match action.action_name:
-			"DoTheAntsyShuffle":
-				print("DoTheAntsyShuffle called")
-				if do_the_antsy_shuffle():
-					character_node.characteristics = action.apply(character_node.characteristics)
-					actioned_plan.pop_front()
-			"MoveIntoIdealRange":
-				print("DoTheAntsyShuffle called")
-				if do_move_into_ideal_range():
-					character_node.characteristics = action.apply(character_node.characteristics)
-					actioned_plan.pop_front()
-			"CircleEnemy":
-				print("CircleEnemy called")
-				actioned_plan.pop_front()
+	if current_state:
+		# Run the current_state action
+		current_state.action(character_node)
+		character_node.characteristics = current_plan[last_index].apply(character_node.characteristics, false)
+		# Check that the state is complete
+		if current_state.is_complete(character_node):
+			current_state = null
+			actioned_plan.pop_at(last_index)
+	
 	return actioned_plan
-
-
-func do_the_antsy_shuffle() -> bool:
-	var rand_x = randf_range(-1, 1)
-	var rand_y = randf_range(-1, 1)
-	var new_position = Vector2(rand_x, rand_y)
-	character_node._handle_combat_creature_basic_movement(new_position)
-	return true
-
-func do_move_into_ideal_range() -> bool:
-	var direction: Vector2	
-	if !AIUtils.check_if_acceptable_distance(character_node.characteristics.distance_to_target, character_node.characteristics.current_ideal_range):
-		if round(character_node.characteristics.distance_to_target) > round(character_node.characteristics.current_ideal_range):
-			direction = character_node.global_position.direction_to(character_node.characteristics.enemy_target.position)
-		elif round(character_node.characteristics.distance_to_target) < round(character_node.characteristics.current_ideal_range):
-			direction = character_node.global_position.direction_to(character_node.characteristics.enemy_target.position) * -1
-		character_node._handle_combat_creature_basic_movement(direction)
-		return false
-	return true

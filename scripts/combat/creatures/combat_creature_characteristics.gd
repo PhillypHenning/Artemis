@@ -1,6 +1,6 @@
 class_name CombatCreatureCharacteristics
 
-extends Node
+extends Resource
 
 enum CHARACTER_TYPE {
 	PLAYER,
@@ -30,43 +30,48 @@ enum PROXIMITY {
 }
 
 # -- DETAILS -- #
-var character_type: CHARACTER_TYPE
-var character_name: String
+@export var character_type: CHARACTER_TYPE
+@export var character_name: String
 # -- HEALTH -- #
-var current_health: float
-var max_health: float
+@export var current_health: float
+@export var max_health: float
 #var health_severity: SEVERITY_LEVEL
-var is_dead: bool
-var can_take_damage: bool
-var can_take_damage_after_time: float
+@export var is_dead: bool
+@export var can_take_damage: bool
+@export var can_take_damage_after_time: float
 # -- STAMINA -- #
-var current_stamina: int
-var max_stamina: int
+@export var current_stamina: int
+@export var max_stamina: int
 # -- MOVEMENT -- #
-var starting_speed: float
-var current_speed: float
+@export var starting_speed: float
+@export var current_speed: float
 const max_speed: float = 1000
-var is_using_movement_ability: bool
-var current_antsy: float
+@export var is_using_movement_ability: bool
+@export var current_antsy: float
 const max_antsy: int = 10
 # -- EVASION -- #
-var is_using_evasive_ability: bool
-var has_iframes: bool
-var time_length_of_iframes: float
+@export var is_using_evasive_ability: bool
+@export var has_iframes: bool
+@export var time_length_of_iframes: float
 # -- ATTACKING -- #
-var is_attacking: bool
+@export var is_attacking: bool
 # -- TARGETTING -- #
-var enemy_targets: Array
-var friendly_targets: Array
+@export var enemy_targets: Array
+@export var friendly_targets: Array
 var enemy_target: CharacterBody2D
 var friendly_target: CharacterBody2D
 # -- LINE OF SIGHT -- #
-var los_on_targets: Dictionary
-var los_on_target: bool
+@export var los_on_targets: Dictionary
+@export var los_on_target: bool
 # -- IDEAL RANGE -- #
-var current_ideal_range: PROXIMITY
-var distance_to_target: float
+@export var current_ideal_range: PROXIMITY
+@export var distance_to_target: float
 
+func deep_duplicate() -> CombatCreatureCharacteristics:
+	var new_ccc = self.duplicate(true)
+	new_ccc.enemy_target = self.enemy_target
+	new_ccc.friendly_target = self.friendly_target
+	return new_ccc
 
 # func calculate_severity_level(state: Dictionary, key: String, reversed: bool = false) -> Dictionary:
 # 	var severity_current =  state.get("current_{key}".format({"key": key}), false)
