@@ -1,7 +1,5 @@
 extends AI_Goal
 
-var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
-
 func _init(character: CombatCreatureBaseClass):
 	self.goal_name = "DoTheAntsyShuffle"
 	self.goal_criteria = { 

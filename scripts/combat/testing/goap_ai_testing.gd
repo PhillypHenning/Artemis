@@ -6,6 +6,7 @@ var inactive_ai: CombatCreatureBaseClass
 @onready var current_plan_textbox = $Debug/CurrentPlanText
 @onready var goals_textbox = $Debug/GoalsText
 @onready var debug_state_textbox = $Debug/DebugStateText
+@onready var actions_textbox = $Debug/ActionsTextBox
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -25,6 +26,7 @@ func _process(_delta):
 	handle_current_plan()
 	handle_goals()
 	handle_state()
+	handle_actions()
 	active_ai.queue_redraw()
 
 
@@ -66,3 +68,14 @@ func handle_state() -> void:
 		}
 	)
 	debug_state_textbox.text = text
+
+func handle_actions() -> void:
+	var text = "Static Actions:"
+	
+	for action in active_ai.combat_creature_brain.static_actions:
+		text = "{text}\n{action_print}".format({
+			"text": text,
+			"action_print": action.print()
+		})
+	
+	actions_textbox.text = text

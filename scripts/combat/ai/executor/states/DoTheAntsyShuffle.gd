@@ -1,5 +1,8 @@
 extends AI_State
 
+func _init():
+	state_name = "DoTheAntsyShuffle"
+
 func action(character_node: CombatCreatureBaseClass) -> void:
 	var rand_x = randf_range(-1, 1)
 	var rand_y = randf_range(-1, 1)

@@ -2,7 +2,7 @@ class_name CombatCreatureBaseClass
 
 extends CharacterBody2D
 
-var characteristics = preload("res://scripts/combat/creatures/combat_creature_characteristics.tres")
+var characteristics = preload("res://scripts/combat/creatures/combat_creature_characteristics.gd").new()
 var combat_creature_abilities = preload("res://scripts/combat/abilities/abilities_handler.gd").new()
 var combat_creature_status_effects = preload("res://scripts/combat/status_effects/status_effect_handler.gd").new()
 

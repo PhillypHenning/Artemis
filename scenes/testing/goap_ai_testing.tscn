@@ -10,15 +10,15 @@ script = ExtResource("1_a2lvv")
 [node name="Debug" type="Node" parent="."]
 
 [node name="CurrentPlanText" type="TextEdit" parent="Debug"]
-offset_left = 64.0
-offset_top = 448.0
-offset_right = 384.0
-offset_bottom = 1024.0
+offset_left = 448.0
+offset_top = 64.0
+offset_right = 896.0
+offset_bottom = 384.0
 
 [node name="GoalsText" type="TextEdit" parent="Debug"]
-offset_left = 456.0
+offset_left = 448.0
 offset_top = 448.0
-offset_right = 960.0
+offset_right = 896.0
 offset_bottom = 1024.0
 
 [node name="DebugStateText" type="TextEdit" parent="Debug"]
@@ -26,6 +26,12 @@ offset_left = 64.0
 offset_top = 64.0
 offset_right = 384.0
 offset_bottom = 384.0
+
+[node name="ActionsTextBox" type="TextEdit" parent="Debug"]
+offset_left = 64.0
+offset_top = 448.0
+offset_right = 384.0
+offset_bottom = 1024.0
 
 [node name="CombatObstacleBoulder" parent="." instance=ExtResource("2_h8dch")]
 position = Vector2(1128, 528)

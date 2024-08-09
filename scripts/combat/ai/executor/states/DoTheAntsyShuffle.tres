@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_c4dhc")
-state_name = "Huh?"
+state_name = ""

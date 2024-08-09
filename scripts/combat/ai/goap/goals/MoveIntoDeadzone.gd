@@ -1,14 +1,12 @@
 extends AI_Goal
 
-var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
-
 func _init(character: CombatCreatureBaseClass):
 	self.goal_name = "MoveIntoDeadzone"
 	self.goal_criteria = {
-				"distance_to_target": { # Effect: distance_to_target = current_ideal_range
-					"target_key": "current_ideal_range",
-					"callable": func(a, b): return AIUtils.check_if_acceptable_distance(a, b)
-				},
+				"distance_to_target": determine_character_in_deadzone
 			}
 	self.goal_priority = 2
 	self.cc_character = character
+
+func determine_character_in_deadzone(character: CombatCreatureBaseClass) -> bool:
+	return AIUtils.check_if_acceptable_distance(character.characteristics.distance_to_target, CombatCreatureCharacteristics.PROXIMITY.DEADZONE)

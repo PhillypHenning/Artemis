@@ -1,6 +1,7 @@
 class_name AI_State
 
 extends Resource
+var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
 
 @export var state_name: String = ""
 

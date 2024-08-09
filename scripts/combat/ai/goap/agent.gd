@@ -3,24 +3,23 @@ class_name AI_Agent
 extends Node
 
 const PlannerPack = preload("res://scripts/combat/ai/goap/planner.gd")
+var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
 
 var character_node: CombatCreatureBaseClass
 
-var primary_goals: Array = []
-var static_actions: Array = []
-var available_actions: Array = []
+var primary_goals: Array
+
+var goals: Array
+var static_actions: Array
+var available_actions: Array
 var planner = PlannerPack.new()
 
+var actions_path: String = "res://scripts/combat/ai/goap/static_actions"
+var goals_path: String = "res://scripts/combat/ai/goap/goals"
+
 func _ready():
-	var deadzone_action_test = load("res://scripts/combat/ai/goap/actions/MoveIntoDeadzone.tres")
-	var antsy_action_test = load("res://scripts/combat/ai/goap/actions/DoTheAntsyShuffle.tres")
-	static_actions.append(deadzone_action_test)
-	static_actions.append(antsy_action_test)
-	
-	var deadzone_goal_test = load("res://scripts/combat/ai/goap/goals/MoveIntoDeadzone.gd").new(character_node)
-	primary_goals.append(deadzone_goal_test)
-	var antsy_goal_test = load("res://scripts/combat/ai/goap/goals/DoTheAntsyShuffle.gd").new(character_node)
-	primary_goals.append(antsy_goal_test)
+	static_actions = AIUtils.load_resources_to_array(actions_path, "gd")
+	primary_goals = AIUtils.load_resources_to_array(goals_path, "gd", character_node)
 
 
 # Takes an array of goals, runs the "calculate_goal_priority" function which either calls the goal callable or returns the static priority. Sorts the goals from highest priority to lowest.
@@ -32,4 +31,4 @@ func determine_goal_priority() -> void:
 
 
 func run_planner() -> Array:
-	return planner.build_plan(available_actions, static_actions, primary_goals, character_node.characteristics)
+	return planner.build_plan(available_actions, static_actions, primary_goals, character_node)

@@ -1,6 +1,7 @@
 extends AI_State
 
-var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
+func _init():
+	state_name = "MoveIntoDeadzone"
 
 func action(character_node: CombatCreatureBaseClass):
 	var direction: Vector2	

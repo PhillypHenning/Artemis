@@ -10,6 +10,7 @@ const MAX_PRIORITY = 10
 @export var goal_priority: float
 @export var goal_timer_interval: float
 @export var cc_character: CombatCreatureBaseClass
+var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
 
 func is_satisfied(agent_state: Dictionary) -> bool:
 	var tracker: bool = false
