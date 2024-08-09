@@ -1,46 +1,15 @@
-extends Node
+class_name AI_Goal
 
-class_name Goal
+extends Node
 
 const MIN_PRIORITY = 0
 const MAX_PRIORITY = 10
 
-var goal_name: String
-var goal_priority: float
-var goal_priority_callable: Callable
-var goal_criteria: Dictionary = {}
-
-func new_goal_with_callable(inc_goal_name: String, inc_goal_priority_callable: Callable, criteria: Dictionary) -> Goal:
-	self.goal_name = inc_goal_name
-	self.goal_priority_callable = inc_goal_priority_callable
-	self.goal_criteria = criteria
-	return self
-
-func new_goal_with_static_priority(inc_goal_name: String, inc_goal_priority: float, criteria: Dictionary) -> Goal:
-	self.goal_name = inc_goal_name
-	self.goal_priority = inc_goal_priority
-	self.goal_criteria = criteria
-	return self
-
-func new_goal_with_timer(inc_goal_name: String,  inc_goal_priority_callable: Callable, increase_interval: float, timer_callable: Callable, root: Node2D, criteria: Dictionary) -> Goal:
-	self.goal_name = inc_goal_name
-	self.goal_priority_callable = inc_goal_priority_callable
-	self.goal_criteria = criteria
-
-	var timer = Timer.new()
-	timer.name = inc_goal_name
-	timer.wait_time = increase_interval
-	timer.one_shot = false
-	timer.autostart = true
-
-	timer.connect("timeout", timer_callable)
-	root.call_deferred("add_child", timer)
-	return self
-
-func calculate_goal_priority(character: Object) -> void:
-	if goal_priority_callable:
-		self.goal_priority = clamp(self.goal_priority_callable.call(character), MIN_PRIORITY, MAX_PRIORITY)
-
+@export var goal_name: String
+@export var goal_criteria: Dictionary
+@export var goal_priority: float
+@export var goal_timer_interval: float
+@export var cc_character: CombatCreatureBaseClass
 
 func is_satisfied(agent_state: Dictionary) -> bool:
 	var tracker: bool = false
@@ -49,3 +18,6 @@ func is_satisfied(agent_state: Dictionary) -> bool:
 		if !tracker:
 			return false
 	return tracker
+
+func calculate_priority() -> float:
+	return self.goal_priority

@@ -1,7 +1,7 @@
 extends Node
 class_name Planner
 
-var Utils = preload("res://scripts/combat/ai/goap/utils.gd").new()
+
 
 # build_plan
 # 	1. Combines available_actions and static_actions
@@ -23,8 +23,8 @@ func build_plan(available_actions: Array, static_actions: Array, primary_goals: 
 	var plan = []
 
 	for goal in primary_goals:
-		# if goal.goal_name == "KeepMoving" and cc_characteristics.current_antsy == 0.3:
-		# 	print("CHECK")
+		# if goal.goal_name == "DoTheAntsyShuffle":
+		# 	print("check")
 		if build_node_plan("a*", plan, all_actions, cc_characteristics, goal, goal.goal_criteria):
 			if plan.is_empty():
 				continue
@@ -34,7 +34,7 @@ func build_plan(available_actions: Array, static_actions: Array, primary_goals: 
 
 
 # Recursively build a plan (One of A*, DFS, or BFS)(A* is the only implemented one at this time)
-func build_node_plan(algorithm: String, plan: Array, actions: Array, cc_characteristics: CombatCreatureCharacteristics, goal: Goal, criteria: Dictionary) -> bool:
+func build_node_plan(algorithm: String, plan: Array, actions: Array, cc_characteristics: CombatCreatureCharacteristics, goal: AI_Goal, criteria: Dictionary) -> bool:
 	match algorithm:
 		"a*":
 			# Base Case: Check if the current state already satisfies the goal
@@ -62,7 +62,10 @@ func build_node_plan(algorithm: String, plan: Array, actions: Array, cc_characte
 
 				# Create a hypothetical new state by applying the action
 				var new_cc_characteristics: CombatCreatureCharacteristics = action.apply(cc_characteristics)
-
+				
+				# Run prediction for action
+				#action.predict()
+				
 				# Add the action to the current plan
 				plan.append(action)
 

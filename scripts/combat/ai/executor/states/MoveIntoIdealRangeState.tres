@@ -1,7 +1,0 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cvukusv7yc175"]
-
-[ext_resource type="Script" path="res://scripts/combat/ai/executor/states/MoveIntoIdealRange.gd" id="2_m2cth"]
-
-[resource]
-script = ExtResource("2_m2cth")
-state_name = "MoveIntoIdealRange"

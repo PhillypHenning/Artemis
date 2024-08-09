@@ -1,0 +1,40 @@
+[gd_scene load_steps=4 format=3 uid="uid://d1tnegb4rajyp"]
+
+[ext_resource type="Script" path="res://scripts/combat/testing/goap_ai_testing.gd" id="1_a2lvv"]
+[ext_resource type="PackedScene" uid="uid://dira860s41xvs" path="res://scenes/combat/creatures/goap_test_bot.tscn" id="1_wnt0l"]
+[ext_resource type="PackedScene" uid="uid://djxjpynabyfcs" path="res://scenes/combat/obstacles/combat_obstacle_boulder.tscn" id="2_h8dch"]
+
+[node name="GoapAITesting" type="Node2D"]
+script = ExtResource("1_a2lvv")
+
+[node name="Debug" type="Node" parent="."]
+
+[node name="CurrentPlanText" type="TextEdit" parent="Debug"]
+offset_left = 64.0
+offset_top = 448.0
+offset_right = 384.0
+offset_bottom = 1024.0
+
+[node name="GoalsText" type="TextEdit" parent="Debug"]
+offset_left = 456.0
+offset_top = 448.0
+offset_right = 960.0
+offset_bottom = 1024.0
+
+[node name="DebugStateText" type="TextEdit" parent="Debug"]
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 384.0
+offset_bottom = 384.0
+
+[node name="CombatObstacleBoulder" parent="." instance=ExtResource("2_h8dch")]
+position = Vector2(1128, 528)
+
+[node name="CombatObstacleBoulder2" parent="." instance=ExtResource("2_h8dch")]
+position = Vector2(1592, 352)
+
+[node name="GoapTestBot" parent="." instance=ExtResource("1_wnt0l")]
+position = Vector2(1752, 848)
+
+[node name="GoapTestBot2" parent="." instance=ExtResource("1_wnt0l")]
+position = Vector2(1376, 224)

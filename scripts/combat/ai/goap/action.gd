@@ -1,23 +1,10 @@
-extends Node
+class_name AI_Action
 
-class_name Action
+extends Resource
 
-var Utils = preload("res://scripts/combat/ai/goap/utils.gd").new()
-
-var action_name: String
-var preconditions: Dictionary = {}
-var effects: Dictionary = {}
-var cost: float = 0.0
-var is_static_action: bool
-
-
-func _init(init_action_name: String, init_preconditions: Dictionary, init_effects: Dictionary, init_cost: float = 0.0, init_is_static_action: bool = true):
-	self.action_name = init_action_name
-	self.preconditions = init_preconditions
-	self.effects = init_effects
-	self.cost = init_cost
-	self.is_static_action = init_is_static_action
-
+@export var action_name: String
+@export var preconditions: Dictionary
+@export var effects: Dictionary
 
 func is_valid(cc_characteristics: CombatCreatureCharacteristics, goal_criteria: Dictionary) -> bool:
 	var tracker: bool = false
@@ -41,7 +28,7 @@ func is_valid(cc_characteristics: CombatCreatureCharacteristics, goal_criteria: 
 
 func apply(cc_characteristics: CombatCreatureCharacteristics, simulate: bool = true) -> CombatCreatureCharacteristics:
 	var new_cc_characteristics: CombatCreatureCharacteristics = cc_characteristics.deep_duplicate()
-	
+
 	for key in effects.keys():
 		match typeof(effects[key]):
 			TYPE_INT:
