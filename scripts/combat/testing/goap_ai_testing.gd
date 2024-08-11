@@ -5,7 +5,6 @@ var inactive_ai: CombatCreatureBaseClass
 
 @onready var current_plan_textbox = $Debug/CurrentPlanText
 @onready var goals_textbox = $Debug/GoalsText
-@onready var debug_state_textbox = $Debug/DebugStateText
 @onready var actions_textbox = $Debug/ActionsTextBox
 
 var close_range_attack: AI_Action = load("res://scripts/combat/ai/goap/ability_actions/BasicAttackTest.gd").new()
@@ -54,22 +53,6 @@ func handle_goals() -> void:
 			goals_text = "{goal_text}\n\t\t[{criteria}] : [{value}]".format({"goal_text": goals_text, "criteria": criteria, "value": goal.goal_criteria[criteria]})
 	goals_textbox.text = goals_text
 
-
-func handle_state() -> void:
-	var text = "State:\n"
-	text = "{text}\tlos_on_target: [{los}]
-\tcurrent_antsy: [{antsy}]
-\tcurrent_ideal_range: [{ideal_range}]
-\tdistance_to_target: [{distance_to_target}]".format(
-		{
-			"text": text, 
-			"los": active_ai.characteristics.los_on_target,
-			"antsy": active_ai.characteristics.current_antsy,
-			"ideal_range": active_ai.characteristics.current_ideal_range,
-			"distance_to_target": '%.2f' % active_ai.characteristics.distance_to_target,
-		}
-	)
-	debug_state_textbox.text = text
 
 func handle_actions() -> void:
 	var text = "Static Actions:"

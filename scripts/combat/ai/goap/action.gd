@@ -9,22 +9,23 @@ var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
 
 func is_valid(character: CombatCreatureBaseClass, goal_criteria: Dictionary) -> bool:
 	var tracker: bool = false
+	# Creature the simulated character
 	var simulated_character = character.duplicate()
 	simulated_character.characteristics = character.characteristics.deep_duplicate()
+	
 	for key in goal_criteria:
 		if effects.has(key):
 			match typeof(effects[key]):
 				TYPE_BOOL:
+					# Easiest of the testables
+					# If the effect will result in the goal_criteria request, then life is good, proceed.
 					tracker = effects[key] == goal_criteria[key]
-				TYPE_CALLABLE:
-					tracker = effects[key].call(simulated_character) == goal_criteria[key]
+				
 				TYPE_DICTIONARY:
-					tracker = goal_criteria.get(key).call(effects[key].callable.call(simulated_character))
-				TYPE_FLOAT:
-					# goal_cruteria.get(key) == action.effects.get(key)
-					pass
+					var validate_callable = effects[key].get("validate")
+					tracker = validate_callable.call(simulated_character, goal_criteria.get(key))
 				_:
-					push_error("Precondition type not defined [{key}], [{key_type}]".format({
+					push_error("Effect type not defined [{key}], [{key_type}]".format({
 						"key": key,
 						"key_type": typeof(effects[key])
 					}))
@@ -42,21 +43,13 @@ func apply(character: CombatCreatureBaseClass, simulate: bool = true) -> CombatC
 
 	for key in effects.keys():
 		match typeof(effects[key]):
-			TYPE_INT:
-				var new_value = new_character.characteristics.get(key) + effects[key]
-				var max_key = key.replace("current", "max")
-				new_character.characteristics.key = clamp(new_value, 0, new_character.characteristics.get(max_key))
-			TYPE_FLOAT:
-				var max_key = key.replace("current", "max")
-				var new_value = clampf((new_character.characteristics.get(key) + effects[key]), 0, new_character.characteristics.get(max_key))
-				new_character.characteristics.set(key, new_value)
-			TYPE_DICTIONARY:
-				if effects[key].apply or simulate:
-					new_character = effects[key].callable.call(new_character)
 			TYPE_BOOL:
 				new_character.characteristics.set(key, effects[key])
-			TYPE_CALLABLE:
-				new_character = effects[key].call(new_character)
+			TYPE_DICTIONARY:
+				#if !effects[key].get("simulate_only", false) and !simulate:
+				if simulate or !effects[key].get("simulate_only", false):
+					var apply_callable = effects[key].get("apply")
+					apply_callable.call(new_character)
 			_:
 				push_error("Effect type not defined [{key}], [{key_type}]".format({
 					"key": key,

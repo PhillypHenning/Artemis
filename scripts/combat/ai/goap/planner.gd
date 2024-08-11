@@ -12,20 +12,20 @@ class_name Planner
 #		b. If the plan is returned empty, then it moves on to the next goal
 #		c. If the plan isn't empty it returns the plan (Array of actions)
 #	5. Return the empty plan
-func build_plan(available_actions: Array, static_actions: Array, primary_goals: Array, creature: CombatCreatureBaseClass) -> Array:
+func build_plan(available_actions: Array, static_actions: Array, primary_goals: Array, character: CombatCreatureBaseClass) -> Array:
 	# Combine static and available actions
 	var all_actions = available_actions + static_actions
+	if len(available_actions) != 0:
+		print()
 	
 	# Get the highest priority goal
 	primary_goals.sort_custom(func (a, b): return a.goal_priority > b.goal_priority)
 
 	# Initialize the plan as an empty array
-	var plan: Array
+	var plan: Array = []
 
 	for goal in primary_goals:
-		if goal.goal_name == "DoTheAntsyShuffle":
-			print()
-		if build_node_plan("a*", plan, all_actions, creature, goal, goal.goal_criteria):
+		if build_node_plan("a*", plan, all_actions, character, goal, goal.goal_criteria):
 			if plan.is_empty():
 				continue
 			else:
@@ -42,7 +42,7 @@ func build_node_plan(algorithm: String, plan: Array, actions: Array, character: 
 			if goal_criteria_is_already_satisfied(character, criteria):
 				return true
 
-			var valid_actions: Array
+			var valid_actions: Array = []
 			var new_goal_criteria: Dictionary = criteria.duplicate()
 			for action in actions:
 				if action.is_valid(character, criteria):
