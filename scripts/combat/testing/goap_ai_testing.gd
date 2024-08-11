@@ -8,6 +8,8 @@ var inactive_ai: CombatCreatureBaseClass
 @onready var debug_state_textbox = $Debug/DebugStateText
 @onready var actions_textbox = $Debug/ActionsTextBox
 
+var close_range_attack: AI_Action = load("res://scripts/combat/ai/goap/ability_actions/BasicAttackTest.gd").new()
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var root_node = get_tree().current_scene
@@ -25,7 +27,7 @@ func _ready():
 func _process(_delta):
 	handle_current_plan()
 	handle_goals()
-	handle_state()
+	#handle_state()
 	handle_actions()
 	active_ai.queue_redraw()
 
@@ -79,3 +81,7 @@ func handle_actions() -> void:
 		})
 	
 	actions_textbox.text = text
+
+
+func _on_button_pressed():
+	active_ai.combat_creature_brain.available_actions.append(close_range_attack)

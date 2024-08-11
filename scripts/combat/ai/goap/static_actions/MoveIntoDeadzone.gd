@@ -3,14 +3,9 @@ extends AI_Action
 func _init() -> void:
 	action_name = "MoveIntoDeadzone"
 	preconditions = {
-			"distance_to_target": determine_character_in_deadzone
-		}
+			#"distance_to_target": determine_character_in_deadzone
+	}
 	effects = {	# Effects
-			#"distance_to_target": { # Effect: distance_to_target = current_ideal_range
-				#"target_key": "current_ideal_range",
-				#"callable": func(a): return float(a),
-				#"apply": false
-			#},
 			"distance_to_target": {
 				"callable": simulate_character_in_deadzone,
 				"apply": false

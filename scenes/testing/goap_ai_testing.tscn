@@ -10,9 +10,9 @@ script = ExtResource("1_a2lvv")
 [node name="Debug" type="Node" parent="."]
 
 [node name="CurrentPlanText" type="TextEdit" parent="Debug"]
-offset_left = 448.0
+offset_left = 64.0
 offset_top = 64.0
-offset_right = 896.0
+offset_right = 512.0
 offset_bottom = 384.0
 
 [node name="GoalsText" type="TextEdit" parent="Debug"]
@@ -21,17 +21,18 @@ offset_top = 448.0
 offset_right = 896.0
 offset_bottom = 1024.0
 
-[node name="DebugStateText" type="TextEdit" parent="Debug"]
-offset_left = 64.0
-offset_top = 64.0
-offset_right = 384.0
-offset_bottom = 384.0
-
 [node name="ActionsTextBox" type="TextEdit" parent="Debug"]
 offset_left = 64.0
 offset_top = 448.0
 offset_right = 384.0
 offset_bottom = 1024.0
+
+[node name="Button" type="Button" parent="Debug"]
+offset_left = 576.0
+offset_top = 64.0
+offset_right = 832.0
+offset_bottom = 128.0
+text = "Close Range Attack"
 
 [node name="CombatObstacleBoulder" parent="." instance=ExtResource("2_h8dch")]
 position = Vector2(1128, 528)
@@ -44,3 +45,5 @@ position = Vector2(1752, 848)
 
 [node name="GoapTestBot2" parent="." instance=ExtResource("1_wnt0l")]
 position = Vector2(1376, 224)
+
+[connection signal="pressed" from="Debug/Button" to="." method="_on_button_pressed"]

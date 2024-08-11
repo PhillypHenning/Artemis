@@ -7,22 +7,26 @@ extends Resource
 @export var effects: Dictionary
 var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
 
-func is_valid(chracter: CombatCreatureBaseClass, goal_criteria: Dictionary) -> bool:
+func is_valid(character: CombatCreatureBaseClass, goal_criteria: Dictionary) -> bool:
 	var tracker: bool = false
+	var simulated_character = character.duplicate()
+	simulated_character.characteristics = character.characteristics.deep_duplicate()
 	for key in goal_criteria:
-		if preconditions.has(key):
-			match typeof(preconditions[key]):
+		if effects.has(key):
+			match typeof(effects[key]):
 				TYPE_BOOL:
-					tracker = chracter.characteristics.get(key) == preconditions[key]
+					tracker = effects[key] == goal_criteria[key]
 				TYPE_CALLABLE:
-					#tracker =  preconditions[key].call(chracter.characteristics.get(key))
-					tracker = preconditions[key].call(chracter)
+					tracker = effects[key].call(simulated_character) == goal_criteria[key]
 				TYPE_DICTIONARY:
-					tracker =  preconditions[key].callable.call(chracter.characteristics.get(key), chracter.characteristics.get(preconditions[key].target_key))
+					tracker = goal_criteria.get(key).call(effects[key].callable.call(simulated_character))
+				TYPE_FLOAT:
+					# goal_cruteria.get(key) == action.effects.get(key)
+					pass
 				_:
 					push_error("Precondition type not defined [{key}], [{key_type}]".format({
 						"key": key,
-						"key_type": typeof(preconditions[key])
+						"key_type": typeof(effects[key])
 					}))
 			if !tracker: return tracker
 	return tracker
