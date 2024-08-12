@@ -4,15 +4,13 @@ extends Node
 
 const PlannerPack = preload("res://scripts/combat/ai/goap/planner.gd")
 var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
+var planner = PlannerPack.new()
 
 var character_node: CombatCreatureBaseClass
 
 var primary_goals: Array
-
-var goals: Array
 var static_actions: Array
 var available_actions: Array
-var planner = PlannerPack.new()
 
 var actions_path: String = "res://scripts/combat/ai/goap/static_actions"
 var goals_path: String = "res://scripts/combat/ai/goap/goals"

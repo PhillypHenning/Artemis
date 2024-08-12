@@ -7,22 +7,27 @@ extends Resource
 @export var effects: Dictionary
 var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
 
-func is_valid(chracter: CombatCreatureBaseClass, goal_criteria: Dictionary) -> bool:
+func is_valid(character: CombatCreatureBaseClass, goal_criteria: Dictionary) -> bool:
 	var tracker: bool = false
+	# Creature the simulated character
+	var simulated_character = character.duplicate()
+	simulated_character.characteristics = character.characteristics.deep_duplicate()
+	
 	for key in goal_criteria:
-		if preconditions.has(key):
-			match typeof(preconditions[key]):
+		if effects.has(key):
+			match typeof(effects[key]):
 				TYPE_BOOL:
-					tracker = chracter.characteristics.get(key) == preconditions[key]
-				TYPE_CALLABLE:
-					#tracker =  preconditions[key].call(chracter.characteristics.get(key))
-					tracker = preconditions[key].call(chracter)
+					# Easiest of the testables
+					# If the effect will result in the goal_criteria request, then life is good, proceed.
+					tracker = effects[key] == goal_criteria[key]
+				
 				TYPE_DICTIONARY:
-					tracker =  preconditions[key].callable.call(chracter.characteristics.get(key), chracter.characteristics.get(preconditions[key].target_key))
+					var validate_callable = effects[key].get("validate")
+					tracker = validate_callable.call(simulated_character, goal_criteria.get(key))
 				_:
-					push_error("Precondition type not defined [{key}], [{key_type}]".format({
+					push_error("Effect type not defined [{key}], [{key_type}]".format({
 						"key": key,
-						"key_type": typeof(preconditions[key])
+						"key_type": typeof(effects[key])
 					}))
 			if !tracker: return tracker
 	return tracker
@@ -38,21 +43,12 @@ func apply(character: CombatCreatureBaseClass, simulate: bool = true) -> CombatC
 
 	for key in effects.keys():
 		match typeof(effects[key]):
-			TYPE_INT:
-				var new_value = new_character.characteristics.get(key) + effects[key]
-				var max_key = key.replace("current", "max")
-				new_character.characteristics.key = clamp(new_value, 0, new_character.characteristics.get(max_key))
-			TYPE_FLOAT:
-				var max_key = key.replace("current", "max")
-				var new_value = clampf((new_character.characteristics.get(key) + effects[key]), 0, new_character.characteristics.get(max_key))
-				new_character.characteristics.set(key, new_value)
-			TYPE_DICTIONARY:
-				if effects[key].apply or simulate:
-					new_character = effects[key].callable.call(new_character)
 			TYPE_BOOL:
 				new_character.characteristics.set(key, effects[key])
-			TYPE_CALLABLE:
-				new_character = effects[key].call(new_character)
+			TYPE_DICTIONARY:
+				if simulate or !effects[key].get("simulate_only", false):
+					var apply_callable = effects[key].get("apply")
+					apply_callable.call(new_character)
 			_:
 				push_error("Effect type not defined [{key}], [{key_type}]".format({
 					"key": key,
@@ -63,13 +59,4 @@ func apply(character: CombatCreatureBaseClass, simulate: bool = true) -> CombatC
 
 func print() -> String:
 	var header = "\tAction: [%s]" % action_name
-	var pc_text: String
-	for precondition in preconditions:
-		match typeof(preconditions[precondition]):
-			TYPE_CALLABLE:
-				pc_text = "%s\n\t\t%s: Callable" % [pc_text, precondition]
-			TYPE_DICTIONARY:
-				pc_text = "%s\n\t\t%s:" % [pc_text, precondition]
-				for key in preconditions[precondition]:
-					pc_text = "%s\n\t\t\t%s" % [pc_text, key]
-	return header + pc_text
+	return header

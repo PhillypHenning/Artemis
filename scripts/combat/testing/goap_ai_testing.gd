@@ -5,8 +5,9 @@ var inactive_ai: CombatCreatureBaseClass
 
 @onready var current_plan_textbox = $Debug/CurrentPlanText
 @onready var goals_textbox = $Debug/GoalsText
-@onready var debug_state_textbox = $Debug/DebugStateText
 @onready var actions_textbox = $Debug/ActionsTextBox
+
+var close_range_attack: AI_Action = load("res://scripts/combat/ai/goap/ability_actions/BasicAttackTest.gd").new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -25,7 +26,7 @@ func _ready():
 func _process(_delta):
 	handle_current_plan()
 	handle_goals()
-	handle_state()
+	#handle_state()
 	handle_actions()
 	active_ai.queue_redraw()
 
@@ -53,29 +54,25 @@ func handle_goals() -> void:
 	goals_textbox.text = goals_text
 
 
-func handle_state() -> void:
-	var text = "State:\n"
-	text = "{text}\tlos_on_target: [{los}]
-\tcurrent_antsy: [{antsy}]
-\tcurrent_ideal_range: [{ideal_range}]
-\tdistance_to_target: [{distance_to_target}]".format(
-		{
-			"text": text, 
-			"los": active_ai.characteristics.los_on_target,
-			"antsy": active_ai.characteristics.current_antsy,
-			"ideal_range": active_ai.characteristics.current_ideal_range,
-			"distance_to_target": '%.2f' % active_ai.characteristics.distance_to_target,
-		}
-	)
-	debug_state_textbox.text = text
-
 func handle_actions() -> void:
-	var text = "Static Actions:"
+	var static_action_text = "Static Actions:"
 	
 	for action in active_ai.combat_creature_brain.static_actions:
-		text = "{text}\n{action_print}".format({
-			"text": text,
+		static_action_text = "{text}\n{action_print}".format({
+			"text": static_action_text,
 			"action_print": action.print()
 		})
 	
-	actions_textbox.text = text
+	var available_action_text = "\n\nAvailable Actions:"
+	
+	for action in active_ai.combat_creature_brain.available_actions:
+		available_action_text = "{text}\n{action_print}".format({
+			"text": available_action_text,
+			"action_print": action.print()
+		})
+	
+	actions_textbox.text = static_action_text + available_action_text
+
+
+func _on_button_pressed():
+	active_ai.combat_creature_brain.available_actions.append(close_range_attack)

@@ -19,7 +19,7 @@ func calculate_time_to_reach_destination(speed: float, start_position: Vector2, 
 	return time_to_reach
 
 func load_resources_to_dict(resource_path: String, extension: String) -> Dictionary:
-	var discovered_resources: Dictionary
+	var discovered_resources: Dictionary ={}
 	for file_name in DirAccess.get_files_at(resource_path):
 		if (file_name.get_extension() == extension):
 			var state = file_name.replace("."+extension, '')
@@ -28,7 +28,7 @@ func load_resources_to_dict(resource_path: String, extension: String) -> Diction
 	return discovered_resources
 
 func load_resources_to_array(resource_path: String, extension: String, character: CombatCreatureBaseClass = null) -> Array:
-	var discovered_resources: Array
+	var discovered_resources: Array = []
 	for file_name in DirAccess.get_files_at(resource_path):
 		if (file_name.get_extension() == extension):
 			var loaded_resource

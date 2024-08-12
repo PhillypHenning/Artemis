@@ -2,24 +2,18 @@ extends AI_Action
 
 func _init() -> void:
 	action_name = "MoveIntoDeadzone"
-	preconditions = {
-			"distance_to_target": determine_character_in_deadzone
-		}
-	effects = {	# Effects
-			#"distance_to_target": { # Effect: distance_to_target = current_ideal_range
-				#"target_key": "current_ideal_range",
-				#"callable": func(a): return float(a),
-				#"apply": false
-			#},
+	preconditions = {}
+	effects = {
 			"distance_to_target": {
-				"callable": simulate_character_in_deadzone,
-				"apply": false
+				"apply": simulate_character_in_deadzone,
+				"validate": determine_character_in_deadzone,
+				"simulate_only": true
 			}
 		}
 
-func determine_character_in_deadzone(character: CombatCreatureBaseClass) -> bool:
-	var distance = character.position.distance_to(character.characteristics.enemy_target.position)
-	return !AIUtils.check_if_acceptable_distance(distance, CombatCreatureCharacteristics.PROXIMITY.DEADZONE)
+func determine_character_in_deadzone(character: CombatCreatureBaseClass, criteria: Callable) -> bool:
+	simulate_character_in_deadzone(character)
+	return criteria.call(character)
 
 func simulate_character_in_deadzone(character: CombatCreatureBaseClass) -> CombatCreatureBaseClass:
 	character.characteristics.distance_to_target = CombatCreatureCharacteristics.PROXIMITY.DEADZONE
