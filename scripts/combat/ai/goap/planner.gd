@@ -15,8 +15,6 @@ class_name Planner
 func build_plan(available_actions: Array, static_actions: Array, primary_goals: Array, character: CombatCreatureBaseClass) -> Array:
 	# Combine static and available actions
 	var all_actions = available_actions + static_actions
-	if len(available_actions) != 0:
-		print()
 	
 	# Get the highest priority goal
 	primary_goals.sort_custom(func (a, b): return a.goal_priority > b.goal_priority)
@@ -43,7 +41,7 @@ func build_node_plan(algorithm: String, plan: Array, actions: Array, character: 
 				return true
 
 			var valid_actions: Array = []
-			var new_goal_criteria: Dictionary = criteria.duplicate()
+			var new_goal_criteria: Dictionary = {}
 			for action in actions:
 				if action.is_valid(character, criteria):
 					valid_actions.append(action)
@@ -52,6 +50,9 @@ func build_node_plan(algorithm: String, plan: Array, actions: Array, character: 
 
 			# Improvement: Sorting
 			##	- If multiple actions accomplish the same action, then it will become necessary to filter the actions down to the "best option"
+
+			# If the criteria is already satisfied than remove them?
+
 
 			# Iterate over valid actions and attempt to build a plan
 			for action in valid_actions:
@@ -72,6 +73,9 @@ func build_node_plan(algorithm: String, plan: Array, actions: Array, character: 
 
 
 func goal_criteria_is_already_satisfied(character: CombatCreatureBaseClass, goal_criteria: Dictionary) -> bool:
+	if goal_criteria.size() == 0:
+		return true
+	
 	var tracker: bool = false
 	for key in goal_criteria.keys():
 		match typeof(goal_criteria[key]):

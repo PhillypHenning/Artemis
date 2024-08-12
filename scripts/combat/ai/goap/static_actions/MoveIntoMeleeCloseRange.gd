@@ -13,7 +13,7 @@ func _init() -> void:
 
 func determine_character_in_melee_close_range(character: CombatCreatureBaseClass, criteria: Callable) -> bool:
 	simulate_character_in_melee_close_range(character)
-	return AIUtils.check_if_acceptable_distance(character.characteristics.distance_to_target, CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE)
+	return criteria.call(character)
 
 func simulate_character_in_melee_close_range(character: CombatCreatureBaseClass) -> CombatCreatureBaseClass:
 	character.characteristics.distance_to_target = CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE

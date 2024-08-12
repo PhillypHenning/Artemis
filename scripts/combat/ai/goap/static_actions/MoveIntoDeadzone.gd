@@ -13,7 +13,7 @@ func _init() -> void:
 
 func determine_character_in_deadzone(character: CombatCreatureBaseClass, criteria: Callable) -> bool:
 	simulate_character_in_deadzone(character)
-	return AIUtils.check_if_acceptable_distance(character.characteristics.distance_to_target, CombatCreatureCharacteristics.PROXIMITY.DEADZONE)
+	return criteria.call(character)
 
 func simulate_character_in_deadzone(character: CombatCreatureBaseClass) -> CombatCreatureBaseClass:
 	character.characteristics.distance_to_target = CombatCreatureCharacteristics.PROXIMITY.DEADZONE

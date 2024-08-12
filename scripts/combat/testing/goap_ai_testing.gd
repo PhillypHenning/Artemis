@@ -55,15 +55,23 @@ func handle_goals() -> void:
 
 
 func handle_actions() -> void:
-	var text = "Static Actions:"
+	var static_action_text = "Static Actions:"
 	
 	for action in active_ai.combat_creature_brain.static_actions:
-		text = "{text}\n{action_print}".format({
-			"text": text,
+		static_action_text = "{text}\n{action_print}".format({
+			"text": static_action_text,
 			"action_print": action.print()
 		})
 	
-	actions_textbox.text = text
+	var available_action_text = "\n\nAvailable Actions:"
+	
+	for action in active_ai.combat_creature_brain.available_actions:
+		available_action_text = "{text}\n{action_print}".format({
+			"text": available_action_text,
+			"action_print": action.print()
+		})
+	
+	actions_textbox.text = static_action_text + available_action_text
 
 
 func _on_button_pressed():

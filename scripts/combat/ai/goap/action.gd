@@ -46,7 +46,6 @@ func apply(character: CombatCreatureBaseClass, simulate: bool = true) -> CombatC
 			TYPE_BOOL:
 				new_character.characteristics.set(key, effects[key])
 			TYPE_DICTIONARY:
-				#if !effects[key].get("simulate_only", false) and !simulate:
 				if simulate or !effects[key].get("simulate_only", false):
 					var apply_callable = effects[key].get("apply")
 					apply_callable.call(new_character)
@@ -60,13 +59,4 @@ func apply(character: CombatCreatureBaseClass, simulate: bool = true) -> CombatC
 
 func print() -> String:
 	var header = "\tAction: [%s]" % action_name
-	var pc_text: String
-	for precondition in preconditions:
-		match typeof(preconditions[precondition]):
-			TYPE_CALLABLE:
-				pc_text = "%s\n\t\t%s: Callable" % [pc_text, precondition]
-			TYPE_DICTIONARY:
-				pc_text = "%s\n\t\t%s:" % [pc_text, precondition]
-				for key in preconditions[precondition]:
-					pc_text = "%s\n\t\t\t%s" % [pc_text, key]
-	return header + pc_text
+	return header
