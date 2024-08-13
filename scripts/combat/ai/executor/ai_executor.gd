@@ -22,16 +22,22 @@ func run_planner(current_plan: Array) -> Array:
 	# Run through the current_plan
 	for index in range(current_plan.size()):
 		# Get state from action
-		var target_state = state_resources.get(current_plan[index].action_name)
-
-		if target_state:
-			if !current_state:
+		if !current_state:
+			var target_state: Resource
+			match current_plan[index].action_type:
+				AI_Action.ACTION_TYPE.MOVE_TO:
+					target_state = state_resources.get("MoveTo").duplicate(true)
+					target_state.target_action_properties = current_plan[index].action_execution.do_action
+					target_state.target_is_complete = current_plan[index].action_execution.is_complete
+				AI_Action.ACTION_TYPE.USE_ABILITY:
+					target_state = state_resources.get("UseAbility").duplicate(true)
+					target_state.ability_name = current_plan[index].action_name
+					target_state.target_action_properties = current_plan[index].action_execution.do_action
+					target_state.target_is_complete = current_plan[index].action_execution.is_complete
+			if target_state:
 				current_state = target_state # Set current_state to target_state
 				state_index = index
 				break
-		else:
-			push_error("State is undefined.. [{state}]".format({"state": current_plan[index].action_name}))
-
 	if current_state:
 		# Run the current_state action
 		current_state.action(character_node)
@@ -40,5 +46,4 @@ func run_planner(current_plan: Array) -> Array:
 		if current_state.is_complete(character_node):
 			current_state = null
 			actioned_plan.pop_at(state_index)
-
 	return actioned_plan
