@@ -1,12 +1,19 @@
-extends AI_Action
+extends AI_Use_Ability_Action
 
 func _init() -> void:
 	action_name = "BasicAttackTest"
+	action_type = ACTION_TYPE.USE_ABILITY
 	preconditions = {
 		"distance_to_target": determine_character_in_melee_close_range
 	}
 	effects = {
 		"is_attacking": true
+	}
+	action_execution = {
+		"do_action": {
+			"ability": null
+		},
+		"is_complete": is_complete
 	}
 
 # Preconditions:
@@ -20,3 +27,7 @@ func _init() -> void:
 
 func determine_character_in_melee_close_range(character: CombatCreatureBaseClass) -> bool:
 	return AIUtils.check_if_acceptable_distance(character.characteristics.distance_to_target, CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE)
+
+func is_complete(character: CombatCreatureBaseClass) -> bool:
+	character.characteristics.is_attacking = false
+	return true

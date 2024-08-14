@@ -75,4 +75,4 @@ func handle_actions() -> void:
 
 
 func _on_button_pressed():
-	active_ai.combat_creature_brain.available_actions.append(close_range_attack)
+	active_ai.combat_creature_brain.available_actions.append(close_range_attack.duplicate(true))

@@ -2,9 +2,17 @@ class_name AI_Action
 
 extends Resource
 
-@export var action_name: String
-@export var preconditions: Dictionary
-@export var effects: Dictionary
+enum ACTION_TYPE {
+	MOVE_TO,
+	USE_ABILITY
+}
+
+var action_name: String
+var preconditions: Dictionary
+var effects: Dictionary
+var action_execution: Dictionary
+var action_type: ACTION_TYPE
+
 var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
 
 func is_valid(character: CombatCreatureBaseClass, goal_criteria: Dictionary) -> bool:
