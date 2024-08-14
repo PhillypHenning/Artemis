@@ -161,8 +161,9 @@ func _init_ai() -> void:
 
 
 # PROCESS FUNCTIONS
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	# TARGETTING
+	tracked_delta = delta
 	_handle_look_at_target()
 	calculate_ideal_combat_range()
 	calculate_distance_to_target()
@@ -179,15 +180,18 @@ func _process(_delta: float) -> void:
 			## Execute plan
 			current_plan = combat_creature_nervous_system.run_planner(current_plan)
 
+var tracked_delta: float
 
-## BASIC MOVEMENT
-func _handle_combat_creature_basic_movement(direction: Vector2) -> void:
-	if !combat_creature_nodes[MOVEMENT].movement_override:
-		combat_creature_nodes[POSITIONS].last_known_direction = direction
-		velocity = direction * characteristics.current_speed
-		move_and_slide()
+## MOVEMENT
+func handle_combat_creature_basic_movement(end_position: Vector2) -> void:
+	var current_position = position
+	var direction_to_move = (end_position - current_position).normalized()
+	var movement = direction_to_move * characteristics.current_speed * tracked_delta
+	if (current_position.distance_to(end_position) <= movement.length()):
+		position = end_position  # Snap to the end position
 	else:
-		combat_creature_nodes[MOVEMENT].movement_override.call({"target": self})
+		velocity = direction_to_move * characteristics.current_speed
+		move_and_slide()
 
 func calculate_distance_to_target() -> void:
 	if characteristics.enemy_target:
@@ -223,7 +227,7 @@ func _use_combat_creature_take_damage(amount_of_incoming_damage: int) -> void:
 		#characteristics.health_severity = CombatCreatureCharacteristics.calculate_severity_level()
 		
 		
-		combat_creature_brain.goal_conserve_health.goal_priority = (characteristics.health_severity/10)
+		#combat_creature_brain.goal_conserve_health.goal_priority = (characteristics.health_severity/10)
 		
 	if characteristics.current_health <= 0:
 		characteristics.is_dead = true

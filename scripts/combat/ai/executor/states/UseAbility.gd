@@ -2,8 +2,8 @@ extends AI_State
 
 var ability_name: String
 
-func action(_character: CombatCreatureBaseClass) -> void:
-	print("Attack called")
+func action(character: CombatCreatureBaseClass) -> void:
+	target_action_properties["ability"].call(character)
 
 func is_complete(character: CombatCreatureBaseClass) -> bool:
 	for index in range(character.combat_creature_brain.available_actions.size()):

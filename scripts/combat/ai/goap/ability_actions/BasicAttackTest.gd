@@ -1,5 +1,7 @@
 extends AI_Use_Ability_Action
 
+var AbilityTesting = preload("res://scripts/combat/abilities/BasicAttackTest.gd").new()
+
 func _init() -> void:
 	action_name = "BasicAttackTest"
 	action_type = ACTION_TYPE.USE_ABILITY
@@ -11,7 +13,7 @@ func _init() -> void:
 	}
 	action_execution = {
 		"do_action": {
-			"ability": null
+			"ability": perform_attack
 		},
 		"is_complete": is_complete
 	}
@@ -26,8 +28,12 @@ func _init() -> void:
 # 	The Combat Creature will use Stamina
 
 func determine_character_in_melee_close_range(character: CombatCreatureBaseClass) -> bool:
-	return AIUtils.check_if_acceptable_distance(character.characteristics.distance_to_target, CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE)
+	return AIUtils.check_if_target_in_range(character, character.characteristics.enemy_target.position, CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE)
 
 func is_complete(character: CombatCreatureBaseClass) -> bool:
 	character.characteristics.is_attacking = false
 	return true
+
+func perform_attack(character: CombatCreatureBaseClass) -> void:
+	if determine_character_in_melee_close_range(character):
+		AbilityTesting.perform_basic_attack_test(character, 1)

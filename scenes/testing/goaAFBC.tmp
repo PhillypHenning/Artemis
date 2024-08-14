@@ -35,22 +35,15 @@ offset_bottom = 128.0
 text = "Close Range Attack"
 
 [node name="CombatObstacleBoulder" parent="." instance=ExtResource("2_h8dch")]
-position = Vector2(976, 912)
+position = Vector2(1128, 528)
 
 [node name="CombatObstacleBoulder2" parent="." instance=ExtResource("2_h8dch")]
-position = Vector2(976, 1024)
+position = Vector2(1592, 352)
 
 [node name="GoapTestBot" parent="." instance=ExtResource("1_wnt0l")]
-position = Vector2(1352, 432)
+position = Vector2(1752, 848)
 
 [node name="GoapTestBot2" parent="." instance=ExtResource("1_wnt0l")]
 position = Vector2(1376, 224)
-
-[node name="Bot2Stats" type="TextEdit" parent="GoapTestBot2"]
-offset_left = -104.0
-offset_top = -160.0
-offset_right = 104.0
-offset_bottom = -64.0
-metadata/_edit_use_anchors_ = true
 
 [connection signal="pressed" from="Debug/Button" to="." method="_on_button_pressed"]

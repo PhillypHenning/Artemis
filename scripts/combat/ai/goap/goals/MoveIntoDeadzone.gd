@@ -1,7 +1,10 @@
 extends AI_Goal
 
+var distance: float
+
 func _init(character: CombatCreatureBaseClass):
 	self.goal_name = "MoveIntoDeadzone"
+	distance = CombatCreatureCharacteristics.PROXIMITY.DEADZONE
 	self.goal_criteria = {
 				"distance_to_target": determine_character_in_deadzone
 	}
@@ -9,4 +12,5 @@ func _init(character: CombatCreatureBaseClass):
 	self.cc_character = character
 
 func determine_character_in_deadzone(character: CombatCreatureBaseClass) -> bool:
-	return AIUtils.check_if_acceptable_distance(character.characteristics.distance_to_target, CombatCreatureCharacteristics.PROXIMITY.DEADZONE)
+	# Character position - distance should = the characters distance_to_target value
+	return AIUtils.check_if_target_in_range(character, character.characteristics.enemy_target.position, distance)

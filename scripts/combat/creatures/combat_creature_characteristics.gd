@@ -20,10 +20,10 @@ enum CHARACTER_TYPE {
 # }
 
 enum PROXIMITY {
-	MELEE_CLOSE = 50,
-	MELEE_MEDIUM = 100,
-	MELEE_FAR = 150,
-	DEADZONE = 250,
+	MELEE_CLOSE = 100,
+	MELEE_MEDIUM = 250,
+	MELEE_FAR = 300,
+	DEADZONE = 400,
 	RANGE_CLOSE = 350,
 	RANGE_FAR = 450,
 	OOMR,
@@ -37,7 +37,7 @@ enum PROXIMITY {
 @export var max_health: float
 #var health_severity: SEVERITY_LEVEL
 @export var is_dead: bool
-@export var can_take_damage: bool
+@export var can_take_damage: bool = true
 @export var can_take_damage_after_time: float
 # -- STAMINA -- #
 @export var current_stamina: int
