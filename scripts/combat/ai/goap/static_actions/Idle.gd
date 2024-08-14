@@ -11,8 +11,8 @@ func _init() -> void:
 	preconditions = {}
 	effects = {
 		"current_antsy": {
-			"apply": antsy_apply,
-			"validate": antsy_validate,
+			"apply": reduce_antsy,
+			"validate": validate_antsy_effect,
 			"simulate_only": true
 		}
 	}
@@ -25,12 +25,12 @@ func _init() -> void:
 		"is_complete": is_complete
 	}
 
-func antsy_apply(character: CombatCreatureBaseClass) -> CombatCreatureBaseClass:
+func reduce_antsy(character: CombatCreatureBaseClass) -> CombatCreatureBaseClass:
 	character.characteristics.current_antsy = clamp(character.characteristics.current_antsy-antsy_effect_value, 0, character.characteristics.max_antsy)
 	return character
 
-func antsy_validate(character: CombatCreatureBaseClass, target_value: float) -> bool:
-	antsy_apply(character)
+func validate_antsy_effect(character: CombatCreatureBaseClass, target_value: float) -> bool:
+	reduce_antsy(character)
 	return character.characteristics.current_antsy == target_value
 
 func get_distance(_character: CombatCreatureBaseClass) -> float:
@@ -54,7 +54,7 @@ func start_action_timer(character: CombatCreatureBaseClass) -> void:
 func finish_action_timer(character: CombatCreatureBaseClass) -> void:
 	action_timer.queue_free()
 	action_done = true
-	antsy_apply(character)
+	reduce_antsy(character)
 
-func is_complete(_character: CombatCreatureBaseClass) -> bool:
+func is_complete(_character: CombatCreatureBaseClass, _target_location: Vector2) -> bool:
 	return action_done

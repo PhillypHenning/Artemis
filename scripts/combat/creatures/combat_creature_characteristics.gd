@@ -37,7 +37,7 @@ enum PROXIMITY {
 @export var max_health: float
 #var health_severity: SEVERITY_LEVEL
 @export var is_dead: bool
-@export var can_take_damage: bool
+@export var can_take_damage: bool = true
 @export var can_take_damage_after_time: float
 # -- STAMINA -- #
 @export var current_stamina: int

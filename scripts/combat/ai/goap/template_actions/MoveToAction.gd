@@ -25,9 +25,9 @@ func determine_character_in_target_location(character: CombatCreatureBaseClass, 
 	return criteria.call(character)
 
 func simulate_character_target_location(character: CombatCreatureBaseClass) -> CombatCreatureBaseClass:
-	var direction = get_direction(character)
-	var distance = get_distance(character)
-	var displacement = direction * distance
+	var target_direction = get_direction(character)
+	var target_distance = get_distance(character)
+	var displacement = target_direction * target_distance
 	character.position = character.position + displacement
 	return character
 
@@ -36,8 +36,7 @@ func get_distance(character: CombatCreatureBaseClass) -> float:
 	return target_distance
 
 func get_direction(character: CombatCreatureBaseClass) -> Vector2:
-	var direction: Vector2
 	return character.position.direction_to(character.characteristics.enemy_target.position)
 
-func character_at_target_location(character: CombatCreatureBaseClass) -> bool:
-	return AIUtils.check_if_target_in_range(character, distance)
+func character_at_target_location(character: CombatCreatureBaseClass, _target_location: Vector2) -> bool:
+	return AIUtils.check_if_target_in_range(character, character.characteristics.enemy_target.position, distance)

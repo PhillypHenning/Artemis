@@ -12,8 +12,9 @@ func check_if_acceptable_distance(value1: float, value2: float) -> bool:
 	# Check if the difference is within the tolerance
 	return difference <= tolerance
 
-func check_if_target_in_range(character: CombatCreatureBaseClass, distance: float) -> bool:
-	var target_distance = character.position.distance_to(character.characteristics.enemy_target.position) - distance
+func check_if_target_in_range(character: CombatCreatureBaseClass, target_position: Vector2, distance: float) -> bool:
+	# var target_distance = character.position.distance_to(character.characteristics.enemy_target.position) - distance
+	var target_distance = character.position.distance_to(target_position) - distance
 	var epsilon = 0.001  # Define a small enough value to consider as close to zero
 	var abs_value = abs(target_distance)
 	return abs_value <= epsilon

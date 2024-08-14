@@ -7,6 +7,7 @@ var state_name: String = ""
 var target_action_properties: Dictionary
 var target_is_complete: Callable
 var action_timer: Callable
+var update: Callable
 
 func run_action(_character_node: CombatCreatureBaseClass):
 	push_error("Template function. Override this in the child state object")

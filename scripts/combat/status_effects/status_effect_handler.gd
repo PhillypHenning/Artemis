@@ -45,7 +45,7 @@ func _apply_damage_immunity(parameters: Dictionary) -> void:
 		push_error("Unable to find timers_group_node")
 		return
 	
-	parameters.target.combat_creature_health_characteristics.can_take_damage = false
+	parameters.target.characteristics.can_take_damage = false
 	
 	var finish_parameters = parameters.duplicate()
 	finish_parameters.merge(status_effects[DAMAGE_IMMUNITY].on_finish)
@@ -56,4 +56,4 @@ func _apply_damage_immunity(parameters: Dictionary) -> void:
 
 func _finish_damage_immunity(parameters: Dictionary) -> void:
 	print("_finish_damage_immunity called")
-	parameters.target.combat_creature_health_characteristics.can_take_damage = true
+	parameters.target.characteristics.can_take_damage = true

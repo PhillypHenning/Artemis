@@ -13,4 +13,4 @@ func _init(character: CombatCreatureBaseClass):
 
 func determine_character_in_deadzone(character: CombatCreatureBaseClass) -> bool:
 	# Character position - distance should = the characters distance_to_target value
-	return AIUtils.check_if_target_in_range(character, distance)
+	return AIUtils.check_if_target_in_range(character, character.characteristics.enemy_target.position, distance)

@@ -6,6 +6,7 @@ var inactive_ai: CombatCreatureBaseClass
 @onready var current_plan_textbox = $Debug/CurrentPlanText
 @onready var goals_textbox = $Debug/GoalsText
 @onready var actions_textbox = $Debug/ActionsTextBox
+@onready var bot_2_stats = $GoapTestBot2/Bot2Stats
 
 var close_range_attack: AI_Action = load("res://scripts/combat/ai/goap/ability_actions/BasicAttackTest.gd").new()
 
@@ -22,11 +23,15 @@ func _ready():
 	active_ai.combat_creature_nodes[CombatCreatureBaseClass.DEBUG] = true
 	active_ai.combat_creature_nodes[CombatCreatureBaseClass.TARGETTING][CombatCreatureBaseClass.TARGETTING_DETAILS.LOS].los_debug = true
 
+	#inactive_ai.ai_brain_state = true
+	#inactive_ai._init_ai()
+	#inactive_ai.characteristics.enemy_target = active_ai
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	handle_current_plan()
 	handle_goals()
-	#handle_state()
+	handle_state()
 	handle_actions()
 	active_ai.queue_redraw()
 
@@ -76,3 +81,8 @@ func handle_actions() -> void:
 
 func _on_button_pressed():
 	active_ai.combat_creature_brain.available_actions.append(close_range_attack.duplicate(true))
+
+func handle_state():
+	var text_string: String
+	text_string = "Current Health [{0}]".format([inactive_ai.characteristics.current_health])
+	bot_2_stats.text = text_string
