@@ -2,7 +2,7 @@ extends AI_State
 
 var ability_name: String
 
-func action(character: CombatCreatureBaseClass) -> void:
+func action(_character: CombatCreatureBaseClass) -> void:
 	print("Attack called")
 
 func is_complete(character: CombatCreatureBaseClass) -> bool:

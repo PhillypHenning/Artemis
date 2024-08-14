@@ -28,7 +28,7 @@ func simulate_character_in_melee_close_range(character: CombatCreatureBaseClass)
 	character.characteristics.distance_to_target = distance
 	return character
 
-func get_distance(character: CombatCreatureBaseClass) -> float:
+func get_distance(_character: CombatCreatureBaseClass) -> float:
 	return distance
 
 func get_direction(character: CombatCreatureBaseClass) -> Vector2:
