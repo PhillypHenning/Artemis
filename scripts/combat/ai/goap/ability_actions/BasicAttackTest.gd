@@ -26,7 +26,7 @@ func _init() -> void:
 # 	The Combat Creature will use Stamina
 
 func determine_character_in_melee_close_range(character: CombatCreatureBaseClass) -> bool:
-	return AIUtils.check_if_acceptable_distance(character.characteristics.distance_to_target, CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE)
+	return AIUtils.check_if_target_in_range(character,  CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE)
 
 func is_complete(character: CombatCreatureBaseClass) -> bool:
 	character.characteristics.is_attacking = false

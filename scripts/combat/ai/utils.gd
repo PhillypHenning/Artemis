@@ -2,10 +2,21 @@ class_name AI_Utils
 
 extends Node
 
-func check_if_acceptable_distance(a: int, b: int) -> bool:
-	var trange = range(b-2, b+2)
-	var tracker = a in trange
-	return tracker
+func check_if_acceptable_distance(value1: float, value2: float) -> bool:
+	# Calculate the average value to use as a reference for tolerance
+	var average_value = (value1 + value2) / 2.0
+	# Calculate the tolerance (1% of the average value)
+	var tolerance = average_value * 0.01
+	# Calculate the absolute difference between the two values
+	var difference = abs(value1 - value2)
+	# Check if the difference is within the tolerance
+	return difference <= tolerance
+
+func check_if_target_in_range(character: CombatCreatureBaseClass, distance: float) -> bool:
+	var target_distance = character.position.distance_to(character.characteristics.enemy_target.position) - distance
+	var epsilon = 0.001  # Define a small enough value to consider as close to zero
+	var abs_value = abs(target_distance)
+	return abs_value <= epsilon
 
 func calculate_time_to_reach_destination(speed: float, start_position: Vector2, desired_position: Vector2) -> float:
 	# Calculate the distance between the two positions

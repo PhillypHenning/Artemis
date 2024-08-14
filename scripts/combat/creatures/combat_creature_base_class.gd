@@ -161,8 +161,9 @@ func _init_ai() -> void:
 
 
 # PROCESS FUNCTIONS
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	# TARGETTING
+	tracked_delta = delta
 	_handle_look_at_target()
 	calculate_ideal_combat_range()
 	calculate_distance_to_target()
@@ -179,9 +180,22 @@ func _process(_delta: float) -> void:
 			## Execute plan
 			current_plan = combat_creature_nervous_system.run_planner(current_plan)
 
+var tracked_delta: float
+
+## MOVEMENT
+func _n_handle_combat_creature_basic_movement(end_position: Vector2) -> void:
+	var current_position = position
+	var direction_to_move = (end_position - current_position).normalized()
+	var movement = direction_to_move * characteristics.current_speed * tracked_delta
+	if (current_position.distance_to(end_position) <= movement.length()):
+		position = end_position  # Snap to the end position
+	else:
+		velocity = direction_to_move * characteristics.current_speed
+		move_and_slide()
 
 ## BASIC MOVEMENT
 func _handle_combat_creature_basic_movement(direction: Vector2) -> void:
+	pass
 	if !combat_creature_nodes[MOVEMENT].movement_override:
 		combat_creature_nodes[POSITIONS].last_known_direction = direction
 		velocity = direction * characteristics.current_speed

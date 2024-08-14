@@ -1,6 +1,6 @@
 extends AI_Move_to_Action
 
-var antsy_effect_value: int = 10
+var antsy_effect_value: int = 0
 var radius: float = 100.0 
 var speed: float = 1.0
 var angle: float = 0.0
@@ -14,8 +14,8 @@ func _init() -> void:
 	preconditions = {}
 	effects = {
 		"current_antsy": {
-			"apply": apply_effect,
-			"validate": validate_effect,
+			"apply": reduce_antsy,
+			"validate": validate_antsy_effect,
 		}
 	}
 	action_execution = {
@@ -26,11 +26,11 @@ func _init() -> void:
 		"is_complete": is_complete
 	}
 
-func apply_effect(character: CombatCreatureBaseClass) -> CombatCreatureBaseClass:
+func reduce_antsy(character: CombatCreatureBaseClass) -> CombatCreatureBaseClass:
 	character.characteristics.current_antsy = clamp(character.characteristics.current_antsy-antsy_effect_value, 0, character.characteristics.max_antsy)
 	return character
 
-func validate_effect(character: CombatCreatureBaseClass, target_value: float) -> bool:
+func validate_antsy_effect(character: CombatCreatureBaseClass, target_value: float) -> bool:
 	character = apply(character)
 	return character.characteristics.current_antsy == target_value
 
@@ -41,7 +41,7 @@ func get_circular_direction(character: CombatCreatureBaseClass) -> Vector2:
 	var direction: Vector2
 	var enemy_position: Vector2 = character.characteristics.enemy_target.position
 	
-	# Calculate the vector to perpendicular to the direction to the enemy
+	# Calculate the vector perpendicular to the direction to the enemy
 	var to_enemy: Vector2 = enemy_position - character.global_position
 	var perpendicular: Vector2 = Vector2(-to_enemy.y, to_enemy.x).normalized()
 	
@@ -63,4 +63,5 @@ func get_circular_direction(character: CombatCreatureBaseClass) -> Vector2:
 	return direction
 
 func is_complete(character: CombatCreatureBaseClass) -> bool:
+	return false
 	return AIUtils.check_if_acceptable_distance(character.characteristics.distance_to_target, distance)

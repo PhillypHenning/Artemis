@@ -29,6 +29,11 @@ func run_planner(current_plan: Array) -> Array:
 					target_state = state_resources.get("MoveTo").duplicate(true)
 					target_state.target_action_properties = current_plan[index].action_execution.do_action
 					target_state.target_is_complete = current_plan[index].action_execution.is_complete
+					target_state.calculate_target_location(character_node)
+					var timer = current_plan[index].action_execution.do_action.get("action_timer")
+					if timer:
+						timer.call(character_node)
+				
 				AI_Action.ACTION_TYPE.USE_ABILITY:
 					target_state = state_resources.get("UseAbility").duplicate(true)
 					target_state.ability_name = current_plan[index].action_name

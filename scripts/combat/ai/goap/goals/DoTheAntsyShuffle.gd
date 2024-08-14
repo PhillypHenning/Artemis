@@ -10,7 +10,7 @@ func _init(character: CombatCreatureBaseClass):
 	self.goal_timer_interval = 1
 	
 	var timer = Timer.new()
-	timer.name = self.goal_name + "Timer"
+	timer.name = self.goal_name + "GoalTimer"
 	timer.wait_time = self.goal_timer_interval
 	timer.one_shot = false
 	timer.autostart = true
