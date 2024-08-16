@@ -5,8 +5,6 @@
 
 [node name="AbilityTesterGroup" type="Node"]
 script = ExtResource("1_ny8fn")
-amount_healed = null
-Bullet = null
 
 [node name="TargetDummy" parent="." instance=ExtResource("2_x1170")]
 position = Vector2(1728, 128)

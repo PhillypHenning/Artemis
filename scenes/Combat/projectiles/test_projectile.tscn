@@ -7,12 +7,12 @@
 size = Vector2(13, 13)
 
 [node name="TestProjectile" type="Area2D"]
-collision_layer = 0
-collision_mask = 15
+collision_layer = 32
+collision_mask = 0
 script = ExtResource("1_f38tk")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-6, -4)
+position = Vector2(-7, -4)
 rotation = 1.5708
 scale = Vector2(0.025, 0.025)
 texture = ExtResource("2_2gklv")

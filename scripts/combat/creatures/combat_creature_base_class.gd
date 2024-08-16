@@ -68,9 +68,12 @@ var combat_creature_nodes = {
 var current_plan: Array
 var ai_brain_state: bool = false
 
+var collision_layers: Array
+var collision_masks: Array
 
-# INITIALIZATION FUNCTIONS
 func _ready() -> void:
+	_init_containers()
+
 	combat_creature_nodes[PARENT_NODE].arena = find_parent("CombatArena")
 	
 	# Image
@@ -105,7 +108,7 @@ func _init_initial_stat_set(health: float, stamina: int, speed: float) -> void:
 
 func _init_attach_creature_card() -> void:
 	if combat_creature_nodes[PARENT_NODE].arena != null:
-		if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER:
+		if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER_1:
 			combat_creature_nodes[PARENT_NODE].arena.connect("attach_player_creature_to_card", _init_attach_creature_to_card)
 		else:
 			combat_creature_nodes[PARENT_NODE].arena.connect("attach_enemy_creature_to_card", _init_attach_creature_to_card)
@@ -113,7 +116,7 @@ func _init_attach_creature_card() -> void:
 
 func _init_assign_target() -> void:
 	if combat_creature_nodes[PARENT_NODE].arena != null:
-		if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER:
+		if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER_1:
 			combat_creature_nodes[PARENT_NODE].arena.connect("player_character_target", _handle_assign_target)
 		else:
 			combat_creature_nodes[PARENT_NODE].arena.connect("enemy_character_target", _handle_assign_target)
@@ -128,28 +131,37 @@ func _init_create_raycast() -> void:
 	combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(5, true) # Collide with CombatCreatures
 	
 	# Set Specific
-	#if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER:
-		#combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(3, true)
-	#if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY:
-		#combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(1, true)
+	if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER_1:
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(3, true)
+	if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY:
+		combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast.set_collision_mask_value(1, true)
 	
 	self.add_child(combat_creature_nodes[TARGETTING][TARGETTING_DETAILS.LOS].los_raycast)
 
 
 func _init_set_mask() -> void:
-	# Set layer Object exists in
-	self.set_collision_layer_value(5, true)	# Combat Creature
+	self.collision_layer = 0
+	self.collision_mask = 0
+	self.set_collision_layer_value(1, false)
 	
-	# Set layers Object should interact with
+	# Defaults
+	self.set_collision_layer_value(5, true)	# Combat Creature
+	collision_layers.append(5)
 	self.set_collision_mask_value(2, true) 	# Walls
+	collision_masks.append(2)
 	self.set_collision_mask_value(4, true)	# Obstacles
-	#if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER:
-		#self.set_collision_layer_value(1, true)	# Player
-		#self.set_collision_mask_value(3, true)	# Enemy
-	#if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY:
-		#self.set_collision_layer_value(1, false)
-		#self.set_collision_layer_value(3, true)	# Enemy
-		#self.set_collision_mask_value(1, true)	# Player
+	collision_masks.append(4)
+	
+	if characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER_1:
+		self.set_collision_layer_value(1, true)	# Player
+		collision_layers.append(1)
+		self.set_collision_mask_value(3, true)	# Enemy
+		collision_masks.append(3)
+	elif characteristics.character_type == CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY:
+		self.set_collision_layer_value(3, true)	# Enemy
+		collision_layers.append(3)
+		self.set_collision_mask_value(1, true)	# Player
+		collision_masks.append(1)
 
 func _init_ai() -> void:
 	combat_creature_brain.character_node = self
@@ -317,3 +329,66 @@ func calculate_ideal_combat_range() -> void:
 	# If the combat_creature_brain.available_actions array is empty, then the ideal range should be the border of melee_far and range_close
 	if len(combat_creature_brain.available_actions) == 0:
 		characteristics.current_ideal_range = CombatCreatureCharacteristics.PROXIMITY.DEADZONE
+
+
+
+var managed_containers_group_node: Node
+var projectiles_group_node: Node
+var timers_containers_group_node: Node
+
+var projectiles_nodes: Array
+var timers_nodes: Array
+
+func _init_containers() -> void:
+	managed_containers_group_node = Node.new()
+	managed_containers_group_node.name = "ManagedContainers"
+	add_child(managed_containers_group_node)
+	
+	projectiles_group_node = Node.new()
+	projectiles_group_node.name = "Projectiles"
+	managed_containers_group_node.add_child(projectiles_group_node)
+	
+	timers_containers_group_node = Node.new()
+	timers_containers_group_node.name = "Timers"
+	managed_containers_group_node.add_child(timers_containers_group_node)
+
+
+func create_group(container_group: String, timer_group_name: String) -> Node:
+	var new_group: Node
+	var target_container_group: Node
+	var target_container_array: Array
+	match container_group:
+		"Projectiles":
+			target_container_group = projectiles_group_node
+			target_container_array = projectiles_nodes
+			for container in projectiles_nodes:
+				if container.name == timer_group_name:
+					return container
+		"Timers":
+			target_container_group = timers_containers_group_node
+			target_container_array = timers_nodes
+			for container in timers_nodes:
+				if container.name == timer_group_name:
+					return container
+	new_group = Node.new()
+	new_group.name = timer_group_name
+	target_container_array.append(new_group)
+	target_container_group.add_child(new_group)
+	return new_group
+
+
+func create_timer_group(target_timer_group_name: String) -> Node:
+	return create_group("Timers", target_timer_group_name)
+
+func create_projectile_group(target_timer_group_name: String) -> Node:
+	return create_group("Projectiles", target_timer_group_name)
+
+func add_timer_to_timer_group(target_timer_group_name: String, child_timer: Timer) -> void:
+	# Check timer_groups for a matching name
+	var target_timer_group: Node = create_timer_group(target_timer_group_name)
+	target_timer_group.add_child(child_timer)
+
+func add_projectile_to_projectile_group(target_timer_group_name: String, projectile: Node) -> void:
+	# Check timer_groups for a matching name
+	var target_projectile_group: Node = create_projectile_group(target_timer_group_name)
+	target_projectile_group.add_child(projectile)

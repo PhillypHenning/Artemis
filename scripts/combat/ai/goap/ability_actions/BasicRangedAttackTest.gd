@@ -1,6 +1,6 @@
 extends AI_Use_Ability_Action
 
-var offensive_melee_attacks = preload("res://scripts/combat/abilities/offensive/offensive_melee_attacks.gd").new()
+var offensive_ranged_attacks = preload("res://scripts/combat/abilities/offensive/offensive_ranged_attacks.gd").new()
 
 func _init() -> void:
 	action_name = "BasicAttackTest"
@@ -17,7 +17,7 @@ func _init() -> void:
 		},
 		"is_complete": is_complete
 	}
-	ability = offensive_melee_attacks.close_range_basic_attack
+	ability = offensive_ranged_attacks.shoot_basic_ranged_attack
 
 # Preconditions:
 #	Combat Creature can't already be attacking
@@ -29,11 +29,11 @@ func _init() -> void:
 # 	The Combat Creature will use Stamina
 
 func determine_character_in_melee_close_range(character: CombatCreatureBaseClass) -> bool:
-	return AIUtils.check_if_target_in_range(character, character.characteristics.enemy_target.position, CombatCreatureCharacteristics.PROXIMITY.MELEE_CLOSE)
+	return AIUtils.check_if_target_in_range(character, character.characteristics.enemy_target.position, CombatCreatureCharacteristics.PROXIMITY.RANGE_CLOSE)
 
 func is_complete(character: CombatCreatureBaseClass) -> bool:
 	character.characteristics.is_attacking = false
 	return true
 
 func perform_attack(character: CombatCreatureBaseClass) -> void:
-	ability.call(character.characteristics.enemy_target, 1)
+	ability.call(character, character.transform, 1, 900)

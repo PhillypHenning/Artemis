@@ -12,6 +12,7 @@ var preconditions: Dictionary
 var effects: Dictionary
 var action_execution: Dictionary
 var action_type: ACTION_TYPE
+var ability: Callable
 
 var AIUtils = preload("res://scripts/combat/ai/utils.gd").new()
 

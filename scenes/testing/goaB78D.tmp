@@ -34,13 +34,6 @@ offset_right = 832.0
 offset_bottom = 128.0
 text = "Close Range Attack"
 
-[node name="Button2" type="Button" parent="Debug"]
-offset_left = 576.0
-offset_top = 192.0
-offset_right = 832.0
-offset_bottom = 256.0
-text = "Ranged Attack"
-
 [node name="CombatObstacleBoulder" parent="." instance=ExtResource("2_h8dch")]
 position = Vector2(976, 912)
 
@@ -61,4 +54,3 @@ offset_bottom = -64.0
 metadata/_edit_use_anchors_ = true
 
 [connection signal="pressed" from="Debug/Button" to="." method="_on_button_pressed"]
-[connection signal="pressed" from="Debug/Button2" to="." method="_on_button_2_pressed"]

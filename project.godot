@@ -94,3 +94,4 @@ shoot={
 2d_render/layer_3="Enemy"
 2d_render/layer_4="Obstacle"
 2d_render/layer_5="CombatCreatures"
+2d_render/layer_6="Projectiles"

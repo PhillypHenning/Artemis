@@ -8,13 +8,19 @@ var inactive_ai: CombatCreatureBaseClass
 @onready var actions_textbox = $Debug/ActionsTextBox
 @onready var bot_2_stats = $GoapTestBot2/Bot2Stats
 
-var close_range_attack: AI_Action = load("res://scripts/combat/ai/goap/ability_actions/BasicAttackTest.gd").new()
+var melee_close_test_attack: AI_Action = load("res://scripts/combat/ai/goap/ability_actions/BasicAttackTest.gd").new()
+var ranged_close_test_attack: AI_Action = load("res://scripts/combat/ai/goap/ability_actions/BasicRangedAttackTest.gd").new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var root_node = get_tree().current_scene
 	active_ai = root_node.find_child("GoapTestBot")
 	inactive_ai = root_node.find_child("GoapTestBot2")
+	
+	active_ai.characteristics.character_type = CombatCreatureCharacteristics.CHARACTER_TYPE.PLAYER_1
+	inactive_ai.characteristics.character_type = CombatCreatureCharacteristics.CHARACTER_TYPE.NPC_ENEMY
+	active_ai._init_set_mask()
+	inactive_ai._init_set_mask()
 
 	# Turn on "active_ai" brain
 	active_ai.ai_brain_state = true
@@ -80,9 +86,13 @@ func handle_actions() -> void:
 
 
 func _on_button_pressed():
-	active_ai.combat_creature_brain.available_actions.append(close_range_attack.duplicate(true))
+	active_ai.combat_creature_brain.available_actions.append(melee_close_test_attack.duplicate(true))
 
 func handle_state():
 	var text_string: String
 	text_string = "Current Health [{0}]".format([inactive_ai.characteristics.current_health])
 	bot_2_stats.text = text_string
+
+
+func _on_button_2_pressed():
+	active_ai.combat_creature_brain.available_actions.append(ranged_close_test_attack.duplicate(true))

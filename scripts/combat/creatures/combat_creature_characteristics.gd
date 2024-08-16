@@ -3,7 +3,7 @@ class_name CombatCreatureCharacteristics
 extends Resource
 
 enum CHARACTER_TYPE {
-	PLAYER,
+	PLAYER_1,
 	NPC_FRIENDLY,
 	NPC_NEUTRAL,
 	NPC_ENEMY
@@ -24,8 +24,8 @@ enum PROXIMITY {
 	MELEE_MEDIUM = 250,
 	MELEE_FAR = 300,
 	DEADZONE = 400,
-	RANGE_CLOSE = 350,
-	RANGE_FAR = 450,
+	RANGE_CLOSE = 450,
+	RANGE_FAR = 550,
 	OOMR,
 }
 
